@@ -38,7 +38,7 @@ $ pwd
 
 ### 使用通配符
 ```shell
-$ cd /home/shiyanlou
+$ cd /home/likun
 $ touch asd.txt fgh.txt
 # 列出当前文件夹内的.txt 文件
 $ ls *.txt
@@ -182,60 +182,63 @@ $ pwd
 
 方法一：使用 groups 命令
 ```shell
-$ groups shiyanlou
+$ groups likun
 
-#likun : likun adm cdrom sudo dip plugdev lpadmin sambashare
+likun : likun sudo
 ```
 
-其中冒号之前表示用户，后面表示该用户所属的用户组。这里可以看到 shiyanlou 用户属于 shiyanlou 用户组，每次新建用户如果不指定用户组的话，默认会自动创建一个与用户名相同的用户组（差不多就相当于家长的意思，或者说是老总）。默认情况下在 sudo 用户组里的可以使用 sudo 命令获得 root 权限。shiyanlou 用户也可以使用 sudo 命令，为什么这里没有显示在 sudo 用户组里呢？可以查看下 /etc/sudoers.d/shiyanlou 文件，我们在 /etc/sudoers.d 目录下创建了这个文件，从而给 shiyanlou 用户赋予了 sudo 权限：
-```shell
-sudo cat /etc/sudoers.d/shiyanlou
-```
+> 其中冒号之前表示用户，后面表示该用户所属的用户组。这里可以看到 likun 用户属于 likun 用户组，每次新建用户如果不指定用户组的话，默认会自动创建一个与用户名相同的用户组。默认情况下在 sudo 用户组里的可以使用 sudo 命令获得 root 权限。
 
 方法二：查看 /etc/group 文件
 ```shell
 $ cat /etc/group | sort
 ```
-这里 cat 命令用于读取指定文件的内容并打印到终端输出，后面会详细讲它的使用。 | sort 表示将读取的文本进行一个字典排序再输出，然后你将看到如下一堆输出，你可以在最下面看到 shiyanlou 的用户组信息：
-没找到，没关系，你可以使用命令过滤掉一些你不想看到的结果：
+这里 cat 命令用于读取指定文件的内容并打印到终端输出。 | sort 表示将读取的文本进行一个字典排序再输出，然后你将看到如下一堆输出，你可以在最下面看到 likun 的用户组信息.
 
-$ cat /etc/group | grep -E "shiyanlou"
+可以使用命令过滤掉一些不想看到的结果：
 
-此处输入图片的描述
-/etc/group 文件格式说明
+```shell
+$ cat /etc/group | grep -E "likun"
+
+likun:x:1000:
+```
+
+/etc/group 文件格式说明:
 
 /etc/group 的内容包括用户组（Group）、用户组口令、GID 及该用户组所包含的用户（User），每个用户组一条记录。格式如下：
 
 `group_name:password:GID:user_list`
 
 你看到上面的 password 字段为一个 x 并不是说密码就是它，只是表示密码不可见而已。
+这里需要注意，如果用户主用户组，即用户的 GID 等于用户组的 GID，那么最后一个字段 user_list 就是空的，比如 likun 用户，在 /etc/group 中的 likun 用户组后面是不会显示的。lilei 用户，在 /etc/group 中的 lilei 用户组后面也是不会显示的。
 
-这里需要注意，如果用户主用户组，即用户的 GID 等于用户组的 GID，那么最后一个字段 user_list 就是空的，比如 shiyanlou 用户，在 /etc/group 中的 shiyanlou 用户组后面是不会显示的。lilei 用户，在 /etc/group 中的 lilei 用户组后面是不会显示的。
 
-
-将其它用户加入 sudo 用户组
+将其它用户加入 sudo 用户组：
 
 默认情况下新创建的用户是不具有 root 权限的，也不在 sudo 用户组，可以让其加入 sudo 用户组从而获取 root 权限：
-
+```shell
 # 注意 Linux 上输入密码是不会显示的
 $ su -l lilei
 $ sudo ls
 
-会提示 lilei 不在 sudoers 文件中，意思就是 lilei 不在 sudo 用户组中，至于 sudoers 文件（/etc/sudoers）你现在最好不要动它，操作不慎会导致比较麻烦的后果。
+lilei is not in the sudoers file.  This incident will be reported.
+```
+> 会提示 lilei 不在 sudoers 文件中，意思就是 lilei 不在 sudo 用户组中
 
 使用 usermod 命令可以为用户添加用户组，同样使用该命令你必需有 root 权限，你可以直接使用 root 用户为其它用户添加用户组，或者用其它已经在 sudo 用户组的用户使用 sudo 命令获取权限来执行该命令。
 
-这里我用 shiyanlou 用户执行 sudo 命令将 lilei 添加到 sudo 用户组，让它也可以使用 sudo 命令获得 root 权限：
-
-$ su shiyanlou # 此处需要输入 shiyanlou 用户密码，shiyanlou 的密码可以通过 `sudo passwd shiyanlou` 进行设置。
+这里我用 likun 用户执行 sudo 命令将 lilei 添加到 sudo 用户组，让它也可以使用 sudo 命令获得 root 权限：
+```shell
+$ su likun
 $ groups lilei
 $ sudo usermod -G sudo lilei
 $ groups lilei
-
-然后你再切换回 lilei 用户，现在就可以使用 sudo 获取 root 权限了。
+```
+> 然后你再切换回 lilei 用户，现在就可以使用 sudo 获取 root 权限了。
 
 ### 删除用户 
 ```shell
+# 首先要退出要删除的用户
 $ sudo deluser lilei --remove-home
 ```
 
@@ -253,21 +256,25 @@ Unix/Linux系统是一个典型的多用户系统，不同的用户处于不同�
 使用较长格式列出文件：
 ```shell
 $ ls -l
+
+-rw-rw-r--  1 likun likun    0 Jun 20 21:38 1.txt
+drwxrwxr-x  3 likun likun 4096 Jun  9 18:38 abc
+...
 ```
 ![](./res/linux_file1.png)
 ![](./res/linux_file2.png)
 
 
 文件类型
-- 关于文件类型，这里有一点你必需时刻牢记 Linux 里面一切皆文件，正因为这一点才有了设备文件（ /dev 目录下有各种设备文件，大都跟具体的硬件设备相关）这一说。 socket：网络套接字，具体是什么，感兴趣的用户可以自己去了解或期待实验楼的后续相关课程。pipe 管道，这个东西很重要，我们以后将会讨论到，这里你先知道有它的存在即可。软链接文件：链接文件是分为两种的，另一种当然是“硬链接”（硬链接不常用，具体内容不作为本课程讨论重点，而软链接等同于 Windows 上的快捷方式,你记住这一点就够了）。
+- 关于文件类型，这里有一点你必需时刻牢记 Linux 里面一切皆文件，正因为这一点才有了设备文件（ /dev 目录下有各种设备文件，大都跟具体的硬件设备相关）这一说。 socket：网络套接字。pipe 管道。软链接文件：链接文件是分为两种的，另一种当然是“硬链接”（硬链接不常用，具体内容不作为本课程讨论重点，而软链接等同于 Windows 上的快捷方式,你记住这一点就够了）。
 
 文件权限
 - 读权限，表示你可以使用 cat <file name> 之类的命令来读取某个文件的内容；写权限，表示你可以编辑和修改某个文件； 执行权限，通常指可以运行的二进制程序文件或者脚本文件，如同 Windows 上的 exe 后缀的文件，不过 Linux 上不是通过文件后缀名来区分文件的类型。你需要注意的一点是，一个目录同时具有读权限和执行权限才可以打开并查看内部文件，而一个目录要有写权限才允许在其中创建其它文件，这是因为目录文件实际保存着该目录里面的文件的列表等信息。
 
-- 所有者权限，这一点相信你应该明白了，至于所属用户组权限，是指你所在的用户组中的所有其它用户对于该文件的权限，比如，你有一个 iPad，那么这个用户组权限就决定了你的兄弟姐妹有没有权限使用它破坏它和占有它。
+- 所属用户组权限，是指你所在的用户组中的所有其它用户对于该文件的权限。
 
 链接数
-- 链接到该文件所在的 inode 结点的文件名数目（关于这个概念涉及到 Linux 文件系统的相关概念知识，不在本课程的讨论范围，感兴趣的用户可以自己去了解）。
+- 链接到该文件所在的 inode 结点的文件名数目（关于这个概念涉及到 Linux 文件系统的相关概念知识，先忽略）。
 
 文件大小
 - 以 inode 结点大小为单位来表示的文件大小，你可以给 ls 加上 -lh 参数来更直观的查看文件的大小。
@@ -275,18 +282,42 @@ $ ls -l
 ls 命令的一些其它常用的用法：
  - 显示除了 .（当前目录）和 ..（上一级目录）之外的所有文件，包括隐藏文件（Linux 下以 . 开头的文件为隐藏文件）。
 ```shell
+#显示当前目录下的所有目录和文件
 $ ls -A
-$ ls -Al
-```
-查看某一个目录的完整属性，而不是显示目录里面的文件属性：
 
+#详细的显示当前目录下的所有目录和文件
+$ ls -Al
+
+#查看某一个目录的完整属性，而不是显示目录里面的文件属性
 $ ls -dl <目录名>
 
-显示所有文件大小，并以普通人类能看懂的方式呈现：
-
+#显示所有文件大小和文件名
 $ ls -AsSh
-
-其中小 s 为显示文件大小，大 S 为按文件大小排序，若需要知道如何按其它方式排序，请使用“man”命令查询。
-
+##其中小 s 为显示文件大小，大 S 为按文件大小排序，若需要知道如何按其它方式排序，请使用“man”命令查询。
+```
 
 ### 变更文件所有者 
+假设目前是 lilei 用户登录，新建一个文件，命名为 “ iphone6 ”：
+```shell
+# 注意当前的用户必须是 lilei
+# 如果是 shiyanlou 用户需要切换到 lilei（如果之前已经删除需要重新创建下）
+$ su lilei
+$ cd /home/lilei
+$ touch iphone6
+#查看文件详细信息
+$ ll iphone6
+```
+
+换回到 likun 用户身份，使用以下命令变更文件所有者为 likun ：
+```shell
+# 需要切换到 shiyanlou 用户执行以下操作
+$ cd /home/lilei
+$ ls iphone6
+$ sudo chown shiyanlou iphone6
+$ ll iphone6
+
+###
+所有者成功改为likun
+-rw-rw-r-- 1 likun lilei 0 Jun 20 21:49 iphone6
+```
+
