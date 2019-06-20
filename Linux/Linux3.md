@@ -63,4 +63,175 @@ $ cd ../../usr/local/bin
 
 ### 新建
 
+新建空白文件
 
+使用 touch 命令创建空白文件，关于 touch 命令，其主要作用是来更改已有文件的时间戳的（比如，最近访问时间，最近修改时间），但其在不加任何参数的情况下，只指定一个文件名，则可以创建一个指定文件名的空白文件（不会覆盖已有同名文件），当然你也可以同时指定该文件的时间戳
+
+创建名为 test 的空白文件，因为在其它目录没有权限，所以需要先 cd ~ 切换回用户的 /home/likun 目录：
+```python
+$ cd /home/likun
+# 或者 cd ~
+$ touch test
+```
+新建目录
+
+使用 mkdir（make directories）命令可以创建一个空目录，也可同时指定创建目录的权限属性。
+
+创建名为“ mydir ”的空目录：
+```shell
+$ mkdir mydir
+```
+
+使用 -p 参数，同时创建父目录（如果不存在该父目录），如下我们同时创建一个多级目录（这在安装软件、配置安装路径时非常有用）：
+```shell
+$ mkdir -p father/son/grandson
+```
+
+### 复制
+复制文件
+
+使用 cp（copy）命令复制一个文件到指定目录。
+
+将之前创建的“ test ”文件复制到“ /home/likun/father/son/grandson ”目录中：
+```shell
+$ cp test father/son/grandson
+```
+复制目录
+
+如果直接使用 cp 命令复制一个多层目录的话，会出现如下错误：
+```shell
+mkdir family
+cp father family
+```
+要成功复制目录需要加上 -r 或者 -R 参数，表示递归复制，就是说有点“株连九族”的意思：
+```shell
+$ cd /home/shiyanlou
+$ mkdir family
+$ cp -r father family
+```
+
+### 删除
+删除文件
+
+使用 rm（remove files or directories）命令删除一个文件：
+```shell
+$rm test
+```
+有时候你会遇到想要删除一些为只读权限的文件，直接使用 rm 删除会显示一个提示，如下：
+```shell
+$touch test
+$chmod 444 test
+$ll test
+$rm test
+$rm -f test
+```
+> 你如果想忽略这提示，直接删除文件，可以使用 -f 参数强制删除：`rm -f test`
+
+删除目录
+
+跟复制目录一样，要删除一个目录，也需要加上 -r 或 -R 参数：
+```shell
+$ rm -r family
+```
+
+### 移动文件与文件重命名
+移动文件
+
+使用 mv（move or rename files）命令移动文件（剪切）。将文件“ file1 ”移动到 Documents 目录：
+
+mv 源目录文件 目的目录：
+```shell
+$ mkdir Documents
+$ touch file1
+$ mv file1 Documents
+```
+重命名文件
+
+将文件“ file1 ”重命名为“ myfile ”：
+
+mv 旧的文件名 新的文件名：
+```shell
+$ mv file1 myfile
+```
+批量重命名
+
+要实现批量重命名，mv 命令就有点力不从心了，我们可以使用一个看起来更专业的命令 rename 来实现。不过它要用 perl 正则表达式来作为参数，这里只做演示.
+
+```shell
+$ cd /home/likun/
+
+# 使用通配符批量创建 5 个文件:
+$ touch file{1..5}.txt
+
+# 批量将这 5 个后缀为 .txt 的文本文件重命名为以 .c 为后缀的文件:
+$ rename 's/\.txt/\.c/' *.txt
+
+# 批量将这 5 个文件，文件名和后缀改为大写:
+$ rename 'y/a-z/A-Z/' *.c
+```
+> rename 是先使用第二个参数的通配符匹配所有后缀为 .txt 的文件，然后使用第一个参数提供的正则表达式将匹配的这些文件的 .txt 后缀替换为 .c
+
+### 查看文件 
+使用 cat，tac 和 nl 命令查看文件
+- 前两个命令都是用来打印文件内容到标准输出（终端），其中 cat 为正序显示，tac 为倒序显示。
+> 标准输入输出：当我们执行一个 shell 命令行时通常会自动打开三个标准文件，即标准输入文件（stdin），默认对应终端的键盘、标准输出文件（stdout）和标准错误输出文件（stderr），后两个文件都对应被重定向到终端的屏幕，以便我们能直接看到输出内容。进程将从标准输入文件中得到输入数据，将正常输出数据输出到标准输出文件，而将错误信息送到标准错误文件中。
+
+比如我们要查看之前从 /etc 目录下拷贝来的 passwd 文件：
+```shell
+$ cd /home/likun
+$ cp /etc/passwd passwd
+$ cat passwd
+```
+可以加上 -n 参数显示行号：
+```shell
+$ cat -n passwd
+```
+
+`nl`命令，添加行号并打印，这是个比 `cat -n` 更专业的行号打印命令。
+
+这里简单列举它的常用的几个参数：
+```shell
+-b : 指定添加行号的方式，主要有两种：
+    -b a:表示无论是否为空行，同样列出行号("cat -n"就是这种方式)
+    -b t:只列出非空行的编号并列出（默认为这种方式）
+-n : 设置行号的样式，主要有三种：
+    -n ln:在行号字段最左端显示
+    -n rn:在行号字段最右边显示，且不加 0
+    -n rz:在行号字段最右边显示，且加 0
+-w : 行号字段占用的位数(默认为 6 位)
+```
+```shell
+$ nl -b a passwd
+```
+使用 more 和 less 命令分页查看文件
+
+使用 more 命令打开 passwd 文件：
+```shell
+$ more passwd
+```
+> 打开后默认只显示一屏内容，终端底部显示当前阅读的进度。可以使用 Enter 键向下滚动一行，使用 Space 键向下滚动一屏，按下 h 显示帮助，q 退出。
+
+使用 head 和 tail 命令查看文件
+
+只查看文件的头几行（默认为 10 行，不足 10 行则显示全部）和尾几行。
+```shell
+$ tail /etc/passwd
+
+# 甚至更直接的只看一行， 加上 -n 参数，后面紧跟行数：
+$ tail -n 1 /etc/passwd
+```
+> 关于 tail 命令，不得不提的还有它一个很牛的参数 -f，这个参数可以实现不停地读取某个文件的内容并显示。这可以让我们动态查看日志，达到实时监视的目的。
+
+### 查看文件类型 
+在 Linux 中文件的类型不是根据文件后缀来判断的，我们通常使用 file 命令查看文件的类型：
+
+```shell
+$ file /bin/ls
+
+/bin/ls: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/l, for GNU/Linux 2.6.32, BuildID[sha1]=d0bc0fb9b3f60f72bbad3c5a1d24c9e2a1fde775, stripped
+```
+> 说明这是一个可执行文件，运行在 64 位平台，并使用了动态链接文件（共享库）。
+
+### 编辑文件 
+在 Linux 下面编辑文件通常我们会直接使用专门的命令行编辑器比如（emacs，vim，nano）,同时也可以使用类似与window系统下的记事本程序编辑，如sublime text， gedit。
+vim作为文本编辑器十分强大，可以只使用键盘进行操作，但是需要一定时间练习。
