@@ -84,12 +84,112 @@ likun@Ubuntu16:~$ echo $temp
 - 永久的：需要修改配置文件，变量永久生效；
 - 临时的：使用 export 命令行声明即可，变量在关闭 shell 时失效。
 
-这里介绍两个重要文件 /etc/bashrc（有的 Linux 没有这个文件） 和 /etc/profile ，它们分别存放的是 shell 变量和环境变量。还有要注意区别的是每个用户目录下的一个隐藏文件：
+这里介绍两个重要文件 /etc/bashrc（有的 Linux 没有这个文件） 和 /etc/profile ，它们分别存放的是 shell 变量和环境变量。
+
+还有要注意区别的是每个用户目录下的一个隐藏文件：
 ```shell
 #.profile 可以用 ls -a 查看
-$ cd /home/shiyanlou
+$ cd /home/likun
 $ ls -a 
+$ cat .profile
+```
+> 这个 .profile 只对当前用户永久生效。而写在 /etc/profile 里面的是对所有用户永久生效，所以如果想要添加一个永久生效的环境变量，只需要打开 /etc/profile，在最后加上你想添加的环境变量就好啦。
+
+## 命令的查找路径与顺序 
+你可能很早之前就有疑问，我们在 Shell 中输入一个命令，Shell 是怎么知道去哪找到这个命令然后执行的呢？这是通过环境变量 PATH 来进行搜索的，熟悉 Windows 的用户可能知道 Windows 中的也是有这么一个 PATH 环境变量。这个 PATH 里面就保存了 Shell 中执行的命令的搜索路径。
+
+查看 PATH 环境变量的内容：
+```shell
+$ echo $PATH
+
+/opt/ros/kinetic/bin:/home/likun/bin:/home/likun/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+```
+>通常这一类目录下放的都是可执行文件，当我们在 Shell 中执行一个命令时，系统就会按照 PATH 中设定的路径按照顺序依次到目录中去查找，如果存在同名的命令，则执行先找到的那个。
+
+下面我们将练习创建一个最简单的可执行 Shell 脚本和一个使用 C 语言创建的“ hello world ”程序:
+创建一个 Shell 脚本文件：
+```shell
+$ cd /home/likun
+$ touch hello_shell.sh
+$ gedit hello_shell.sh
+```
+在脚本中添加如下内容，保存并退出（注意不要省掉第一行，这不是注释）
+```
+#!/bin/bash
+
+for ((i=0; i<10; i++));do
+    echo "hello shell"
+done
+
+exit 0
+```
+为文件添加可执行权限：
+
+```shell
+$ chmod 755 hello_shell.sh
+```
+执行脚本：
+```shell
+$ cd /home/likun
+$ ./hello_shell.sh
+
+hello shell
+hello shell
+....
 ```
 
+创建一个 C 语言“ hello world ”程序：
+```shell
+$ cd /home/likun
+$ gedit hello_world.c
+```
+```c
+#include <stdio.h>
 
+int main(void)
+{
+    printf("hello world!\n");
+    return 0;
+}
+```
+保存后使用 gcc 生成可执行文件：
+```shell
+$ gcc -o hello_world hello_world.c
+```
+> gcc 生成二进制文件默认具有可执行权限，不需要修改
+
+在 /home/likun 家目录创建一个 mybin 目录，并将上述 hello_shell.sh 和 hello_world 文件移动到其中,并运行：
+```shell
+$ cd /home/shiyanlou
+$ mkdir mybin
+$ mv hello_shell.sh hello_world mybin/
+$ cd mybin
+$ ./hello_shell.sh
+$ ./hello_world
+```
+
+> 回到上一级目录，也就是 likun 家目录，当再想运行那两个程序时，会发现提示命令找不到，除非加上命令的完整路径，但那样很不方便，如何做到像使用系统命令一样执行自己创建的脚本文件或者程序呢？那就要将命令所在路径添加到 PATH 环境变量了。
+
+### 添加自定义路径到“ PATH ”环境变量
+在前面我们应该注意到 PATH 里面的路径是以 `:` 作为分割符的，所以我们可以这样添加自定义路径：
+```shell
+$ PATH=$PATH:/home/likun/mybin
+```
+> 注意这里一定要使用绝对路径。
+
+现在你就可以在任意目录执行那两个命令了（注意需要去掉前面的 ./）。
+```shell
+$ hello_shell.sh
+$ hello_world
+```
+
+你可能会意识到这样还并没有很好的解决问题，因为我给 PATH 环境变量追加了一个路径，它也只是在当前 Shell 有效，我一旦退出终端，再打开就会发现又失效了。有没有方法让添加的环境变量全局有效？或者每次启动 Shell 时自动执行上面添加自定义路径到 PATH 的命令？下面我们就来说说后一种方式——让它自动执行。
+
+在每个用户的 home 目录中有一个 Shell 每次启动时会默认执行一个配置脚本，以初始化环境，包括添加一些用户自定义环境变量等等。zsh 的配置文件是 .zshrc，相应 Bash 的配置文件为 .bashrc 。它们在 etc 下还都有一个或多个全局的配置文件，不过我们一般只修改用户目录下的配置文件。
+
+我们可以简单地使用下面命令直接添加内容到 .zshrc 中：
+```shell
+$ echo "PATH=$PATH:/home/likun/mybin" >> .zshrc
+```
+> 上述命令中 `>>` 表示将标准输出以追加的方式重定向到一个文件中，注意前面用到的 `>` 是以覆盖的方式重定向到一个文件中，使用的时候一定要注意分辨。在指定文件不存在的情况下都会创建新的文件。
 
