@@ -321,3 +321,34 @@ $ ll iphone6
 -rw-rw-r-- 1 likun lilei 0 Jun 20 21:49 iphone6
 ```
 
+### 修改文件权限
+修改文件的权限有两种方式：
+
+- 方式一：二进制数字表示
+![](./res/chmod.png)
+每个文件的三组权限（拥有者，所属用户组，其他用户，记住这个顺序是一定的）对应一个 " rwx "，也就是一个 “ 7 ” ，所以如果我要将文件“ iphone6 ”的权限改为只有我自己可以用那么就这样：
+
+```shell
+#为了演示，先在文件里加点内容：
+$ echo "echo \"hello world\"" > iphone6
+#然后修改权限：
+#此处只允许所有者进行读写操作（rw）
+$ chmod 600 iphone6
+$ ll iphone6
+
+###修改完后的权限
+-rw------- 1 likun lilei 19 Jun 20 22:05 iphone6
+```
+
+- 方式二：加减赋值操作
+```shell
+$ chmod go-rw iphone6
+```
+> g、o 还有 u 分别表示 group、others 和 user，+ 和 - 分别表示增加和去掉相应的权限。
+
+### adduser 和 useradd 的区别是什么？
+- useradd 只创建用户，创建完了用 passwd lilei 去设置新用户的密码。adduser 会创建用户，创建目录，创建密码（提示你设置），做这一系列的操作。其实 useradd、userdel 这类操作更像是一种命令，执行完了就返回。而 adduser 更像是一种程序，需要你输入、确定等一系列操作。
+
+
+
+
