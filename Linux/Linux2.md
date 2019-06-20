@@ -146,3 +146,64 @@ su，su- 与 sudo:
 
 su <user> 可以切换到用户 user，执行时需要输入目标用户的密码，sudo <cmd> 可以以特权级别运行 cmd 命令，需要当前用户属于 sudo 组，且需要输入当前用户的密码。su - <user> 命令也是切换用户，同时环境变量也会跟着改变成目标用户的环境变量。
   
+现在我们新建一个叫 lilei 的用户：
+```shell
+$ sudo adduser lilei
+```
+修改用户密码：
+```shell
+sudo passwd <user>
+```
+查看home下不同用户的文件夹
+```shell
+$ ls /home
+```
+使用如下命令切换登录用户：
+```shell
+$ su -l lilei
+```
+
+输入刚刚设置的 lilei 的密码，然后输入如下命令并查看输出：
+```shell
+$ who am i
+$ whoami
+$ pwd
+```
+退出当前用户跟退出终端一样可以使用 exit 命令或者使用快捷键 Ctrl+d。
+
+### 用户组 
+在 Linux 里面每个用户都有一个归属（用户组），用户组简单地理解就是一组用户的集合，它们共享一些资源和权限，同时拥有私有资源，就跟家的形式差不多，你的兄弟姐妹（不同的用户）属于同一个家（用户组），你们可以共同拥有这个家（共享资源），爸妈对待你们都一样（共享权限），你偶尔写写日记，其他人未经允许不能查看（私有资源和权限）。当然一个用户是可以属于多个用户组的，正如你既属于家庭，又属于学校或公司。
+
+查看所属用户组：
+
+方法一：使用 groups 命令
+```shell
+$ groups shiyanlou
+```
+
+其中冒号之前表示用户，后面表示该用户所属的用户组。这里可以看到 shiyanlou 用户属于 shiyanlou 用户组，每次新建用户如果不指定用户组的话，默认会自动创建一个与用户名相同的用户组（差不多就相当于家长的意思，或者说是老总）。默认情况下在 sudo 用户组里的可以使用 sudo 命令获得 root 权限。shiyanlou 用户也可以使用 sudo 命令，为什么这里没有显示在 sudo 用户组里呢？可以查看下 /etc/sudoers.d/shiyanlou 文件，我们在 /etc/sudoers.d 目录下创建了这个文件，从而给 shiyanlou 用户赋予了 sudo 权限：
+```shell
+sudo cat /etc/sudoers.d/shiyanlou
+```
+
+方法二：查看 /etc/group 文件
+```shell
+$ cat /etc/group | sort
+```
+这里 cat 命令用于读取指定文件的内容并打印到终端输出，后面会详细讲它的使用。 | sort 表示将读取的文本进行一个字典排序再输出，然后你将看到如下一堆输出，你可以在最下面看到 shiyanlou 的用户组信息：
+没找到，没关系，你可以使用命令过滤掉一些你不想看到的结果：
+
+$ cat /etc/group | grep -E "shiyanlou"
+
+此处输入图片的描述
+/etc/group 文件格式说明
+
+/etc/group 的内容包括用户组（Group）、用户组口令、GID 及该用户组所包含的用户（User），每个用户组一条记录。格式如下：
+
+`group_name:password:GID:user_list`
+
+你看到上面的 password 字段为一个 x 并不是说密码就是它，只是表示密码不可见而已。
+
+这里需要注意，如果用户主用户组，即用户的 GID 等于用户组的 GID，那么最后一个字段 user_list 就是空的，比如 shiyanlou 用户，在 /etc/group 中的 shiyanlou 用户组后面是不会显示的。lilei 用户，在 /etc/group 中的 lilei 用户组后面是不会显示的。
+
+
