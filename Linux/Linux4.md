@@ -16,7 +16,7 @@ $ declare tmp
 使用 = 号赋值运算符，将变量 tmp 赋值为 likun：
 
 ```shell
-$ tmp=shiyanlou
+$ tmp=likun
 ```
 
 读取变量的值，使用 echo 命令和 $ 符号（$ 符号用于表示引用一个变量的值）：
@@ -42,4 +42,54 @@ $ echo $tmp
 | set    | 显示当前 Shell 所有变量，包括其内建环境变量（与 Shell 外观等相关），用户自定义变量及导出的环境变量。 |
 | env    | 显示与当前用户相关的环境变量，还可以让命令在指定环境中运行。|
 | export | 显示从 Shell 中导出成环境变量的变量，也能通过它将自定义变量导出为环境变量。 |
+
+![](./res/set_env_export.png)
+
+你可以更直观的使用 vimdiff 工具比较一下它们之间的差别：
+```shell
+$ temp=likun
+$ export temp_env=likun
+$ env|sort>env.txt
+$ export|sort>export.txt
+$ set|sort>set.txt
+$ ls *.txt
+```
+> 上述操作将命令输出通过管道 | 使用 sort 命令排序，再重定向到对象文本文件中。
+
+使用 vimdiff 工具比较导出的几个文件的内容：
+```shell
+$ vimdiff env.txt export.txt set.txt
+```
+
+关于哪些变量是环境变量，可以简单地理解成在当前进程的子进程有效则为环境变量，否则不是（有些人也将所有变量统称为环境变量，只是以全局环境变量和局部环境变量进行区分，我们只要理解它们的实质区别即可）。这里用 export 命令来体会一下，先在 Shell 中设置一个变量 temp=likun，然后再新创建一个子 Shell 查看 temp 变量的值：
+```shell
+➜  ~ temp=likun
+➜  ~ echo $temp
+likun
+➜  ~ bash
+likun@Ubuntu16:~$ echo $temp
+
+likun@Ubuntu16:~$ zsh
+➜  ~ export temp
+➜  ~ bash
+likun@Ubuntu16:~$ echo $temp
+
+# 结果不对。。。
+```
+> 注意：为了与普通变量区分，通常我们习惯将环境变量名设为大写。
+
+### 永久生效
+
+按变量的生存周期来划分，Linux 变量可分为两类：
+- 永久的：需要修改配置文件，变量永久生效；
+- 临时的：使用 export 命令行声明即可，变量在关闭 shell 时失效。
+
+这里介绍两个重要文件 /etc/bashrc（有的 Linux 没有这个文件） 和 /etc/profile ，它们分别存放的是 shell 变量和环境变量。还有要注意区别的是每个用户目录下的一个隐藏文件：
+```shell
+#.profile 可以用 ls -a 查看
+$ cd /home/shiyanlou
+$ ls -a 
+```
+
+
 
