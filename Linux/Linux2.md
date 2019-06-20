@@ -105,15 +105,17 @@ $ ls --help
 
 ### 小工具banner
 可以在shell 打印想打印的大字符
-
+```shell
 #先使用如下命令安装：
 $ sudo apt-get update
 $ sudo apt-get install sysvbanner
 $ banner shiyanlou
+```
 
 或者你觉得这字体不好看，那么你还可以使用默认已经安装的一个命令printerbanner：
-
+```shell
 $ printerbanner -w 50 A
+```
 
 ## Linux 用户管理 
 Linux 是一个可以实现多用户登录的操作系统，比如“李雷”和“韩梅梅”都可以同时登录同一台主机，他们共享一些主机的资源，但他们也分别有自己的用户空间，用于存放各自的文件。但实际上他们的文件都是放在同一个物理磁盘上的甚至同一个逻辑分区或者目录里，但是由于 Linux 的 用户管理 和 权限机制，不同用户不可以轻易地查看、修改彼此的文件。
@@ -144,10 +146,11 @@ who 命令其它常用参数:
 我们一般登录系统时都是以普通账户的身份登录的，要创建用户需要 root 权限，这里就要用到 sudo 这个命令了。不过使用这个命令有两个大前提，一是你要知道当前登录用户的密码，二是当前用户必须在 sudo 用户组。
 
 su，su- 与 sudo:
-
-su <user> 可以切换到用户 user，执行时需要输入目标用户的密码，sudo <cmd> 可以以特权级别运行 cmd 命令，需要当前用户属于 sudo 组，且需要输入当前用户的密码。su - <user> 命令也是切换用户，同时环境变量也会跟着改变成目标用户的环境变量。
+- su <user> 可以切换到用户user，执行时需要输入目标用户的密码
+- sudo <cmd> 可以以特权级别运行 cmd 命令，需要当前用户属于 sudo 组，且需要输入当前用户的密码。
+- su - <user> 命令也是切换用户，同时环境变量也会跟着改变成目标用户的环境变量。
   
-现在我们新建一个叫 lilei 的用户：
+新建一个叫 lilei 的用户：
 ```shell
 $ sudo adduser lilei
 ```
@@ -180,6 +183,8 @@ $ pwd
 方法一：使用 groups 命令
 ```shell
 $ groups shiyanlou
+
+#likun : likun adm cdrom sudo dip plugdev lpadmin sambashare
 ```
 
 其中冒号之前表示用户，后面表示该用户所属的用户组。这里可以看到 shiyanlou 用户属于 shiyanlou 用户组，每次新建用户如果不指定用户组的话，默认会自动创建一个与用户名相同的用户组（差不多就相当于家长的意思，或者说是老总）。默认情况下在 sudo 用户组里的可以使用 sudo 命令获得 root 权限。shiyanlou 用户也可以使用 sudo 命令，为什么这里没有显示在 sudo 用户组里呢？可以查看下 /etc/sudoers.d/shiyanlou 文件，我们在 /etc/sudoers.d 目录下创建了这个文件，从而给 shiyanlou 用户赋予了 sudo 权限：
