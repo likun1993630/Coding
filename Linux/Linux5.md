@@ -72,3 +72,15 @@ $ sudo find /etc/ -name interfaces
 - -mtime +n：列出在 n 天之前（不包含 n 天本身）被修改过的文件
 - -mtime -n：列出在 n 天之内（包含 n 天本身）被修改过的文件
 - -newer file：file 为一个已存在的文件，列出比 file 还要新的文件名
+
+![](./res/mtime.png)
+
+列出 home 目录中，当天（24 小时之内）有改动的文件：
+```shell
+$ find ~ -mtime 0
+```
+
+列出用户家目录下比 Code 文件夹新的文件：
+```shell
+$ find ~ -newer /home/likun/Code
+```
