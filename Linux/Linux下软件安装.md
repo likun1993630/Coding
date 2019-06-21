@@ -230,7 +230,7 @@ $ sudo dpkg -L emacs24
 
 下载leanote软件二进制包，是zip文件。 `leanote-desktop-linux-x64-v2.6.2.zip`
 
-使用unzip命令解压后目录如下：
+使用unzip命令解压到目录leanote下：
 
 ```
 leanote
@@ -252,4 +252,13 @@ leanote
 将该文件夹移动到一个存放软件的地方如： /home/likun/Apps/
 
 添加环境变量：
+```shell
+$ echo "PATH=$PATH:/home/likun/Apps/leanote" >> .zshrc
+$ source .zshrc
+
+# 直接运行Leanote
+$ Leanote
+```
+
+
 
