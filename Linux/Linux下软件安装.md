@@ -249,7 +249,7 @@ leanote
 ├── snapshot_blob.bin
 └── version
 ```
-将该文件夹移动到一个存放柔软的地方如： /home/likun/Apps/
+将该文件夹移动到一个存放软件的地方如： /home/likun/Apps/
 
 添加环境变量：
 
