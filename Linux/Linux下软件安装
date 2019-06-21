@@ -43,6 +43,7 @@ $ source .zshrc
 
 使用w3m打开一个网页
 ```shell
+
 $ w3m www.baidu.com
 ```
 
