@@ -56,4 +56,25 @@ $ sudo find /etc/ -name \*.list
 > 注意：如果是实验楼的海外用户，由于环境差异可能会找到两个 sources.list 文件，不需要修改 shiyanlou 目录下的 sources.list，因为这个文件是从实验环境外部挂载到环境中的，是无法修改的。
 
 解法：
+```shell
+$ sudo find /etc -name sources.list
+$ mkdir test
+$ cp /etc/apt/sources.list test
+$ cd test
+$ ls -l sources.list
+$ sudo chown lilei sources.list
+$ ls -l sources.list
+$ sudo chown likun sources.list
+$ ls -l sources.list
+$ chmod 600 sources.list
+$ ls -l sources.list
+
+/etc/apt/sources.list
+-rw-rw-r-- 1 likun likun 2904 Jun 21 11:20 sources.list
+-rw-rw-r-- 1 lilei likun 2904 Jun 21 11:20 sources.list
+-rw-rw-r-- 1 likun likun 2904 Jun 21 11:20 sources.list
+-rw------- 1 likun likun 2904 Jun 21 11:20 sources.list
+
+```
+
 
