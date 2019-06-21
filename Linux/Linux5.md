@@ -90,3 +90,138 @@ $ find ~ -newer /home/likun/Code
 ### 基本概念
 在 Windows 上最常见的不外乎这两种 `*.zip`，`*.7z` 后缀的压缩文件。而在 Linux 上面常见的格式除了以上两种外，还有 `.rar，*.gz，*.xz，*.bz2，*.tar，*.tar.gz，*.tar.xz，*.tar.bz2`，简单介绍如下：
 
+| 文件后缀名 | 说明                           |
+|------------|--------------------------------|
+| *.zip      | zip 程序打包压缩的文件         |
+| *.rar      | rar 程序压缩的文件             |
+| *.7z       | 7zip 程序压缩的文件            |
+| *.tar      | tar 程序打包，未压缩的文件     |
+| *.gz       | gzip 程序（GNU zip）压缩的文件 |
+| *.xz       | xz 程序压缩的文件              |
+| *.bz2      | bzip2 程序压缩的文件           |
+| *.tar.gz   | tar 打包，gzip 程序压缩的文件  |
+| *.tar.xz   | tar 打包，xz 程序压缩的文件    |
+| *tar.bz2   | tar 打包，bzip2 程序压缩的文件 |
+| *.tar.7z   | tar 打包，7z 程序压缩的文件    |
+
+> 我们一般只需要掌握几个命令即可，包括 zip，tar。
+
+### zip 压缩打包程序 
+- 使用 zip 打包文件夹：
+```shell
+$ cd /home/likun
+$ zip -r -q -o test.zip /home/likun/test
+$ du -h test.zip
+$ file test.zip
+```
+> 上面命令将目录 /home/likun/test 打包成一个文件，并查看了打包后文件的大小和类型。第一行命令中，-r 参数表示递归打包包含子目录的全部内容，-q 参数表示为安静模式，即不向屏幕输出信息，-o，表示输出文件，需在其后紧跟打包输出文件名。后面使用 du 命令查看打包后文件的大小（后面会具体说明该命令）。
+
+- 设置压缩级别为 9 和 1（9 最大，1 最小），重新打包：
+```shell
+$ zip -r -9 -q -o test_9.zip /home/likun/test -x ~/*.zip
+$ zip -r -1 -q -o test_1.zip /home/likun/test -x ~/*.zip
+```
+> 这里添加了一个参数用于设置压缩级别 -[1-9]，1 表示最快压缩但体积大，9 表示体积最小但耗时最久。最后那个 -x 是为了排除我们上一次创建的 zip 文件，否则又会被打包进这一次的压缩文件中，注意：这里只能使用绝对路径，否则不起作用。
+
+我们再用 du 命令分别查看默认压缩级别、最低、最高压缩级别及未压缩的文件的大小：
+```shell
+$ du -h -d 0 *.zip ~ | sort
+
+27G	/home/likun
+8.0K	test_1.zip
+8.0K	test_9.zip
+8.0K	test.zip
+```
+通过 man 手册可知：
+- h， --human-readable（顾名思义，你可以试试不加的情况）
+- d， --max-depth（所查看文件的深度），0表示只差看给定的根目录，1代表该目录下的所有目录和文件，依次类推
+- 可以同时查看多个文件或者目录
+
+> 这样一目了然，理论上来说默认压缩级别应该是最高的，但是由于文件不大，这里的差异不明显（几乎看不出差别），不过你在环境中操作之后看到的压缩文件大小可能跟图上的有些不同，因为系统在使用过程中，会随时生成一些缓存文件在当前用户的家目录中，这对于我们学习命令使用来说，是无关紧要的，可以忽略这些不同。
+
+```shell
+#查看 当前目录下的*.zip 和 目录home/home/abc
+#并查看到第二层
+$ du -h -d 2 *.zip ~/abc | sort
+
+164K	/home/likun/abc/redis-4.0.10/utils
+16M	/home/likun/abc
+3.2M	/home/likun/abc/redis-4.0.10/src
+4.1M	/home/likun/abc/redis-4.0.10/deps
+780K	/home/likun/abc/redis-4.0.10/tests
+8.0K	test_1.zip
+8.0K	test_9.zip
+8.0K	test.zip
+```
+
+
+- 创建加密 zip 包
+使用 -e 参数可以创建加密压缩包
+```shell
+$ zip -r -e -o test_encryption.zip /home/likun/test
+```
+- 创建兼容windows的zip文件
+```shell
+$ zip -r -l -o test.zip /home/likun/test
+```
+> 需要加上 -l 参数
+
+
+### 使用 unzip 命令解压缩 zip 文件 
+将 shiyanlou.zip 解压到当前目录：
+```shell
+$ unzip test.zip
+```
+使用安静模式，将文件解压到指定目录：
+```shell
+$ unzip -q test.zip -d ziptest
+```
+上述指定目录不存在，将会自动创建。如果你不想解压只想查看压缩包的内容你可以使用 -l 参数：
+```shell
+$ unzip -l test.zip
+```
+
+注意： 使用 unzip 解压文件时我们同样应该注意兼容问题,原因在与中文编码的问题，通常 Windows 系统上面创建的压缩文件，如果有有包含中文的文档或以中文作为文件名的文件时默认会采用 GBK 或其它编码，而 Linux 上面默认使用的是 UTF-8 编码，如果不加任何处理，直接解压的话可能会出现中文乱码的问题（有时候它会自动帮你处理），为了解决这个问题，我们可以在解压时指定编码类型。
+
+使用 -O（英文字母，大写 o）参数指定编码类型：
+```shell
+unzip -O GBK 中文压缩文件.zip
+```
+
+### tar 打包工具 
+打包是指将一大堆文件或目录什么的变成一个总的文件，压缩则是将一个大的文件通过一些压缩算法变成一个小文件。为什么要区分这 两个概念呢？其实这源于Linux中的很多压缩程序只能针对一个文件进行压缩，这样当你想要压缩一大堆文件时，你就得先借助另外的工具将这一大堆文件先打 成一个包，然后再就原来的压缩程序进行压缩。
+
+在 Linux 上面更常用的是 tar 工具，tar 原本只是一个打包工具，只是同时还是实现了对 7z、gzip、xz、bzip2 等工具的支持，这些压缩工具本身只能实现对文件或目录（单独压缩目录中的文件）的压缩，没有实现对文件的打包压缩，
+
+- 创建一个 tar 包：
+```shell
+$ cd /home/likun
+$ tar -cf test.tar /home/likun/test
+```
+> 上面命令中，-c 表示创建一个 tar 包文件，-f 用于指定创建的文件名，注意文件名必须紧跟在 -f 参数之后，比如不能写成 `tar -fc shiyanlou.tar`，可以写成 `tar -f shiyanlou.tar -c ~`。你还可以加上 -v 参数以可视的的方式输出打包的文件。上面会自动去掉表示绝对路径的 /，你也可以使用 -P 保留绝对路径符。
+
+- 解包一个文件（-x 参数）到指定路径的已存在目录（-C 参数）：
+```shell
+$ mkdir tardir
+$ tar -xf test.tar -C tardir
+```
+
+- 只查看不解包文件 -t 参数：
+```shell
+$ tar -tf test.tar
+```
+
+- 保留文件属性和跟随链接（符号链接或软链接）
+有时候我们使用 tar 备份文件当你在其他主机还原时希望保留文件的属性（-p 参数）和备份链接指向的源文件而不是链接本身（-h 参数）：
+```shell
+$ tar -cphf etc.tar /etc
+```
+- 创建压缩文件
+对于创建不同的压缩格式的文件，对于 tar 来说是相当简单的，需要的只是换一个参数，这里我们就以使用 gzip 工具创建 *.tar.gz 文件为例来说明。
+
+只需要在创建 tar 文件的基础上添加 -z 参数，使用 gzip 来压缩文件
+```shell
+$ tar -czf shiyanlou.tar.gz /home/shiyanlou/Desktop
+```
+
+
