@@ -7,3 +7,10 @@ $ cmatrix -C red
 ```
 > F11 全屏
 
+## 《火炉》
+```shell
+$ sudo apt-get install libaa-bin 
+# 提示 command not found ，请自行解决
+$ aafire
+```
+
