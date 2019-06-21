@@ -227,6 +227,9 @@ $ tar -czf test.tar.gz /home/likun/test
 - 解压 `*.tar.gz` 文件
 ```shell
 $ tar -xzf test.tar.gz
+
+# 解压到指定目录 (可以使用相对路径和绝对路径)
+$ tar -xzf test.tar.gz -C ./unziptest
 ```
 
 现在我们要使用其它的压缩工具创建或解压相应文件只需要更改一个参数即可：
