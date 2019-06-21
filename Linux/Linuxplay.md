@@ -14,3 +14,10 @@ $ sudo apt-get install libaa-bin
 $ aafire
 ```
 
+## 《bb》
+```shell
+$ sudo apt-get update
+$ sudo apt-get install bb
+$ /usr/games/bb
+```
+
