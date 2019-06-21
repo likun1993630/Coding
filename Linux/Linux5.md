@@ -221,7 +221,32 @@ $ tar -cphf etc.tar /etc
 
 只需要在创建 tar 文件的基础上添加 -z 参数，使用 gzip 来压缩文件
 ```shell
-$ tar -czf shiyanlou.tar.gz /home/shiyanlou/Desktop
+$ tar -czf test.tar.gz /home/likun/test
 ```
 
+- 解压 `*.tar.gz` 文件
+```shell
+$ tar -xzf test.tar.gz
+```
+
+现在我们要使用其它的压缩工具创建或解压相应文件只需要更改一个参数即可：
+
+| 压缩文件格式 | 参数 |
+|--------------|------|
+| *.tar.gz     | -z   |
+| *.tar.xz     | -J   |
+| *tar.bz2     | -j   |
+
+> tar 命令的参数很多，不过常用的就是上述这些，需要了解更多你可以查看 man 手册获取帮助。
+
+### 总结
+
+    zip：
+        打包 ：zip something.zip something （目录请加 -r 参数）
+        解包：unzip something.zip
+        指定路径：-d 参数
+    tar：
+        打包：tar -cf something.tar something
+        解包：tar -xf something.tar
+        指定路径：-C 参数
 
