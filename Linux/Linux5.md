@@ -84,3 +84,9 @@ $ find ~ -mtime 0
 ```shell
 $ find ~ -newer /home/likun/Code
 ```
+
+## 文件打包与压缩
+
+### 基本概念
+在 Windows 上最常见的不外乎这两种 `*.zip`，`*.7z` 后缀的压缩文件。而在 Linux 上面常见的格式除了以上两种外，还有 `.rar，*.gz，*.xz，*.bz2，*.tar，*.tar.gz，*.tar.xz，*.tar.bz2`，简单介绍如下：
+
