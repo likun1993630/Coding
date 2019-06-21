@@ -241,12 +241,12 @@ $ tar -xzf test.tar.gz
 
 ### 总结
 
-    zip：
-        打包 ：zip something.zip something （目录请加 -r 参数）
-        解包：unzip something.zip
-        指定路径：-d 参数
-    tar：
-        打包：tar -cf something.tar something
-        解包：tar -xf something.tar
-        指定路径：-C 参数
+- zip：
+ - 打包 ：zip something.zip something （目录请加 -r 参数）
+ - 解包：unzip something.zip
+ - 指定路径：-d 参数
+- tar：
+ - 打包：tar -cf something.tar something
+ - 解包：tar -xf something.tar
+ - 指定路径：-C 参数
 
