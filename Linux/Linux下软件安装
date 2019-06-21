@@ -1,1 +1,51 @@
+## Linux 下软件安装（以Ubuntu 为例）
+ubuntu是基于debian的发行版，它使用的是debian的包管理工具dpkg，所以一些操作也适用与debian。
+
+通常 Linux 上的软件安装主要有四种方式：
+- 在线安装（APT）
+- 从磁盘安装deb软件包 
+- 从二进制软件包安装
+- 从源代码编译安装
+
+### apt 包管理工具介绍 
+APT是Advance Packaging Tool（高级包装工具）的缩写，是Debian及其派生发行版的软件包管理器，APT可以自动下载，配置，安装二进制或者源代码格式的软件包，因此简化了Unix系统上管理软件的过程。APT最早被设计成dpkg的前端，用来处理deb格式的软件包。现在经过APT-RPM组织修改，APT已经可以安装在支持RPM的系统管理RPM包。这个包管理器包含以 apt- 开头的多个工具，如 apt-get apt-cache apt-cdrom 等，在Debian系列的发行版中使用。
+
+
+
+
+### 初体验
+安装一个软件，名字叫做 w3m(w3m是一个命令行的简易网页浏览器)，那么输入如下命令：
+```shell
+$ sudo apt-get install w3m
+
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+Suggested packages:
+  w3m-img libsixel-bin w3m-el cmigemo
+The following NEW packages will be installed:
+  w3mAPT是Advance Packaging Tool（高级包装工具）的缩写，是Debian及其派生发行版的软件包管理器，APT可以自动下载，配置，安装二进制或者源代码格式的软件包，因此简化了Unix系统上管理软件的过程。APT最早被设计成dpkg的前端，用来处理deb格式的软件包。现在经过APT-RPM组织修改，APT已经可以安装在支持RPM的系统管理RPM包。这个包管理器包含以 apt- 开头的多个工具，如 apt-get apt-cache apt-cdrom 等，在Debian系列的发行版中使用。
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 898 kB of archives.
+After this operation, 2,234 kB of additional disk space will be used.
+Get:1 http://de.archive.ubuntu.com/ubuntu xenial-updates/universe amd64 w3m amd64 0.5.3-26ubuntu0.2 [898 kB]
+Fetched 898 kB in 0s (2,258 kB/s)
+Selecting previously unselected package w3m.
+(Reading database ... 416465 files and directories currently installed.)
+Preparing to unpack .../w3m_0.5.3-26ubuntu0.2_amd64.deb ...
+Unpacking w3m (0.5.3-26ubuntu0.2) ...
+Processing triggers for mime-support (3.59ubuntu1) ...
+Processing triggers for man-db (2.7.5-1) ...
+Setting up w3m (0.5.3-26ubuntu0.2) ...
+```
+> 意:如果你在安装一个软件之后，无法立即使用Tab键补全这个命令，你可以尝试先执行source ~/.zshrc，然后你就可以使用补全操作。
+```shell
+$ source .zshrc
+```
+
+使用w3m打开一个网页
+```shell
+$ w3m www.baidu.com
+```
+
 
