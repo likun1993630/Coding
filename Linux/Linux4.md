@@ -248,3 +248,34 @@ $ . ./.zshrc
 
 ### source命令（.命令）
 
+```shell
+$ source filename    # filename必须是可执行的脚本文件
+# 或者
+$ . filename         # 注意“.”号后面还有一个空格
+```
+
+功能：
+ - **通知当前shell读入路径为filename的文件并依次执行文件中的所有语句**。
+ - 通常用于重新执行刚修改的初始化文件，使之立即生效，而不必注销并重新登录。例如，当我们修改了/etc/profile文件，并想让它立刻生效，而不用重新登录，就可以使用source命令，如“source /etc/profile”。再如，修改了zsh-shell 的 .zshrc 文件，使用“source .zshrc” 使修改立即生效。
+ - source命令是bash shell的内置命令。而点命令（即“.”命令）则是source的另一名称。这两个命令都以一个脚本为参数，该脚本将作为当前shell的环境执行，即不会启动一个新的子进程。所有在脚本中设置的变量将成为当前Shell的一部分。
+
+比较：
+
+“source filename”与“sh filename”、“./filename”这三个命令都可以用于执行一个脚本文件，那么它们之间的区别又如何呢？
+> 当前文件夹的一个脚本文件
+
+- 当shell脚本具有可执行权限时，用sh filename (rw即可)与./filename是没有区别的。./filename是因为当前目录没有在PATH中，所以”.”是用来表示当前目录的。
+- sh filename和./filename会重新建立一个子shell，在子shell中执行脚本里面的语句，该子shell继承父shell的环境变量，但子shell是新建的，其改变的变量不会被带回父shell，除非使用export。
+- source filename读取脚本里面的语句依次在当前shell里面执行，没有建立新的子shell。那么脚本里面所有新建、改变变量的语句都会保存在当前shell里面。
+
+举例：
+
+#新建一个test.sh脚本，内容为:A=1；
+$ touch test.sh
+
+修改其可执行权限：chmod +x test.sh；
+运行sh test.sh后，echo $A，显示为空，因为A=1并未传回给当前shell；
+运行./test.sh后，也是一样的效果；
+运行source test.sh 或者 . test.sh，然后echo $A，则会显示1，说明A=1的变量在当前shell中；
+
+
