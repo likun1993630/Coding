@@ -7,17 +7,16 @@
   $ df
   
   文件系统           1K-块     已用      可用 已用% 挂载点
-udev             8153140        0   8153140    0% /dev
-tmpfs            1643980    18284   1625696    2% /run
-/dev/sdb3       30831676 11222420  18020012   39% /
-tmpfs            8219896    53580   8166316    1% /dev/shm
-tmpfs               5120        4      5116    1% /run/lock
-tmpfs            8219896        0   8219896    0% /sys/fs/cgroup
-/dev/nvme0n1p2     97280    32801     64479   34% /boot/efi
-/dev/sdb4       74953600 29900524  41222500   43% /home
-tmpfs            1643980       16   1643964    1% /run/user/122
-tmpfs            1643980      184   1643796    1% /run/user/1000
-/dev/nvme0n1p6 283585532 24921716 258663816    9% /media/likun/SSD2
-
+  udev             8153140        0   8153140    0% /dev
+  tmpfs            1643980    18284   1625696    2% /run
+  /dev/sdb3       30831676 11222420  18020012   39% /
+  tmpfs            8219896    53580   8166316    1% /dev/shm
+  tmpfs               5120        4      5116    1% /run/lock
+  tmpfs            8219896        0   8219896    0% /sys/fs/cgroup
+  /dev/nvme0n1p2     97280    32801     64479   34% /boot/efi
+  /dev/sdb4       74953600 29900524  41222500   43% /home
+  tmpfs            1643980       16   1643964    1% /run/user/122
+  tmpfs            1643980      184   1643796    1% /run/user/1000
+  /dev/nvme0n1p6 283585532 24921716 258663816    9% /media/likun/SSD2
   ```
   
