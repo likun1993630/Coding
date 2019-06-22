@@ -302,3 +302,7 @@ $ echo $A
 1
 ```
 
+> 如果将环境变量写进一个脚本文件，就需要使用source命令来执行，否则，该环境变量无法在当前shell中使用。
+
+> /home/likun/.zshrc（.bashrc）中的内容在每次自动shell的时候会被shell自动被运行。
+
