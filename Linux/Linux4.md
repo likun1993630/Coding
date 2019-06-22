@@ -269,13 +269,36 @@ $ . filename         # 注意“.”号后面还有一个空格
 - source filename读取脚本里面的语句依次在当前shell里面执行，没有建立新的子shell。那么脚本里面所有新建、改变变量的语句都会保存在当前shell里面。
 
 举例：
-
+```shell
 #新建一个test.sh脚本，内容为:A=1；
 $ touch test.sh
+$ echo '#!/bin/bash\nA=1' > test.sh
 
-修改其可执行权限：chmod +x test.sh；
-运行sh test.sh后，echo $A，显示为空，因为A=1并未传回给当前shell；
-运行./test.sh后，也是一样的效果；
-运行source test.sh 或者 . test.sh，然后echo $A，则会显示1，说明A=1的变量在当前shell中；
+#修改其可执行权限：chmod +x test.sh；
+$ chmod u+x test.sh
 
+#运行sh test.sh后，echo $A，显示为空，因为A=1并未传回给当前shell；
+$ sh test.sh
+$ echo $A
+
+#运行./test.sh后，也是一样的效果；
+$ ./test.sh
+$ echo $A
+
+#运行source test.sh 或者 . test.sh，然后echo $A，则会显示1，说明A=1的变量在当前shell中；
+$ source test.sh
+$ echo $A
+
+1
+```
+
+如果使用export命令从shell子进程中声明该变量到环境变量（临时的，并且只在该父shell中有效），父进程shell就可以使用该变量
+
+```shell
+$ echo '#!/bin/bash\nA=1\nexport A' > test.sh
+$ sh test.sh
+$ echo $A
+
+1
+```
 
