@@ -308,6 +308,8 @@ $ echo $A
 
 
 ## source命令的另一个应用
+在开发中，经常会需要重复在shell输入并运行多行命令，比如编译工程，安装软件等。此时可以借助source 命令完成。
+
 在编译工程时，经常要在shell运行多行命令，比如：
 ```shell
 $ make mrproper
@@ -332,4 +334,18 @@ $ source make_command.sh
 ```
 
 > &&表示与，||表示或。把两个命令用&&联接起来，如 make mrproper && make menuconfig，表示要第一个命令执行成功才能执行第二个命令。对执行顺序有要求的命令能保证一旦有错误发生，下面的命令不会盲目地继续执行。
+
+
+再比如创建，初始化并编译ros工作空间：
+
+ros_workspace.sh:
+
+```shell
+#!/bin/bash
+mkdir -p ~/catkin_ws/src &&
+cd ~/catkin_ws/src &&
+catkin_init_workspace &&
+cd ~/catkin_ws &&
+catkin_make &&
+```
 
