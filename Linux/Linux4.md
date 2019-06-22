@@ -306,3 +306,30 @@ $ echo $A
 
 > /home/likun/.zshrc（.bashrc）中的内容在每次自动shell的时候会被shell自动被运行。
 
+
+## source命令的另一个应用
+在编译工程时，经常要在shell运行多行命令，比如：
+```shell
+$ make mrproper
+$ make menuconfig
+$ make dep
+.....
+```
+可以将这些命令写到一个脚本文件中，直接使用source命令执行这个脚本文件就省去多次输入多条命令的操作。
+
+make_command.sh
+```shell
+make mrproper &&
+make menuconfig &&
+make dep &&
+cp arch/i386/boot/bzImge /boot/vmlinuz_new &&
+cp System.map /boot
+```
+在shell中运行:
+
+```shell
+$ source make_command.sh
+```
+
+> &&表示与，||表示或。把两个命令用&&联接起来，如 make mrproper && make menuconfig，表示要第一个命令执行成功才能执行第二个命令。对执行顺序有要求的命令能保证一旦有错误发生，下面的命令不会盲目地继续执行。
+
