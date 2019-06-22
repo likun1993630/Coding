@@ -11,12 +11,13 @@ apt软件包管理系统使用一个私有数据库跟踪列表中软件包的�
 - `deb-src http://host/debian distribution section1 section2 section3`
 
 - deb
- - 包含的是二进制软件包(deb)， 即我们通常使用的已编译好的软件包；
+  - 包含的是二进制软件包(deb)， 即我们通常使用的已编译好的软件包；
 - deb-src
- - 包含的是源码包(deb-src)，源码包包含源程序编码。
+  - 包含的是源码包(deb-src)，源码包包含源程序编码。
  
 
 一个sources.list 的示例：
+
 ```shell
 # deb cdrom:[Ubuntu 16.04.6 LTS _Xenial Xerus_ - Release amd64 (20190227)]/ xenial main restricted
 
@@ -45,10 +46,18 @@ $ sudo cp /etc/apt/sources.list /etc/apt/sources.list.save1
 ```shell
 $ sudo subl /etc/apt/sources.list
 ```
-- 粘贴源并保存
- - 此处以阿里源为例
-```
-deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
+- 粘贴源并保存(此处以阿里源为例)
+```shell
+deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse 
+deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse 
+deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse 
+deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse 
+deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse 
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse 
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse 
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse 
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse 
+deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
 ```
 - 刷新列表
 ```shell
