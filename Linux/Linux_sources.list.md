@@ -1,10 +1,12 @@
+apt软件包管理系统使用一个私有数据库跟踪列表中软件包的当前状态：已安装、未安 装或可安装。apt-get通过该数据库来确定如何安装用户想用的软件包以及正常运行该软件包所必须的其它关联包。 使用sudo apt-get update来更新数据库列表。这个命令将扫描 /etc/apt/sources.list文件中所指路径（链接）中的软件包列表文件。
+
 ## /etc/apt/sources.list文件
 /etc/apt/sources.list 文件内容是APT使用的可获得软件包的镜像站点的地址，也就是软件源或者软件源镜像。
 
 另外：
 和sources.list功能一样的是/etc/apt/sources.list.d/*.list(*代表一个文件名，只能由字母、数字、下划线、英文句号组成)。sources.list.d目录下的*.list文件为在单独文件中写入源的地址提供了一种方式，通常用来安装第三方的软件。
 
- 文件中的各项信息通常按如下格式列出：
+文件中的各项信息通常按如下格式列出：
 - `deb http://host/debian distribution section1 section2 section3`
 - `deb-src http://host/debian distribution section1 section2 section3`
 
@@ -34,7 +36,22 @@ deb http://de.archive.ubuntu.com/ubuntu/ xenial-updates main restricted
 > 修改list文件后，需要运行`sudo apt-get update` 更新。
 > 其中的网页链接可以用浏览器打开，类似与一个ftp的文件夹。
 
-apt软件包管理系统使用一个私有数据库跟踪列表中软件包的当前状态：已安装、未安 装或可安装。apt-get通过该数据库来确定如何安装用户想用的软件 包以及正常运行该软件包所必须的其它关联包。 使用sudo apt-get update来更新数据库列表。这个命令将扫描 /etc/apt/sources.list文件中所指路径（链接）中的软件包列表文件。
-
->文件从网络上下载到本地 /var/cache/apt/archives目录，然后再自动安装。
+## 修改ubuntu的sources.list源
+- 首先备份源列表
+```shell
+$ sudo cp /etc/apt/sources.list /etc/apt/sources.list.save1
+```
+- 使用编辑器打开sources.list
+```shell
+$ sudo subl /etc/apt/sources.list
+```
+- 粘贴源并保存
+ - 此处以阿里源为例
+```
+deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse deb http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty-proposed main restricted universe multiverse deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted universe multiverse
+```
+- 刷新列表
+```shell
+$ sudo apt-get update
+```
 
