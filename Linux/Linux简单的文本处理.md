@@ -75,7 +75,7 @@
   # 将/etc/passwd与/etc/group两个文件合并，指定以':'作为分隔符, 分别比对第4和第3个字段
   $ sudo join -t':' -1 4 /etc/passwd -2 3 /etc/group
   ```
-  
+  ```
   sudo cat /etc/shadow
   daemon:*:17953:0:99999:7:::
   
@@ -90,5 +90,33 @@
   
   sudo join -t':' -1 4 /etc/passwd -2 3 /etc/group
   1:daemon:x:1:daemon:/usr/sbin:/usr/sbin/nologin:daemon:x:
+  ```
+  
+- paste命令 
+  paste这个命令与join 命令类似，它是在不对比数据的情况下，简单地将多个文件合并一起，以Tab隔开。
+  
+  使用方式：
+  ```shell
+  paste [option] file...
+  ```
+  
+  常用的选项有：
+  
+  | 选项 | 说明                         |
+  |------|------------------------------|
+  | -d   | 指定合并的分隔符，默认为Tab  |
+  | -s   | 不合并到一行，每个文件为一行 |
+  
+  操作举例：
+  
+  ```shell
+  $ echo hello > file1
+  $ echo shiyanlou > file2
+  $ echo www.shiyanlou.com > file3
+  $ paste -d ':' file1 file2 file3
+  $ paste -s file1 file2 file3
+  ```
+  
+  
 
 
