@@ -63,4 +63,32 @@
   | -1   | 指明第一个文件要用哪个字段来对比，默认对比第一个字段 |
   | -2   | 指明第二个文件要用哪个字段来对比，默认对比第一个字段 |
   
+  操作举例：
+  ```shell
+  $ cd /home/shiyanlou
+  # 创建两个文件
+  $ echo '1 hello' > file1
+  $ echo '1 shiyanlou' > file2
+  $ join file1 file2
+  # 将/etc/passwd与/etc/shadow两个文件合并，指定以':'作为分隔符
+  $ sudo join -t':' /etc/passwd /etc/shadow
+  # 将/etc/passwd与/etc/group两个文件合并，指定以':'作为分隔符, 分别比对第4和第3个字段
+  $ sudo join -t':' -1 4 /etc/passwd -2 3 /etc/group
+  ```
   
+  sudo cat /etc/shadow
+  daemon:*:17953:0:99999:7:::
+  
+  sudo cat /etc/passwd
+  daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+  
+  sudo cat /etc/group
+  daemon:x:1:
+  
+  sudo join -t':' /etc/passwd /etc/shadow
+  daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin:*:17953:0:99999:7:::
+  
+  sudo join -t':' -1 4 /etc/passwd -2 3 /etc/group
+  1:daemon:x:1:daemon:/usr/sbin:/usr/sbin/nologin:daemon:x:
+
+
