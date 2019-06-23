@@ -77,4 +77,24 @@ $ ls -l sources.list
 
 ```
 
+## 文件夹大小排序
+找出当前目录下面占用最大的前十个文件。
 
+```shell
+$ du -s * | sort -nr | head
+
+# 后10个
+$ du -s * | sort -nr | tail
+
+
+20488000	VirtualBox VMs
+4891044	Downloads
+1081588	clion-2018.3.4
+819868	Udacity
+426896	下载
+245760	Apps
+67056	amz
+23556	selfie_carolocup2019
+16148	abc
+7748	selfie_carolocup2019 (复件)
+```
