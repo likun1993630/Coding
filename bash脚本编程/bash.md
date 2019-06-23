@@ -408,3 +408,103 @@ $ cat t.back
 ```
 > 注意： 在大括号中，不允许有空白，除非这个空白被引用或转义。
 
+### 代码块
+
+代码块，又被称为内部组，这个结构事实上创建了一个匿名函数（一个没有名字的函数）。然而，与“标准”函数不同的是，在其中声明的变量，对于脚本其他部分的代码来说还是可见的。
+```shell
+$ vim test23.sh
+```
+输入代码：
+```shell
+#!/bin/bash
+a=123
+{ a=321; }
+echo "a = $a"
+```
+
+运行代码：
+```shell
+$ bash test23.sh
+
+a = 321
+```
+> 变量 a 的值被更改了。
+
+## 中括号（[ ]）
+### 条件测试
+
+条件测试表达式放在[ ]中。下列练习中的-lt (less than)表示小于号。
+```shell
+$ vim test24.sh
+```
+输入代码：
+```shell
+#!/bin/bash
+
+a=5
+if [ $a -lt 10 ]
+then
+    echo "a: $a"
+else
+    echo 'a>10'
+fi
+```
+运行代码：
+```shell
+$ bash test24.sh
+
+a: 5
+```
+> 双中括号（[[ ]]）也用作条件测试（判断），后面的实验会详细讲解。
+
+### 数组元素
+在一个array结构的上下文中，中括号用来引用数组中每个元素的编号。
+```shell
+$ vim test25.sh
+```
+输入代码：
+```shell
+#!/bin/bash
+
+arr=(12 22 32)
+arr[0]=10
+echo ${arr[0]}
+```
+运行代码：
+```shell
+$ bash test25.sh
+
+10
+```
+
+## 尖括号（< 和 >） 
+
+重定向
+
+- test.sh > filename：重定向test.sh的输出到文件 filename 中。如果 filename 存在的话，那么将会被覆盖。
+- test.sh &> filename：重定向 test.sh 的 stdout（标准输出）和 stderr（标准错误）到 filename 中。
+- test.sh >&2：重定向 test.sh 的 stdout 到 stderr 中。
+- test.sh >> filename：把 test.sh 的输出追加到文件 filename 中。如果filename 不存在的话，将会被创建。
+
+
+## 竖线（|） 
+管道
+
+分析前边命令的输出，并将输出作为后边命令的输入。这是一种产生命令链的好方法。
+```shell
+$ vim test26.sh
+```
+输入代码：
+```shell
+#!/bin/bash
+
+tr 'a-z' 'A-Z'
+exit 0
+```
+现在让我们输送ls -l的输出到一个脚本中：
+```shell
+$ chmod 755 test26.sh
+$ ls -l | ./test26.sh
+```
+> 输出的内容均变为了大写字母。
+
