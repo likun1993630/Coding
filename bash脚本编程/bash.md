@@ -84,3 +84,100 @@ cat /dev/null > wtmp
 echo "Logs cleaned up."
 exit
 ```
+运行脚本前，先使用 sudo chmod +x cleanlogs.sh 授予脚本执行权限，然后再看看 /var/log/wtmp 文件内是否有内容。运行此脚本后，文件的内容将被清除。
+```shell
+$ sudo chmod +x cleanlogs.sh
+# 使用sudo命令调用管理员权限才能执行成功
+$ sudo ./cleanlogs.sh
+$ cat /var/log/wtmp
+```
+
+> 由于脚本中含有对系统日志文件内容的清除操作，这要求要有管理员权限.不然会报permission denied错误
+
+> #!/bin/bash这一行是表示使用/bin/bash作为脚本的解释器，这行要放在脚本的行首并且不要省略
+
+> 脚本正文中以#号开头的行都是注释语句，这些行在脚本的实际执行过程中不会被执行。这些注释语句能方便我们在脚本中做一些注释或标记，让脚本更具可读性。
+
+注意：
+> `sudo cat /dev/null > /var/log/wtmp`会提示权限不够，为什么呢？因为sudo只能让cat命令以sudo的权限执行，而对于>这个符号并没有sudo的权限，我们可以使用:
+
+> `sudo sh -c "cat /dev/null > /var/log/wtmp " `让整个命令都具有sudo的权限执行
+
+
+# bash特殊字符
+## 注释 #：
+
+行首以 # 开头(除#!之外)的是注释。#!是用于指定当前脚本的解释器，我们这里为bash，且应该指明完整路径，所以为/bin/bash
+
+当然，在echo中转义的 # 是不能作为注释的：
+```shell
+$vim test.sh
+```
+输入如下代码，并保存。（中文为注释，不需要输入）
+```shell
+#!/bin/bash
+
+echo "The # here does not begin a comment."
+echo 'The # here does not begin a comment.'
+echo The \# here does not begin a comment.
+echo The # 这里开始一个注释
+echo $(( 2#101011 ))     # 数制转换（使用二进制表示），不是一个注释，双括号表示对于数字的处理
+```
+> 上面的脚本说明了如何使用echo打印出一段字符串和变量内容
+
+## 分号（;） 
+### 命令分隔符
+使用分号（;）可以在同一行上写两个或两个以上的命令。
+
+```shell
+$ vim test2.sh
+```
+输入如下代码，并保存。
+
+```shell
+ #!/bin/bash
+ echo hello; echo there
+ filename=ttt.sh
+ if [ -e "$filename" ]; then    # 注意: "if"和"then"需要分隔，-e用于判断文件是否存在
+     echo "File $filename exists."; cp $filename $filename.bak
+ else
+     echo "File $filename not found."; touch $filename
+ fi; echo "File test complete."
+```
+
+执行脚本
+```shell
+$ bash test2.sh
+```
+> 上面脚本使用了一个if分支判断一个文件是否存在，如果文件存在打印相关信息并将该文件备份；如果不存在打印相关信息并创建一个新的文件。最后将输出"测试完成"。
+
+### 终止case选项（双分号）
+
+使用双分号（;;）可以终止case选项。
+```shell
+$ vim test3.sh
+```
+
+输入如下代码，并保存。
+```shell
+#!/bin/bash
+
+varname=b
+
+case "$varname" in
+    [a-z]) echo "abc";;
+    [0-9]) echo "123";;
+esac
+```
+
+执行脚本，查看输出
+```shell
+$ bash test3.sh
+abc
+```
+> 上面脚本使用case语句，首先创建了一个变量初始化为b,然后使用case语句判断该变量的范围，并打印相关信息。
+
+### 点号（.）
+等价于 source 命令
+
+**bash 中的 source 命令用于在当前 bash 环境下读取并执行 FileName.sh 中的命令。**
