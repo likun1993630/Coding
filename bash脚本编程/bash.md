@@ -508,3 +508,59 @@ $ ls -l | ./test26.sh
 ```
 > 输出的内容均变为了大写字母。
 
+## 破折号（-） 
+### 选项，前缀
+在所有的命令内如果想使用选项参数的话,前边都要加上“-”。
+```shell
+$ vim test27.sh
+```
+输入代码：
+```shell
+#!/bin/bash
+
+a=5
+b=5
+if [ "$a" -eq "$b" ]
+then
+    echo "a is equal to b."
+fi
+```
+运行代码：
+```shell
+$ bash test27.sh
+
+a is equal to b.
+```
+### 用于重定向stdin或stdout
+
+下面脚本用于备份最后24小时当前目录下所有修改的文件.
+```shell
+$ vim test28.sh
+```
+输入代码：
+```
+#!/bin/bash
+
+BACKUPFILE=backup-$(date +%m-%d-%Y)
+# 在备份文件中嵌入时间.
+archive=${1:-$BACKUPFILE}
+#  如果在命令行中没有指定备份文件的文件名,
+#  那么将默认使用"backup-MM-DD-YYYY.tar.gz".
+
+tar cvf - `find . -mtime -1 -type f -print` > $archive.tar
+gzip $archive.tar
+echo "Directory $PWD backed up in archive file \"$archive.tar.gz\"."
+
+exit 0
+```
+运行代码：
+```shell
+$ bash test28.sh
+$ ls
+```
+
+## 浪号（~） 
+目录
+
+~ 表示 home 目录。
+
