@@ -98,3 +98,23 @@ $ du -s * | sort -nr | tail
 16148	abc
 7748	selfie_carolocup2019 (复件)
 ```
+
+## 文本处理
+资源下载
+```shell
+$ cd /home/likun
+$ wget http://labfile.oss.aliyuncs.com/courses/1/data1
+```
+data1 文件里记录是一些命令的操作记录，现在需要你从里面找出出现频率次数前3的命令并保存在 /home/likun/result。
+
+目标：
+
+处理文本文件 /home/shiyanlou/data1
+将结果写入 /home/shiyanlou/result
+结果包含三行内容，每行内容都是出现的次数和命令名称，如“100 ls”
+
+结果：
+```shell
+cat data1 |cut -c 8-|sort|uniq -dc|sort -rn -k1 |head -3 > ~/result
+```
+
