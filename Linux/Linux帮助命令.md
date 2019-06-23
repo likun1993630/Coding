@@ -59,17 +59,28 @@
   
   > 最左上角显示“ LS （1）”，在这里，“ LS ”表示手册名称，而“（1）”表示该手册位于第一章节。其他章节内容参见下表：
   
-| 章节数 | 说明                                               |
-|--------|----------------------------------------------------|
-| 1      | Standard commands （标准命令）                     |
-| 2      | System calls （系统调用）                          |
-| 3      | Library functions （库函数）                       |
-| 4      | Special devices （设备说明）                       |
-| 5      | File formats （文件格式）                          |
-| 6      | Games and toys （游戏和娱乐）                      |
-| 7      | Miscellaneous （杂项）                             |
-| 8      | Administrative Commands （管理员命令）             |
-| 9      | 其他（Linux特定的）， 用来存放内核例行程序的文档。 |
+  | 章节数 | 说明                                               |
+  |--------|----------------------------------------------------|
+  | 1      | Standard commands （标准命令）                     |
+  | 2      | System calls （系统调用）                          |
+  | 3      | Library functions （库函数）                       |
+  | 4      | Special devices （设备说明）                       |
+  | 5      | File formats （文件格式）                          |
+  | 6      | Games and toys （游戏和娱乐）                      |
+  | 7      | Miscellaneous （杂项）                             |
+  | 8      | Administrative Commands （管理员命令）             |
+  | 9      | 其他（Linux特定的）， 用来存放内核例行程序的文档。 |
 
-
+- info命令
+  info 得到的信息是不是比 man 还要详细
+  
+  安装：
+  
+  ```shell
+  # 安装 info
+  $ sudo apt-get update
+  $ sudo apt-get install info
+  # 查看 ls 命令的 info
+  $ info ls
+  ```
   
