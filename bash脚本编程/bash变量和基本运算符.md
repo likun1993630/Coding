@@ -20,6 +20,8 @@ variable事实上只是variable 事实上只是 variable事实上只是{variable
     不能使用标点符号。
     不能使用bash里的关键字（可用help命令查看保留关键字）。
 
-除了直接赋值，还可以用语句给变量赋值，如：` for file in \`ls /etc\` `
-
+除了直接赋值，还可以用语句给变量赋值，如：
+```
+for file in `ls /etc` 
+```
 
