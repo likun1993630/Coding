@@ -25,3 +25,5 @@ variable事实上只是variable 事实上只是 variable事实上只是{variable
 for file in `ls /etc` 
 ```
 
+## 使用变量 
+
