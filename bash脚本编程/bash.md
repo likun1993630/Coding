@@ -49,3 +49,21 @@ $  ./hello.sh
 
 ## 使用重定向
 
+比如我们想要保存刚刚的hello world为一个文本，那么该怎么办呢？
+
+> 这个符号是重定向,执行以下代码，就会在当前目录下生成一个my.txt。打开看看有没有hello world
+
+```shell
+ #!/bin/bash
+ echo "Hello World" > my.txt
+```
+
+## 使用脚本清除/var/log下的log文件
+
+首先我们看一看/var/log/wtmp里面有啥东西
+
+cat /var/log/wtmp
+
+这个文件中记录了系统的一些信息，现在我们需要写一个脚本把里面的东西清空，但是保留文件
+
+$ vim cleanlogs.sh
