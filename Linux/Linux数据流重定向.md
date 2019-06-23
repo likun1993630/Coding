@@ -165,4 +165,13 @@ $ cat Documents/test.c nefile 1>/dev/null 2>&1
 ```
 
 ### 使用 xargs 分割参数列表 
+> xargs 是一条 UNIX 和类 UNIX 操作系统的常用命令。它的作用是将参数列表转换成小块分段传递给其他命令，以避免参数列表过长的问题。
+
+```shell
+$ cut -d: -f1 < /etc/passwd | sort | xargs echo
+# 重定向符可以去掉
+```
+> 上面这个命令用于将/etc/passwd文件按:分割取第一个字段排序后，使用echo命令生成一个列表。
+
+
 
