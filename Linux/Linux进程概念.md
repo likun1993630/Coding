@@ -61,4 +61,33 @@
 
 子进程就是父进程通过系统调用 fork() 而产生的复制品，fork() 就是把父进程的 PCB 等进程的数据结构信息直接复制过来，只是修改了 PID，所以一模一样，只有在执行 exec() 之后才会不同，而早先的 fork() 比较消耗资源后来进化成 vfork(),效率高了不少。
 
+进程 0 是系统引导时创建的一个特殊进程，也称之为内核初始化，其最后一个动作就是调用 fork() 创建出一个子进程运行 /sbin/init 可执行文件,而该进程就是 PID=1 的进程 1，而进程 0 就转为交换进程（也被称为空闲进程），进程 1 （init 进程）是第一个用户态的进程，再由它不断调用 fork() 来创建系统里其他的进程，所以它是所有进程的父进程或者祖先进程。同时它是一个守护程序，直到计算机关机才会停止。
+
+通过命令查看进程树：
+```shell
+$ pstree
+```
+
+另一种方式：
+```shell
+$ ps －fxo user,ppid,pid,pgid,command
+
+
+USER      PPID   PID  PGID COMMAND
+....
+root         0     1     1 /sbin/init splash
+....
+likun     1580  7169  1666      \_ /usr/lib/gnome-terminal/gnome-terminal-server
+likun     7169  7174  7174          \_ zsh
+likun     7174  7445  7445              \_ ps -fxo user,ppid,pid,pgid,command
+....
+```
+>  pid 就是该进程的一个唯一编号，ppid 就是该进程的父进程的 pid，command 表示的是该进程通过执行什么样的命令或者脚本而产生的.PGID（process group ID）为进程组。
+>  执行的 ps 就是由 zsh 通过 fork-exec 创建的子进程而执行的
+>  init 如上文所说是由进程 0 这个初始化进程来创建出来的子进程,而其他的进程基本是由 init 创建的子进程，或者是由它的子进程创建出来的子进程。所以 init 是用户进程的第一个进程也是所有用户进程的父进程或者祖先进程。
+
+
+
+
+
 
