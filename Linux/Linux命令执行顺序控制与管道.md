@@ -58,6 +58,7 @@
   ```
   
   流程如下：
+  
   ![](./res/flow.png)
   
 ## 管道
@@ -190,5 +191,18 @@
   history
   ...
   ```
+  > uniq命令只能去连续重复的行，不是全文去重。
   
+  要实现全文去重，可以先排序再去重。
+  ```shell
+  $ history | cut -c 8- | cut -d ' ' -f 1 | sort | uniq
+  # 或者$ history | cut -c 8- | cut -d ' ' -f 1 | sort -u
+  ```
   
+- 输出重复行
+  ```shell
+  # 输出重复过的行（重复的只输出一个）及重复次数
+  $ history | cut -c 8- | cut -d ' ' -f 1 | sort | uniq -dc
+  # 输出所有重复的行
+  $ history | cut -c 8- | cut -d ' ' -f 1 | sort | uniq -D
+  ```
