@@ -538,7 +538,7 @@ a is equal to b.
 $ vim test28.sh
 ```
 输入代码：
-```
+```shell
 #!/bin/bash
 
 BACKUPFILE=backup-$(date +%m-%d-%Y)
