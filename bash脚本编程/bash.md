@@ -61,9 +61,26 @@ $  ./hello.sh
 ## 使用脚本清除/var/log下的log文件
 
 首先我们看一看/var/log/wtmp里面有啥东西
-
-cat /var/log/wtmp
+```shell
+$ cat /var/log/wtmp
+```
 
 这个文件中记录了系统的一些信息，现在我们需要写一个脚本把里面的东西清空，但是保留文件
-
+```shell
+# 创建并编辑脚本
 $ vim cleanlogs.sh
+```
+> /dev/null这个东西可以理解为一个黑洞，里面是空的（可以用cat命令看一看）
+
+cleanlogs.sh内容：
+```shell
+#!/bin/bash
+
+# 初始化一个变量
+LOG_DIR=/var/log
+cd $LOG_DIR
+# 用空内容覆盖wtmp文件的内容
+cat /dev/null > wtmp
+echo "Logs cleaned up."
+exit
+```
