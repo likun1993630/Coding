@@ -35,6 +35,7 @@
   $ echo $?
   # cowsay未安装
   $ which cowsay
+  $ echo $?
   
   /bin/cat
   0
@@ -112,11 +113,82 @@
   
 - wc 命令，简单小巧的计数工具 
   wc 命令用于统计并输出一个文件中行、单词和字节的数目，比如输出/etc/passwd文件的统计信息:
+  ```shell
+  $ wc /etc/passwd
   
-  
+    44   77 2470 /etc/passwd
+  ```
+  分别只输出行数、单词数、字节数、字符数和输入文本中最长一行的字节数：
+  ```shell
+  # 行数
+  $ wc -l /etc/passwd
+  # 单词数
+  $ wc -w /etc/passwd
+  # 字节数
+  $ wc -c /etc/passwd
+  # 字符数
+  $ wc -m /etc/passwd
+  # 最长行字节数
+  $ wc -L /etc/passwd
+  ```
 
+  结合管道来统计 /etc 下面所有目录数：
+  ```shell
+  $ ls -dl /etc/*/ | wc -l
   
+  100
+  ```
   
+- sort 顺序命令
+  将输入按照一定方式排序，然后再输出,它支持的排序有按字典排序,数字排序，按月份排序，随机排序，反转排序，指定特定字段进行排序等等。
   
+  默认为字典排序：
+  ```shell
+  $ cat /etc/passwd | sort
+  ```
+  反转排序：
+  ```shell
+  $ cat /etc/passwd | sort -r
+  ```shell
+  按特定字段排序：
+  ```shell
+  $ cat /etc/passwd | sort -t':' -k 3
+  ```shell
+  > 上面的-t参数用于指定字段的分隔符，这里是以":"作为分隔符；-k 字段号用于指定对哪一个字段进行排序。这里/etc/passwd文件的第三个字段为数字，默认情况下是以字典序排序的，如果要按照数字排序就要加上-n参数：
+  ```shell
+  $ cat /etc/passwd | sort -t':' -k 3 -n
+  ```
+  
+- uniq 去重命令 
+  uniq命令可以用于过滤或者输出重复行。
+  
+  过滤重复行:
+  
+  我们可以使用history命令查看最近执行过的命令（实际为读取${SHELL}_history文件,如我们环境中的~/.zsh_history文件）
+  ```shell
+  $ history
+  
+  ...
+  786  clear
+  787  cat /etc/passwd | sort -t':' -k 3
+  788  cat /etc/passwd | sort -t':' -k 3 -n
+  789  cut --help
+  790  history
+  791  history | sort -r -n
+  ```
+  ```shell
+  $ history | cut -c 8- | cut -d ' ' -f 1 | uniq
+  
+  ls
+  wc
+  ls
+  clear
+  cat
+  clear
+  cat
+  cut
+  history
+  ...
+  ```
   
   
