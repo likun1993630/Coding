@@ -98,10 +98,9 @@ $ roscd roscpp
 ```
 > 为了验证我们已经切换到了roscpp软件包目录下，现在我们可以使用Unix命令pwd来输出当前工作目录：
 > ```shell
-  $ pwd
-  
-  /opt/ros/kinetic/share/roscpp
-  # 你可以看到 /opt/ros/kinetic/share/roscpp和之前使用rospack find得到的路径名称是一样的。
-  ```
->  
+> $ pwd
+> 
+> /opt/ros/kinetic/share/roscpp
+> # 你可以看到 /opt/ros/kinetic/share/roscpp和之前使用rospack find得到的路径名称是一样的。
+> ```
 > 注意，就像ROS中的其它工具一样，roscd只能切换到那些路径已经包含在ROS_PACKAGE_PATH环境变量中的软件包，要查看ROS_PACKAGE_PATH中包含的路径可以
