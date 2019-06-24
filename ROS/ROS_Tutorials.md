@@ -151,3 +151,127 @@ cmake  launch  package.xml  srv
 - 每个目录下只能有一个程序包。
   - 这意味着在同一个目录下不能有嵌套的或者多个程序包存在。 
   
+最简单的程序包也许看起来就像这样：
+```
+ my_package/
+      CMakeLists.txt
+      package.xml
+```
+
+## 在catkin工作空间中的程序包（catkin工作空间的目录结构）
+开发catkin程序包的一个推荐方法是使用catkin工作空间，一个简单的工作空间也许看起来像这样：
+
+```
+workspace_folder/        -- WORKSPACE
+  src/                   -- SOURCE SPACE
+    CMakeLists.txt       -- 'Toplevel' CMake file, provided by catkin
+    package_1/
+      CMakeLists.txt     -- CMakeLists.txt file for package_1
+      package.xml        -- Package manifest for package_1
+    ...
+    package_n/
+      CMakeLists.txt     -- CMakeLists.txt file for package_n
+      package.xml        -- Package manifest for package_n
+```
+
+## 创建一个catkin程序包
+首先切换到之前通过创建catkin工作空间教程创建的catkin工作空间中的src目录下： 
+
+```shell
+$ cd ~/catkin_ws/src
+```
+现在使用catkin_create_pkg命令来创建一个名为'beginner_tutorials'的新程序包，这个程序包依赖于std_msgs、roscpp和rospy：
+```shell
+$ catkin_create_pkg beginner_tutorials std_msgs rospy roscpp
+```
+> 这将会创建一个名为beginner_tutorials的文件夹，这个文件夹里面包含一个package.xml文件和一个CMakeLists.txt文件，这两个文件都已经自动包含了部分你在执行catkin_create_pkg命令时提供的信息,如依赖。
+> std_msgs rospy roscpp 依赖包的信息保存在package.xml文件中
+
+src目录将变为：
+
+```
+src
+├── beginner_tutorials
+│   ├── CMakeLists.txt
+│   ├── include
+│   │   └── beginner_tutorials
+│   ├── package.xml
+│   └── src
+└── CMakeLists.txt -> /opt/ros/kinetic/share/catkin/cmake/toplevel.cmake
+```
+catkin_create_pkg命令会要求你输入package_name，如果有需要你还可以在后面添加一些需要依赖的其它程序包： 
+```shell
+$ catkin_create_pkg <package_name> [depend1] [depend2] [depend3]
+```
+
+## 程序包依赖关系
+### 一级依赖
+
+之前在使用catkin_create_pkg命令时提供了几个程序包作为依赖包，现在我们可以使用rospack命令工具来查看一级依赖包。 
+```shell
+$ rospack depends1 beginner_tutorials 
+
+std_msgs
+rospy
+roscpp
+```
+> rospack列出了在运行catkin_create_pkg命令时作为参数的依赖包，这些依赖包保存在package.xml文件中。
+
+查看package.xml
+```shell
+$ roscd beginner_tutorials
+$ cat package.xml
+
+<package>
+...
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+...
+</package>
+```
+
+### 间接依赖
+在很多情况中，一个依赖包还会有它自己的依赖包，比如，rospy还有其它依赖包。 
+
+```shell
+$ rospack depends1 rospy
+
+genpy
+roscpp
+rosgraph
+rosgraph_msgs
+roslib
+std_msgs
+```
+
+一个程序包还可以有好几个间接的依赖包，幸运的是使用rospack可以递归检测出所有的依赖包:
+```shell
+$ rospack depends beginner_tutorials
+
+cpp_common
+rostime
+roscpp_traits
+roscpp_serialization
+genmsg
+genpy
+message_runtime
+rosconsole
+std_msgs
+rosgraph_msgs
+xmlrpcpp
+roscpp
+rosgraph
+catkin
+rospack
+roslib
+rospy
+```
+
+## 自定义程序包
+接下来将剖析catkin_create_pkg命令生成的每个文件并详细描述这些文件的组成部分以及如何自定义这些文件。 
+> 件中这样的符号内的内容为注释  <!--  --> 
+
+
+
