@@ -123,6 +123,9 @@ echo
 exit 0
 ```
 
+> \`basename $0\` 的含义是只返回去掉路径的文件名
+  比如当，$0 返回值为/home/likun/test.sh，则basename $0 返回 test.sh
+
 运行代码：
 ```shell
 $ bash test30.sh 1 2 10
@@ -141,3 +144,64 @@ This script needs at least 10 command-line arguments!
 
 # 基本运算符
 ##算数运算符
+
+假定变量 a 为 10，变量 b 为 20：
+
+| 运算符 | 说明                                          | 举例                          |
+|--------|-----------------------------------------------|-------------------------------|
+| +      | 加法                                          | `expr $a + $b` 结果为 30。    |
+| -      | 减法                                          | `expr $a - $b` 结果为 -10。   |
+| *      | 乘法                                          | `expr $a \* $b` 结果为  200。 |
+| /      | 除法                                          | `expr $b / $a` 结果为 2。     |
+| %      | 取余                                          | `expr $b % $a` 结果为 0。     |
+| =      | 赋值                                          | a=$b 将把变量 b 的值赋给 a。  |
+| ==     | 相等。用于比较两个数字，相同则返回 true。     | [ $a == $b ] 返回 false。     |
+| !=     | 不相等。用于比较两个数字，不相同则返回 true。 | [ $a != $b ] 返回 true。      |
+
+```shell
+$vim test.sh
+```
+输入代码：
+```shell
+#!/bin/bash
+
+a=10
+b=20
+val=`expr $a + $b`
+echo "a + b : $val"
+val=`expr $a - $b`
+echo "a - b : $val"
+val=`expr $a \* $b`
+echo "a * b : $val"
+val=`expr $b / $a`
+echo "b / a : $val"
+val=`expr $b % $a`
+echo "b % a : $val"
+if [ $a == $b ]
+then
+   echo "a == b"
+fi
+if [ $a != $b ]
+then
+   echo "a != b"
+fi
+```
+运行
+```shell
+$bash test.sh
+
+a + b : 30
+a - b : -10
+a * b : 200
+b / a : 2
+b % a : 0
+a != b
+```
+>
+  原生bash不支持简单的数学运算，但是可以通过其他命令来实现，例如 awk 和 expr，expr 最常用。
+  expr 是一款表达式计算工具，使用它能完成表达式的求值操作。
+  注意使用的反引号（esc键下边）
+  表达式和运算符之间要有空格$a + $b写成$a+$b不行
+  条件表达式要放在方括号之间，并且要有空格[ $a == $b ]写成[$a==$b]不行
+  乘号（*）前边必须加反斜杠（\)才能实现乘法运算
+
