@@ -106,9 +106,48 @@ $ roscd roscpp
 > ```
 > 注意，就像ROS中的其它工具一样，roscd只能切换到那些路径已经包含在ROS_PACKAGE_PATH环境变量中的软件包.
 
-roscd到子目录
+#### roscd到子目录
 
 使用roscd也可以切换到一个软件包或软件包集的子目录中。
 
-执行：
-````
+示例：
+```shell
+$ roscd roscpp/cmake
+$ pwd
+
+/opt/ros/kinetic/share/roscpp/cmake
+```
+
+### 使用roscd log
+使用roscd log可以切换到ROS保存日记文件的目录下。
+> 需要注意的是，如果没有执行过任何ROS程序，系统会报错说该目录不存在。
+
+示例：
+```shell
+$ roscd log
+```
+### 使用rosls
+rosls是rosbash命令集中的一部分，它允许你直接按软件包的名称而不是绝对路径执行ls命令（罗列目录）。
+
+用法：
+```shell
+$ rosls [本地包名称[/子目录]]
+```
+
+示例：
+```shell
+$ rosls roscpp_tutorials
+
+cmake  launch  package.xml  srv
+```
+
+# 创建ROS程序包
+
+## 一个catkin程序包由什么组成?
+一个程序包要想称为catkin程序包必须符合以下要求：
+- 该程序包必须包含catkin compliant package.xml文件
+  - 这个package.xml文件提供有关程序包的元信息。 
+- 程序包必须包含一个catkin 版本的CMakeLists.txt文件，而Catkin metapackages中必须包含一个对CMakeList.txt文件的引用。
+- 每个目录下只能有一个程序包。
+  - 这意味着在同一个目录下不能有嵌套的或者多个程序包存在。 
+  
