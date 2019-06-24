@@ -930,8 +930,35 @@ turtlemimic.launch
   # remap是launch文件中重映射命令，可以用来重命名。格式： <remap from="original-name" to="new-name" />
   # 如果这个 remap 是 launch 元素的一个child（子类），与 node 元素同一层级， 并在 launch 元素内的最顶层。那么这个 remapping 将会作用于后续所有的节点。
   # 这个 remap 元素也可以作为 node 元素的一个child（子类）出现，这里就是node minic的子类。
-  #
+  # <remap from="input" to="turtlesim1/turtle1"/> 将minic节点订阅的话题 /input/pose 重新映射为 /turtlesim1/turtle1/pose， 用于获取乌龟1（turtlesim1/sim） 的位置。
+  # <remap from="output" to="turtlesim2/turtle1"/> 将minic节点发布的话题 /output/cmd_vel重新映射为/turtlesim2/turtle1/cmd_vel, 用于发布给乌龟2移动命令。
 </launch>
 	//这个是launch文件的结束标签。 
 
 ```
+## roslaunch运行
+roslaunch命令来启动launch文件：
+
+```shell
+$ roslaunch beginner_tutorials turtlemimic.launch
+```
+现在将会有两个turtlesims被启动，然后我们在一个新终端中使用rostopic命令发送速度设定消息：
+
+```shell
+$ rostopic pub /turtlesim1/turtle1/cmd_vel geometry_msgs/Twist -r 1 "linear:
+  x: 2.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 2"
+```
+
+> 两个turtlesims会同时开始移动，虽然发布命令只是给turtlesim1发送了速度设定消息。
+
+通过rqt_graph可以看到各个节点之间的通信关系:
+![](./res/turtlesim5.png)
+
+
+
