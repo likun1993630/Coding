@@ -784,4 +784,125 @@ string name
 ---
 string name
 ```
+> 这个服务使得我们可以在给定的位置和角度生成一只新的乌龟。名字参数是可选的，这里我们不设具体的名字，让turtlesim自动创建一个。 
+
+```shell
+$ rosservice call /spawn "x: 2.0
+y: 2.0
+theta: 0.2
+name: "" 
+
+# 服务返回了新产生的乌龟的名字：
+name:turtle2
+```
+
+## 使用 rosparam
+rosparam使得我们能够存储并操作ROS 参数服务器（Parameter Server）上的数据。参数服务器能够存储整型、浮点、布尔、字符串、字典和列表等数据类型。rosparam使用YAML标记语言的语法。一般而言，YAML的表述很自然：1 是整型, 1.0 是浮点型, one是字符串, true是布尔, [1, 2, 3]是整型列表, {a: b, c: d}是字典. rosparam有很多指令可以用来操作参数，如下所示:
+
+- rosparam set            设置参数
+- rosparam get            获取参数
+- rosparam load           从文件读取参数
+- rosparam dump           向文件中写入参数
+- rosparam delete         删除参数
+- rosparam list           列出参数名
+
+### rosparam list
+
+```shell
+$ rosparam list
+
+/background_b
+/background_g
+/background_r
+/roslaunch/uris/aqy:51932
+/run_id
+```
+### rosparam set , rosparam get
+使用：
+
+`rosparam set [param_name]`
+
+`rosparam get [param_name]`
+
+修改背景颜色的红色通道：
+```shell
+$ rosparam set /background_r 150
+```
+上述指令修改了参数的值，现在我们调用清除服务使得修改后的参数生效：
+```shell
+$ rosservice call clear
+```
+现在我们来查看参数服务器上的参数值——获取背景的绿色通道的值：
+```shell
+$ rosparam get background_g 
+
+86
+```
+使用`rosparam get /`来显示参数服务器上的所有内容：
+```shell
+$ rosparam get /
+
+background_b: 255
+background_g: 86
+background_r: 150
+roslaunch:
+uris: {'aqy:51932': 'http://aqy:51932/'}
+run_id: e07ea71e-98df-11de-8875-001b21201aa8
+```
+
+### rosparam dump , rosparam load
+使用方法：
+```
+rosparam dump [file_name]
+rosparam load [file_name] [namespace]
+```
+
+将所有的参数写入params.yaml文件：
+```shell
+$ rosparam dump params.yaml
+```
+
+> 在当前目录下生成一个 params.yaml 文件，文件内记录着参数服务器参数的信息。
+
+
+# roslaunch
+
+roslaunch可以用来启动定义在launch文件中的多个节点。 
+
+用法： ` roslaunch [package] [filename.launch] `
+
+```shell
+# 先切换到beginner_tutorials程序包目录下：
+$ roscd beginner_tutorials
+
+# 然后创建一个launch文件夹：
+$ mkdir launch
+$ cd launch
+
+# 创建一个名为turtlemimic.launch的launch文件并复制粘贴以下内容到该文件里面： 
+$ touch turtlemimic.launch
+$ chmod u+x turtlemimic.launch
+
+```
+turtlemimic.launch
+```
+<launch>
+
+  <group ns="turtlesim1">
+    <node pkg="turtlesim" name="sim" type="turtlesim_node"/>
+  </group>
+
+  <group ns="turtlesim2">
+    <node pkg="turtlesim" name="sim" type="turtlesim_node"/>
+  </group>
+
+  <node pkg="turtlesim" name="mimic" type="mimic">
+    <remap from="input" to="turtlesim1/turtle1"/>
+    <remap from="output" to="turtlesim2/turtle1"/>
+  </node>
+
+</launch>
+```
+
+## Launch 文件解析
 
