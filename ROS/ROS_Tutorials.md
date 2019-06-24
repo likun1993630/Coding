@@ -514,3 +514,274 @@ $ rosnode list
 /rosout
 /turtlesim
 ```
+# 理解ROS话题
+## 运行小海龟历程：
+
+```shell
+$ roscore
+$ rosrun turtlesim turtlesim_node
+$ rosrun turtlesim turtle_teleop_key
+```
+
+## ROS Topics
+turtlesim_node节点和turtle_teleop_key节点之间是通过一个ROS话题来互相通信的。 turtle_teleop_key在一个话题上发布按键输入消息，而turtlesim则订阅该话题以接收该消息。下面让我们使用rqt_graph来显示当前运行的节点和话题。 
+
+在一个新终端中运行:
+```shell
+$ rosrun rqt_graph rqt_graph
+```
+![](./res/turtlesim1.png)
+
+如果你将鼠标放在/turtle1/command_velocity上方，相应的ROS节点（蓝色和绿色）和话题（红色）就会高亮显示。正如你所看到的，turtlesim_node和turtle_teleop_key节点正通过一个名为 /turtle1/command_velocity的话题来互相通信。
+
+![](./res/turtlesim2.png)
+
+## rostopic命令
+rostopic命令工具能让你获取有关ROS话题的信息。
+
+你可以使用帮助选项查看rostopic的子命令：
+
+```shell
+$ rostopic -h
+
+
+rostopic bw     display bandwidth used by topic
+rostopic echo   print messages to screen
+rostopic hz     display publishing rate of topic
+rostopic list   print information about active topics
+rostopic pub    publish data to topic
+rostopic type   print topic type
+```
+
+## 使用 rostopic echo
+rostopic echo可以显示在某个话题上发布的数据。
+
+用法：
+
+```shell
+rostopic echo [topic]
+```
+
+让我们在一个新终端中看一下turtle_teleop_key节点在/turtle1/cmd_vel话题上发布的数据。
+
+```shell
+$ rostopic echo /turtle1/cmd_vel
+
+
+linear: 
+  x: 2.0
+  y: 0.0
+  z: 0.0
+angular: 
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---
+```
+rostopic echo(红色显示部分）现在也订阅了turtle1/command_velocity话题。
+
+![](./res/turtlesim3.png)
+
+## 使用 rostopic list
+
+rostopic list能够列出所有当前订阅和发布的话题。
+让我们查看一下list子命令需要的参数，在一个新终端中运行：
+
+```shell
+$ rostopic list -h
+
+Usage: rostopic list [/topic]
+
+Options:
+  -h, --help            show this help message and exit
+  -b BAGFILE, --bag=BAGFILE
+                        list topics in .bag file
+  -v, --verbose         list full details about each topic
+  -p                    list only publishers
+  -s                    list only subscribers
+
+```
+
+```shell
+$ rostopic list -v
+
+
+Published topics:
+* /turtle1/color_sensor [turtlesim/Color] 1 publisher
+* /turtle1/cmd_vel [geometry_msgs/Twist] 1 publisher
+* /rosout [rosgraph_msgs/Log] 2 publishers
+* /rosout_agg [rosgraph_msgs/Log] 1 publisher
+* /turtle1/pose [turtlesim/Pose] 1 publisher
+
+Subscribed topics:
+* /turtle1/cmd_vel [geometry_msgs/Twist] 1 subscriber
+* /rosout [rosgraph_msgs/Log] 1 subscriber
+```
+
+## ROS Messages
+话题之间的通信是通过在节点之间发送ROS消息实现的。对于发布器(turtle_teleop_key)和订阅器(turtulesim_node)之间的通信，发布器和订阅器之间必须发送和接收相同类型的消息。这意味着话题的类型是由发布在它上面的消息类型决定的。
+
+### 使用 rostopic type
+使用rostopic type命令可以查看发布在某个话题上的消息类型：
+
+用法:
+```shell
+$ rostopic type [topic]
+```
+
+```shell
+$ rostopic type /turtle1/cmd_vel
+
+geometry_msgs/Twist
+```
+
+我们可以使用rosmsg命令来查看消息的详细情况：
+```shell
+$ rosmsg show geometry_msgs/Twist
+
+geometry_msgs/Vector3 linear
+  float64 x
+  float64 y
+  float64 z
+geometry_msgs/Vector3 angular
+  float64 x
+  float64 y
+  float64 z
+```
+
+### 使用 rostopic pub
+rostopic pub可以把数据发布到当前某个正在广播的话题上。 
+
+用法：`rostopic pub [topic] [msg_type] [args]`
+
+```shell
+$ rostopic pub -1 /turtle1/cmd_vel geometry_msgs/Twist "linear:
+  x: 2
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 2.8"
+# -1 这个参数选项使rostopic发布一条消息后马上退出。 
+```
+
+```shell
+rostopic pub /turtle1/cmd_vel geometry_msgs/Twist -r 1 "linear:
+  x: 2
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 2.8"
+# -r 1 一个稳定的频率为1Hz的命令流来保持移动状态。
+```
+我们也可以看一下rqt_graph中的情形，可以看到rostopic发布器节点（红色）正在与rostopic echo节点（绿色）进行通信：
+
+![](./res/turtlesim4.png)
+
+> turtle正沿着一个圆形轨迹连续运动。我们可以在一个新终端中通过rostopic echo命令来查看turtlesim所发布的数据。 
+
+### 使用 rostopic hz
+`rostopic hz [topic]`
+
+我们看一下turtlesim的节点发布/turtle/pose时有多快：
+```shell
+$ rostopic hz /turtle1/pose
+
+subscribed to [/turtle1/pose]
+average rate: 59.354
+    min: 0.005s max: 0.027s std dev: 0.00284s window: 58
+average rate: 59.459
+    min: 0.005s max: 0.027s std dev: 0.00271s window: 118
+```
+> 现在我们可以知道了turtlesim正以大约60Hz的频率发布数据给turtle.
+
+### 使用管道结合rostopic type和rosmsg show命令
+```shell
+$ rostopic type /turtle1/cmd_vel | rosmsg show
+
+geometry_msgs/Vector3 linear
+float64 x
+float64 y
+float64 z
+geometry_msgs/Vector3 angular
+float64 x
+float64 y
+float64 z
+```
+
+# 理解ROS服务和参数
+
+## ROS Services
+服务（services）是节点之间通讯的另一种方式。服务允许节点发送请求（request） 并获得一个响应（response）
+
+### 使用rosservice
+rosservice可以很轻松的使用 ROS 客户端/服务器框架提供的服务。rosservice提供了很多可以在topic上使用的命令，如下所示：
+
+- rosservice list         输出可用服务的信息
+- rosservice call         调用带参数的服务
+- rosservice type         输出服务类型
+- rosservice find         依据类型寻找服务find services by service type
+- rosservice uri          输出服务的ROSRPC uri
+
+### 使用rosservice list
+
+```shell
+$ rosservice list
+
+/clear
+/kill
+/reset
+/rosout/get_loggers
+/rosout/set_logger_level
+/spawn
+/teleop_turtle/get_loggers
+/teleop_turtle/set_logger_level
+/turtle1/set_pen
+/turtle1/teleport_absolute
+/turtle1/teleport_relative
+/turtlesim/get_loggers
+/turtlesim/set_logger_level
+```
+> list 命令显示turtlesim节点提供了9个服务：重置（reset）, 清除（clear）, 再生（spawn）, 终止（kill）, turtle1/set_pen, /turtle1/teleport_absolute, /turtle1/teleport_relative, turtlesim/get_loggers, and turtlesim/set_logger_level. 同时还有另外两个rosout节点提供的服务: /rosout/get_loggers and /rosout/set_logger_level. 
+
+### rosservice type
+用法：`rosservice type [service]`
+
+查看clear服务的类型:
+```shell
+$ rosservice type /clear
+
+std_srvs/Empty
+```
+> 服务的类型为空（empty),这表明在调用这个服务是不需要参数（比如，请求不需要发送数据，响应也没有数据）。
+
+下面我们使用rosservice call命令调用服务。
+
+### rosservice call
+rosservice call命令调用服务
+
+方法：`rosservice call [service] [args]`
+
+```shell
+# 因为服务类型是空，所以进行无参数调用
+
+$ rosservice call clear
+# 服务清除了turtlesim_node的背景上的轨迹。
+```
+
+### rosservice call 有参数调用
+```shell
+# 查看再生（spawn）服务的信息
+$ rosservice type /spawn | rossrv show
+
+float32 x
+float32 y
+float32 theta
+string name
+---
+string name
+```
+
