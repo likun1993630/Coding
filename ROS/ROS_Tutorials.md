@@ -57,6 +57,7 @@ $ echo $ROS_PACKAGE_PATH
 
 /home/likun/catkin_ws/src:/opt/ros/kinetic/share
 #两个路径，一个是刚刚创建的catkin_ws/src，即存放package的地方，另一个是ROS的共享package库文件夹。
+#并且每个路径之间用冒号分隔开来,你可以在ROS_PACKAGE_PATH中添加更多其它路径，每条路径使用冒号':'分隔。
 ```
 
 # ROS文件系统
@@ -103,4 +104,11 @@ $ roscd roscpp
 > /opt/ros/kinetic/share/roscpp
 > # 你可以看到 /opt/ros/kinetic/share/roscpp和之前使用rospack find得到的路径名称是一样的。
 > ```
-> 注意，就像ROS中的其它工具一样，roscd只能切换到那些路径已经包含在ROS_PACKAGE_PATH环境变量中的软件包，要查看ROS_PACKAGE_PATH中包含的路径可以
+> 注意，就像ROS中的其它工具一样，roscd只能切换到那些路径已经包含在ROS_PACKAGE_PATH环境变量中的软件包.
+
+roscd到子目录
+
+使用roscd也可以切换到一个软件包或软件包集的子目录中。
+
+执行：
+````
