@@ -928,7 +928,9 @@ turtlemimic.launch
   </node>
   # 在这里我们启动模仿节点，并将所有话题的输入和输出分别重命名为turtlesim1和turtlesim2，这样就会使turtlesim2模仿turtlesim1。 
   # remap是launch文件中重映射命令，可以用来重命名。格式： <remap from="original-name" to="new-name" />
-  # 
+  # 如果这个 remap 是 launch 元素的一个child（子类），与 node 元素同一层级， 并在 launch 元素内的最顶层。那么这个 remapping 将会作用于后续所有的节点。
+  # 这个 remap 元素也可以作为 node 元素的一个child（子类）出现，这里就是node minic的子类。
+  #
 </launch>
 	//这个是launch文件的结束标签。 
 
