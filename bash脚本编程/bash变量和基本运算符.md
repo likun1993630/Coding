@@ -26,4 +26,118 @@ for file in `ls /etc`
 ```
 
 ## 使用变量 
+```shell
+myname="shiyanlou"
+echo $myname
+echo ${myname}
+echo ${myname}Good
+echo $mynameGood
 
+myname="miao"
+echo ${myname}
+```
+
+> 加花括号帮助解释器识别变量的边界，若不加，解释器会把mynameGood当成一个变量（值为空）
+
+> 推荐给所有变量加花括号
+
+> 已定义的变量可以重新被定义
+
+## 只读变量 
+
+使用 `readonly` 命令可以将变量定义为只读变量，只读变量的值不能被改变。 下面的例子尝试更改只读变量，结果报错：
+
+```shell
+#!/bin/bash
+myUrl="http://www.shiyanlou.com"
+readonly myUrl
+myUrl="http://www.shiyanlou.com"
+```
+结果如下：
+```shell
+/bin/sh: NAME: This variable is read only.
+```
+
+## 特殊变量
+- 局部变量
+  这种变量只有在代码块或者函数中才可见。
+- 环境变量
+  这种变量将影响用户接口和 shell 的行为。
+  在通常情况下，每个进程都有自己的“环境”，这个环境是由一组变量组成的，这些变量中存有进程可能需要引用的信息。在这种情况下，shell 与一个一般的进程没什么区别。
+- 位置参数
+  从命令行传递到脚本的参数：0，1，2，3...
+  0就是脚本文件自身的名字，1 是第一个参数，2是第二个参数，3 是第三个参数，然后是第四个。9之后的位置参数就必须用大括号括起来了，比如，{10}，{11}，{12}。
+  
+  ```
+  $# ： 传递到脚本的参数个数
+  $* ： 以一个单字符串显示所有向脚本传递的参数。与位置变量不同,此选项参数可超过 9个
+  $$ : 脚本运行的当前进程 ID号
+  $! ： 后台运行的最后一个进程的进程 ID号
+  $@ ：与$*相同,但是使用时加引号,并在引号中返回每个参数
+  $- ： 显示shell使用的当前选项,与 set命令功能相同
+  $? ： 显示最后命令的退出状态。 0表示没有错误,其他任何值表明有错误。
+  ```
+### 位置参数实例
+在执行 Shell 脚本时，向脚本传递参数，脚本内获取参数的格式为：$n。n 代表一个数字，1 为执行脚本的第一个参数，2 为执行脚本的第二个参数，以此类推……
+```shell
+$ vim test30.sh
+```
+输入代码（中文皆为注释，不用输入）：
+```shell
+#!/bin/bash
+
+# 作为用例, 调用这个脚本至少需要10个参数, 比如:
+# bash test.sh 1 2 3 4 5 6 7 8 9 10
+MINPARAMS=10
+echo
+echo "The name of this script is \"$0\"."
+echo "The name of this script is \"`basename $0`\"."
+echo
+
+if [ -n "$1" ]              # 测试变量被引用.
+then
+echo "Parameter #1 is $1"  # 需要引用才能够转义"#"
+fi 
+
+if [ -n "$2" ]
+then
+echo "Parameter #2 is $2"
+fi 
+
+if [ -n "${10}" ]  # 大于$9的参数必须用{}括起来.
+then
+echo "Parameter #10 is ${10}"
+fi 
+
+echo "-----------------------------------"
+echo "All the command-line parameters are: "$*""
+
+if [ $# -lt "$MINPARAMS" ]
+then
+ echo
+ echo "This script needs at least $MINPARAMS command-line arguments!"
+fi  
+
+echo
+
+exit 0
+```
+
+运行代码：
+```shell
+$ bash test30.sh 1 2 10
+
+
+The name of this script is "test.sh".
+The name of this script is "test.sh".
+
+Parameter #1 is 1
+Parameter #2 is 2
+-----------------------------------
+All the command-line parameters are: 1 2 10
+
+This script needs at least 10 command-line arguments!
+```
+
+# 基本运算符
+##算数运算符
