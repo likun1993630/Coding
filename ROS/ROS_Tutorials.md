@@ -905,4 +905,31 @@ turtlemimic.launch
 ```
 
 ## Launch 文件解析
+```
+ <launch>
+ # 在这里我们以launch标签开头以表明这是一个launch文件。 
 
+  <group ns="turtlesim1">
+    <node pkg="turtlesim" name="sim" type="turtlesim_node"/>
+  </group>
+
+  <group ns="turtlesim2">
+    <node pkg="turtlesim" name="sim" type="turtlesim_node"/>
+  </group>
+  # 在这里我们创建了两个节点分组并以'命名空间（namespace)'标签来区分，即group指定的ns，其中一个名为turtulesim1，另一个名为turtlesim2，两个组里面都使用相同的turtlesim节点并命名为'sim'。这样可以让我们同时启动两个turtlesim模拟器而不会产生命名冲突，因为虽然节点名字相同，但属于不同的命名空间。
+  # 每个<node> 标签包括了声明ROS图中节点的各种属性
+  # pkg="turtlesim"，指定该节点所在的包名。
+  # name="sim"，指定节点的名字
+  # type="turtlesim_node" ，指定了该节点的类型，也就是可执行程序的文件名
+
+  <node pkg="turtlesim" name="mimic" type="mimic">
+    <remap from="input" to="turtlesim1/turtle1"/>
+    <remap from="output" to="turtlesim2/turtle1"/>
+  </node>
+  # 在这里我们启动模仿节点，并将所有话题的输入和输出分别重命名为turtlesim1和turtlesim2，这样就会使turtlesim2模仿turtlesim1。 
+  # remap是launch文件中重映射命令，可以用来重命名。格式： <remap from="original-name" to="new-name" />
+  # 
+</launch>
+	//这个是launch文件的结束标签。 
+
+```
