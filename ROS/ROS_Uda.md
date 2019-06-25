@@ -8,17 +8,17 @@ from sensor_msgs.msg import JointState
 from simple_arm.srv import *
 ```
 JointState消息发布到/ simple_arm / joint_states主题，用于监视arm的位置。
-  >```shell
-  $ rostopic info /simple_arm/joint_states 
-  Type: sensor_msgs/JointState
+```
+$ rostopic info /simple_arm/joint_states 
+Type: sensor_msgs/JointState
 
-  Publishers: 
-  * /gazebo (http://Ubuntu16:45239/)
+Publishers: 
+* /gazebo (http://Ubuntu16:45239/)
 
-  Subscribers: 
-  * /robot_state_publisher (http://Ubuntu16:37795/)
-  ```
-```shell
+Subscribers: 
+* /robot_state_publisher (http://Ubuntu16:37795/)
+```
+```
 $ rosmsg show sensor_msgs/JointState
 
 std_msgs/Header header
