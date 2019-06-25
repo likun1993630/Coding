@@ -130,3 +130,58 @@ if __name__ == "__main__":
     print "Requesting %s+%s"%(x, y)
     print "%s + %s = %s"%(x, y, add_two_ints_client(x, y))
 ```
+
+代码解释：
+
+```python
+rospy.wait_for_service('add_two_ints')
+```
+使程序等待，直到名为add_two_ints 的服务出现，这是比较常用的方法。
+
+```python
+add_two_ints = rospy.ServiceProxy('add_two_ints', AddTwoInts)
+```
+通过rospy.ServiceProxy接口提供了调用服务的通用方法，返回的add_two_ints是一个函数对象。
+
+补充：
+sys.argv：获取运行 Python 程序的命令行参数。argv为列表。
+ - sys.argv[0] 通常就是指该 Python 程序，即文件名。
+ - sys.argv[1] 代表为 Python 程序提供的第一个参数，
+ - sys.argv[2] 代表为 Python 程序提供的第二个参数……依此类推
+
+## 测试Service和Client
+
+可以通过命令行直接调用服务：
+
+```shell
+# 新终端
+$ roscore
+
+# 新终端
+$ rosrun beginner_tutorials add_two_ints_server.py 
+```
+
+```shell
+$ rosservice call /add_two_ints "a: 2
+b: 2"
+
+
+sum: 4
+```
+
+使用client调用Service：
+
+```shell
+# 新终端
+$ roscore
+
+# 新终端
+$ rosrun beginner_tutorials add_two_ints_server.py 
+
+# 新终端
+$ rosrun beginner_tutorials add_two_ints_client.py 1 3  (Python)
+
+#结果：
+request: x=1, y=3
+sending back response: [4]
+```
