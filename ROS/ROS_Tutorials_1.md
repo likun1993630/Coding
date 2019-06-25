@@ -619,6 +619,8 @@ Subscribed topics:
 ```
 
 ## ROS Messages
+消息，即通过topic发送和接受的内容。
+
 话题之间的通信是通过在节点之间发送ROS消息实现的。对于发布器(turtle_teleop_key)和订阅器(turtulesim_node)之间的通信，发布器和订阅器之间必须发送和接收相同类型的消息。这意味着话题的类型是由发布在它上面的消息类型决定的。
 
 ### 使用 rostopic type
