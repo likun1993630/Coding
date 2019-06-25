@@ -293,7 +293,7 @@ rospy.init_node('talker', anonymous=True)
 - `rospy.init_node(NAME, ...)` 声明发布‘chatter’topic的node的名称。 在这种情况下，节点将采用名称talker。 注意：名称必须是基本名称，即它不能包含任何斜杠“/”。
     - anonymous = True通过在NAME末尾添加随机数来确保这个节点具有唯一名称。
     - 必须在调用任何其他rospy包函数之前调用init_node（）
-
+> node的名字可以与python文件名不同，比如可以命名为节点为talker123。
 > ROS发布可以是同步的也可以是异步的：同步发布意味着发布者将尝试发布到话题，但如果该话题由其他发布者发布，则可能会被阻止。 在这种情况下，第二个发布者被阻止，直到第一个发布者将所有消息序列化到缓冲区，并且缓冲区已将消息写入每个主题的订阅者。 rospy.Publisher默认使用同步发布，如果未使用queue_size参数或将其设置为None。异步发布意味着发布者可以将消息存储在队列中，直到可以发送消息。 如果发布的消息数超过队列大小，则删除最旧的消息。 可以使用queue_size参数设置队列大小。
 
 ```python
@@ -308,5 +308,22 @@ while not rospy.is_shutdown():
         pub.publish(hello_str)
         rate.sleep()
 ```
+
+这个循环是一个相当标准的rospy构造：检查rospy.is_shutdown（）标志然后执行循环。 is_shutdown（）用于判断程序是否应该退出（例如，如果有Ctrl-C或其他）。 在这种情况下，这个循环需要做的是对pub.publish（hello_str）的调用，它将字符串发布到chatter。 
+
+循环调用rate.sleep（），使循环保持所需的速率，即上面的10Hz。
+
+这个循环还调用rospy.loginfo（str），它执行三重任务：将消息打印到屏幕，将消息写入Node的日志文件，将消息写入rosout。
+
+```ptyhon
+if __name__ == '__main__':
+    try:
+        talker()
+    except rospy.ROSInterruptException:
+        pass
+```
+`if __name__ == '__main__' `的意思是：当.py文件被直接运行时，`if __name__ == '__main__'`之下的代码块将被运行；当.py文件以模块形式被导入时，`if __name__ == '__main__'`之下的代码块不被运行。
+
+除了标准的Python`` __main__``检查之外，这还会捕获一个rospy.ROSInterruptException异常，当按下Ctrl-C或者节点关闭时，rospy.sleep（）和rospy.Rate.sleep（）方法会抛出该异常。 这样做是为了防止在sleep（）之后意外地继续执行代码。
 
 
