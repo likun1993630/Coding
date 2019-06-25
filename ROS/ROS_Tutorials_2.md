@@ -234,6 +234,7 @@ Python脚本语言会在 `~/catkin_ws/devel/lib/python2.7/dist-packages/beginner
 
 
 # 简单的消息发布器和订阅器
+## Writing the Publisher Node
 
 ```shell
 $ roscd beginner_tutorials
@@ -292,6 +293,7 @@ rospy.init_node('talker', anonymous=True)
     - queue_size参数在New ROS hydro中新添加的，如果任何subscriber没有足够快地接收消息，则限制排队消息的数量。queue_size参数用于确定在删除消息之前可以存储在发布者队列中的最大数量消息。
 - `rospy.init_node(NAME, ...)` 声明发布‘chatter’topic的node的名称。 在这种情况下，节点将采用名称talker。 注意：名称必须是基本名称，即它不能包含任何斜杠“/”。
     - anonymous = True通过在NAME末尾添加随机数来确保这个节点具有唯一名称。
+        -ros中，如果两个节点名字相同，则先启动的那个节点会被kill
     - 必须在调用任何其他rospy包函数之前调用init_node（）
 > node的名字可以与python文件名不同，比如可以命名为节点为talker123。
 > ROS发布可以是同步的也可以是异步的：同步发布意味着发布者将尝试发布到话题，但如果该话题由其他发布者发布，则可能会被阻止。 在这种情况下，第二个发布者被阻止，直到第一个发布者将所有消息序列化到缓冲区，并且缓冲区已将消息写入每个主题的订阅者。 rospy.Publisher默认使用同步发布，如果未使用queue_size参数或将其设置为None。异步发布意味着发布者可以将消息存储在队列中，直到可以发送消息。 如果发布的消息数超过队列大小，则删除最旧的消息。 可以使用queue_size参数设置队列大小。
@@ -315,7 +317,7 @@ while not rospy.is_shutdown():
 
 这个循环还调用rospy.loginfo（str），它执行三重任务：将消息打印到屏幕，将消息写入Node的日志文件，将消息写入rosout。
 
-```ptyhon
+```python
 if __name__ == '__main__':
     try:
         talker()
@@ -326,4 +328,66 @@ if __name__ == '__main__':
 
 除了标准的Python`` __main__``检查之外，这还会捕获一个rospy.ROSInterruptException异常，当按下Ctrl-C或者节点关闭时，rospy.sleep（）和rospy.Rate.sleep（）方法会抛出该异常。 这样做是为了防止在sleep（）之后意外地继续执行代码。
 
+try-except 异常处理：
+
+Python中检测处理异常是非常重要的，这可以增加代码的健壮性，异常可以通过 try 语句来检测. 任何在 try 语句块里的代码都会被监测, 检查有无异常发生。首先尝试执行 try 子句, 如果没有错误, 忽略所有的 except 从句继续执行，如果发生异常, 解释器将在这一串处理器(except 子句)中查找匹配的异常。
+
+[常见ROS异常](http://wiki.ros.org/rospy/Overview/Exceptions)
+
+
+## Writing the Subscriber Node
+
+```python
+$ roscd beginner_tutorials/scripts/
+$ wget https://raw.github.com/ros/ros_tutorials/kinetic-devel/rospy_tutorials/001_talker_listener/listener.py
+$ chmod +x listener.py
+```
+listener.py内容：
+
+```python
+#!/usr/bin/env python
+import rospy
+from std_msgs.msg import String
+
+def callback(data):
+    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+    
+def listener():
+
+    # In ROS, nodes are uniquely named. If two nodes with the same
+    # name are launched, the previous one is kicked off. The
+    # anonymous=True flag means that rospy will choose a unique
+    # name for our 'listener' node so that multiple listeners can
+    # run simultaneously.
+    rospy.init_node('listener', anonymous=True)
+
+    rospy.Subscriber("chatter", String, callback)
+
+    # spin() simply keeps python from exiting until this node is stopped
+    rospy.spin()
+
+if __name__ == '__main__':
+    listener()
+```
+
+代码解释：
+
+listener.py的代码类似于talker.py，另外引入了一个新的基于回调的机制来订阅消息。
+
+```python
+rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+```
+这里的data.data = String.data， callback(data)中的data是接收到的String对象。
+
+```python
+rospy.init_node('listener', anonymous=True)
+rospy.Subscriber("chatter", String, callback)
+```
+这声明节点订阅了std_msgs.msgs.String类型的chatter主题。 收到新消息时，将调用回调，并将消息作为第一个参数。
+
+我们也稍微改变了对rospy.init_node（）的调用。 我们添加了anonymous = True关键字参数。 ROS要求每个节点都有唯一的名称。 如果出现具有相同名称的节点，则会与第一个节点冲突。  anonymous = True标志告诉rospy为节点生成一个唯一的名称，以便可以轻松运行多个listener.py节点。
+
+rospy.spin（）只是让保持运行节点，直到节点被关闭。 与roscpp不同，rospy.spin（）不会影响订阅者回调函数，因为它们有自己的线程。
+
+## 测试消息发布器和订阅器
 
