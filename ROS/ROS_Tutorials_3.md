@@ -148,6 +148,27 @@ sys.argv：获取运行 Python 程序的命令行参数。argv为列表。
  - sys.argv[0] 通常就是指该 Python 程序，即文件名。
  - sys.argv[1] 代表为 Python 程序提供的第一个参数，
  - sys.argv[2] 代表为 Python 程序提供的第二个参数……依此类推
+ 
+client最简形式：
+
+```python
+#!/usr/bin/env python
+
+import sys
+import rospy
+from beginner_tutorials.srv import *
+
+def add_two_ints_client(x, y):
+	rospy.wait_for_service('add_two_ints')
+	add_two_ints = rospy.ServiceProxy('add_two_ints', AddTwoInts)
+	resp1 = add_two_ints(x, y)
+	return resp1.sum
+	
+if __name__ == "__main__":
+	x = int(sys.argv[1])
+	y = int(sys.argv[2])
+	print "%s + %s = %s"%(x, y, add_two_ints_client(x, y))
+```
 
 ## 测试Service和Client
 
