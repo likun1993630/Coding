@@ -337,7 +337,7 @@ Python中检测处理异常是非常重要的，这可以增加代码的健壮�
 
 ## Writing the Subscriber Node
 
-```python
+```shell
 $ roscd beginner_tutorials/scripts/
 $ wget https://raw.github.com/ros/ros_tutorials/kinetic-devel/rospy_tutorials/001_talker_listener/listener.py
 $ chmod +x listener.py
