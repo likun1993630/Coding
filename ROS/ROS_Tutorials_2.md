@@ -96,4 +96,136 @@ catkin_package(
   ...)
 ```
 
+## 使用rosmsg
+
+下面通过rosmsg show命令，检查ROS是否能够识消息。
+
+使用方法：` rosmsg show [message type]`
+
+```shell
+$ rosmsg show beginner_tutorials/Num
+
+int64 num
+```
+> beginner_tutorials -- 消息所在的package
+> Num -- 消息名Num. 
+
+如果忘记了消息所在的package，你也可以省略掉package名。输入：
+
+```shell
+$ rosmsg show Num
+
+[beginner_tutorials/Num]:
+int64 num
+```
+
+## 创建一个srv
+
+在package中创建一个服务：
+```shell
+$ roscd beginner_tutorials
+$ mkdir srv
+```
+
+这次我们不再手动创建服务，而是从其他的package中复制一个服务。 roscp是一个很实用的命令行工具，它实现了将文件从一个package复制到另外一个package的功能。
+
+使用方法：`roscp [package_name] [file_to_copy_path] [copy_path]`
+
+从rospy_tutorials package中复制一个服务文件：
+
+```shell
+$ roscp rospy_tutorials AddTwoInts.srv srv/AddTwoInts.srv
+```
+
+AddTwoInts.srv内容如下：
+```
+int64 a
+int64 b
+---
+int64 sum
+```
+要确保srv文件被转换成C++，Python和其他语言的源代码,还有很关键的两步：
+
+package.xml文件
+```
+<build_depend>message_generation</build_depend>
+<exec_depend>message_runtime</exec_depend>
+```
+
+在CMakeLists.txt文件中增加了对message_generation的依赖。
+
+```
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+  message_generation)
+```
+> message_generation 对msg和srv都起作用
+
+```
+add_service_files(
+  FILES
+  AddTwoInts.srv
+)
+```
+```
+generate_messages(
+    DEPENDENCIES
+    std_msgs
+)
+```
+> 部分修改与定义msg时相同
+
+## 使用 rossrv
+
+下面通过rosmsg show命令，检查ROS是否能够识该服务。
+
+用法： `rossrv show [service type]`
+
+```shell
+rossrv show beginner_tutorials/AddTwoInts
+
+int64 a
+int64 b
+---
+int64 sum
+```
+
+可以不指定具体的package名来查找服务文件：
+```shell
+$ rossrv show AddTwoInts
+
+[beginner_tutorials/AddTwoInts]:
+int64 a
+int64 b
+---
+int64 sum
+
+[rospy_tutorials/AddTwoInts]:
+int64 a
+int64 b
+---
+int64 sum
+```
+
+## 创建 msg和srv都需要的步骤
+**疑问？ 官方教程不是不没列全**
+```
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+```
+
+## 创建 msg或 srv 之后make
+
+由于增加了新的消息，所以我们需要重新编译我们的package：
+
+```shell
+$ cd ~/catkin_ws
+$ catkin_make
+```
+> 所有在msg路径下的.msg文件都将转换为ROS所支持语言的源代码。生成的C++头文件将会放置在~/catkin_ws/devel/include/beginner_tutorials/。 Python脚本语言会在 ~/catkin_ws/devel/lib/python2.7/dist-packages/beginner_tutorials/msg 目录下创建。
+> 所有在srv路径下的.srv文件都将转换为ROS所支持语言的源代码。生成的C++头文件将会放置在~/catkin_ws/devel/include/beginner_tutorials/。 Python脚本语言会在 ~/catkin_ws/devel/lib/python2.7/dist-packages/beginner_tutorials/srv 目录下创建。
 
