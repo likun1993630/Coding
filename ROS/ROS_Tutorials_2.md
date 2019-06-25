@@ -226,8 +226,9 @@ generate_messages(
 $ cd ~/catkin_ws
 $ catkin_make
 ```
-> 所有在msg路径下的.msg文件都将转换为ROS所支持语言的源代码。生成的C++头文件将会放置在~/catkin_ws/devel/include/beginner_tutorials/         
-Python脚本语言会在 ~/catkin_ws/devel/lib/python2.7/dist-packages/beginner_tutorials/msg 目录下创建。
-> 所有在srv路径下的.srv文件都将转换为ROS所支持语言的源代码。生成的C++头文件将会放置在~/catkin_ws/devel/include/beginner_tutorials/  
-Python脚本语言会在 ~/catkin_ws/devel/lib/python2.7/dist-packages/beginner_tutorials/srv 目录下创建。
+> 所有在msg路径下的.msg文件都将转换为ROS所支持语言的源代码。生成的C++头文件将会放置在`~/catkin_ws/devel/include/beginner_tutorials/` 
+Python脚本语言会在` ~/catkin_ws/devel/lib/python2.7/dist-packages/beginner_tutorials/msg` 目录下创建。
+
+> 所有在srv路径下的.srv文件都将转换为ROS所支持语言的源代码。生成的C++头文件将会放置在`~/catkin_ws/devel/include/beginner_tutorials/ `
+Python脚本语言会在 `~/catkin_ws/devel/lib/python2.7/dist-packages/beginner_tutorials/srv `目录下创建。
 
