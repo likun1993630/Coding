@@ -232,3 +232,68 @@ Python脚本语言会在` ~/catkin_ws/devel/lib/python2.7/dist-packages/beginner
 > 所有在srv路径下的.srv文件都将转换为ROS所支持语言的源代码。生成的C++头文件将会放置在`~/catkin_ws/devel/include/beginner_tutorials/ `
 Python脚本语言会在 `~/catkin_ws/devel/lib/python2.7/dist-packages/beginner_tutorials/srv `目录下创建。
 
+
+# 简单的消息发布器和订阅器
+
+```shell
+$ roscd beginner_tutorials
+$ mkdir scripts
+$ cd scripts
+# 下载教程文件
+$ wget https://raw.github.com/ros/ros_tutorials/kinetic-devel/rospy_tutorials/001_talker_listener/talker.py
+$ chmod +x talker.py
+```
+> python 源文件默认放到scripts文件夹
+
+talker.py 文件内容：
+```python
+#!/usr/bin/env python
+# license removed for brevity
+import rospy
+from std_msgs.msg import String
+
+def talker():
+    pub = rospy.Publisher('chatter', String, queue_size=10)
+    rospy.init_node('talker', anonymous=True)
+    rate = rospy.Rate(10) # 10hz
+    while not rospy.is_shutdown():
+        hello_str = "hello world %s" % rospy.get_time()
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
+
+if __name__ == '__main__':
+    try:
+        talker()
+    except rospy.ROSInterruptException:
+        pass
+```
+
+代码解释：
+```python
+#!/usr/bin/env python
+import rospy
+```
+每个Python ROS节点都会在顶部声明此声明。 第一行确保此脚本作为Python脚本执行。对于ROS节点，需要导入rospy
+```python
+from std_msgs.msg import String
+```
+std_msgs.msg导入是为了我们可以重用std_msgs / String消息类型（一个简单的字符串容器）进行发布。
+- python包将在下面两个库中寻找`/home/likun/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/kinetic/lib/python2.7/dist-packages`。 python环境变量可使用 `echo $PYTHONPATH` 查看。
+- std_msgs包位于`/opt/ros/kinetic/lib/python2.7/dist-packages，std_msgs`子包为msg，子包msg内包含`_String.py`模块
+
+```python
+pub = rospy.Publisher('chatter', String, queue_size=10)
+rospy.init_node('talker', anonymous=True)
+```
+这部分代码定义了talker与ROS中其余对象的接口。
+- `pub = rospy.Publisher("chatter", String, queue_size=10)` 声明节点使用消息类型String发布到chatter话题。
+    - 这里的字符串实际上是std_msgs.msg.String类。
+    - queue_size参数在New ROS hydro中新添加的，如果任何subscriber没有足够快地接收消息，则限制排队消息的数量。queue_size参数用于确定在删除消息之前可以存储在发布者队列中的最大数量消息。
+- `rospy.init_node(NAME, ...)` 声明发布‘chatter’topic的node的名称。 在这种情况下，节点将采用名称talker。 注意：名称必须是基本名称，即它不能包含任何斜杠“/”。
+    - anonymous = True通过在NAME末尾添加随机数来确保这个节点具有唯一名称。
+    - 必须在调用任何其他rospy包函数之前调用init_node（）
+
+> ROS发布可以是同步的也可以是异步的：同步发布意味着发布者将尝试发布到话题，但如果该话题由其他发布者发布，则可能会被阻止。 在这种情况下，第二个发布者被阻止，直到第一个发布者将所有消息序列化到缓冲区，并且缓冲区已将消息写入每个主题的订阅者。 rospy.Publisher默认使用同步发布，如果未使用queue_size参数或将其设置为None。异步发布意味着发布者可以将消息存储在队列中，直到可以发送消息。 如果发布的消息数超过队列大小，则删除最旧的消息。 可以使用queue_size参数设置队列大小。
+
+
