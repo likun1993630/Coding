@@ -7,13 +7,18 @@
   - handler是处理传入服务消息的函数或方法的名称。 每次调用服务时都会调用此函数，并且来自服务调用的消息将作为参数传递给处理程序。 处理程序应返回适当的服务响应消息。
 
 - Using Services
-  - 可以直接从命令行调用服务，另外，要在另一个节点内使用ROS服务，要定义一个ServiceProxy，它提供了向服务发送消息的接口：`service_proxy = rospy.ServiceProxy('service_name', serviceClassName)`
-  - 然后，可以使用ServiceProxy发送请求的一种方法如下：
+  - 可以直接从命令行调用服务`rosservice call /serviceName [para] `
+  - 另外，要在另一个节点内使用ROS服务，要定义一个ServiceProxy，它提供了向服务发送消息的接口：`service_proxy = rospy.ServiceProxy('service_name', serviceClassName)`
+  - 通过调用serviceClassNameRequest（）方法创建新的服务消息：
   ```
   msg = serviceClassNameRequest()
   #update msg attributes here to have correct data
   response = service_proxy(msg)
   ```
+  > 第三种方法适用范围相对比第二种小，不推荐（我自己主观不推荐）
+
+[Rospy_services Doc](http://wiki.ros.org/rospy/Overview/Services)
+ 
 ## Writing a Service Node
 
 AddTwoInts.srv：
