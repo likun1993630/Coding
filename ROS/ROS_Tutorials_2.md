@@ -408,3 +408,4 @@ $ rosrun beginner_tutorials talker.py
 $ rosrun beginner_tutorials listener.py
 ```
 
+![](./res/turtlesim6.png)
