@@ -375,9 +375,12 @@ if __name__ == '__main__':
 listener.py的代码类似于talker.py，另外引入了一个新的基于回调的机制来订阅消息。
 
 ```python
-rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+def callback(data):
+    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
 ```
 这里的data.data = String.data， callback(data)中的data是接收到的String对象。
+
+String消息的定义为：`string data` ，data.data中第一个data为ROS String对象，第二个data为ROS String对象的一个方法，并且名字要与`string data`中的data保持一致，用来获取msg数据。
 
 ```python
 rospy.init_node('listener', anonymous=True)
