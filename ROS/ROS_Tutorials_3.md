@@ -72,18 +72,61 @@ def handle_add_two_ints(req):
     #作用就是将req.a + req.b的结果重新转换为AddTwoIntsResponse实例，也就是AddTwoInts.srv中定义的Response类型(---下半部分)，即int64 sum。AddTwoInt.srv文件在被build时，会在动在后面加Response，也就是 --.srv >> --Response()，所以这里才能用类AddTwoIntsResponse进行实例化。
 
 def add_two_ints_server():
+    #使用init_node（）声明节点
     rospy.init_node('add_two_ints_server')
-    #初始化服务器节点的名字
+    # 声明服务
+    # 使用AddTwoInts服务类型声明一个名为add_two_ints的新服务。 所有请求都传递给handle_add_two_ints函数。 
+    # handle_add_two_ints使用AddTwoIntsRequest实例调用，并返回AddTwoIntsResponse的实例。
     s = rospy.Service('add_two_ints', AddTwoInts, handle_add_two_ints)
     #service = rospy.Service('service_name', serviceClassName, handler)
     #service_name 为服务名
     #serviceClassName 为定义对应的 服务.srv 文件名
     #handler 为处理函数，处理函数的传入参数为服务的请求，请求的数据即为在AddTwoInts.srv中定义的 int64 a 与 int64 b,参数a和b将传入handle_add_two_ints形参req
     print "Ready to add two ints."
+    #rospy.spin（）使代码不会退出，直到服务被关闭
     rospy.spin()
 
 if __name__ == "__main__":
     add_two_ints_server()
 ```
 
+## Writing the Client Node
 
+创建客户端：
+```shell
+$ roscd beginner_tutorials/scripts
+$ touch add_two_ints_client.py
+$ chmod +x add_two_ints_client.py
+```
+
+add_two_ints_client.py 内容：
+
+```python
+#!/usr/bin/env python
+
+import sys
+import rospy
+from beginner_tutorials.srv import *
+
+def add_two_ints_client(x, y):
+    rospy.wait_for_service('add_two_ints')
+    try:
+        add_two_ints = rospy.ServiceProxy('add_two_ints', AddTwoInts)
+        resp1 = add_two_ints(x, y)
+        return resp1.sum
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
+
+def usage():
+    return "%s [x y]"%sys.argv[0]
+
+if __name__ == "__main__":
+    if len(sys.argv) == 3:
+        x = int(sys.argv[1])
+        y = int(sys.argv[2])
+    else:
+        print usage()
+        sys.exit(1)
+    print "Requesting %s+%s"%(x, y)
+    print "%s + %s = %s"%(x, y, add_two_ints_client(x, y))
+```
