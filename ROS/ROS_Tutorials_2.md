@@ -296,4 +296,17 @@ rospy.init_node('talker', anonymous=True)
 
 > ROS发布可以是同步的也可以是异步的：同步发布意味着发布者将尝试发布到话题，但如果该话题由其他发布者发布，则可能会被阻止。 在这种情况下，第二个发布者被阻止，直到第一个发布者将所有消息序列化到缓冲区，并且缓冲区已将消息写入每个主题的订阅者。 rospy.Publisher默认使用同步发布，如果未使用queue_size参数或将其设置为None。异步发布意味着发布者可以将消息存储在队列中，直到可以发送消息。 如果发布的消息数超过队列大小，则删除最旧的消息。 可以使用queue_size参数设置队列大小。
 
+```python
+rate = rospy.Rate(10) # 10hz
+```
+此行创建Rate类的实例化对象rate。 借助对象rate的方法sleep（）可以提供需要的速率循环。参数为10，即每秒循环10次。
+
+```python
+while not rospy.is_shutdown():
+        hello_str = "hello world %s" % rospy.get_time()
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
+```
+
 
