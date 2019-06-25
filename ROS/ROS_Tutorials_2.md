@@ -391,3 +391,20 @@ rospy.spin（）只是让保持运行节点，直到节点被关闭。 与roscpp
 
 ## 测试消息发布器和订阅器
 
+此处因为只使用了默认的msg和python API,所以catkin_make 不是必须的。
+但是 需要`source .zshrc`
+```shell
+$ source .zshrc
+```
+
+```shell
+# 新终端
+$ roscore
+
+# 新终端
+$ rosrun beginner_tutorials talker.py
+
+# 新终端
+$ rosrun beginner_tutorials listener.py
+```
+
