@@ -1,109 +1,71 @@
-# 使用自己创建的消息msg Num.msg
+# 简单的Service和Client
 
-Num.msg：
+## Writing a Service Node
+
+AddTwoInts.srv：
 ```
-int64 num
+int64 a
+int64 b
+---
+int64 sum
 ```
 
-## 创建Node 用来发布话题
-```shell
+创建服务（“add_two_ints_server”）节点，该节点将接收两个整数并返回总和。
+
+```
 $ roscd beginner_tutorials/scripts
-$ touch talkernum.py
-$ chmod +x talkernum.py
+$ touch add_two_ints_server.py
+$ chmod +x add_two_ints_server.py
 ```
 
-talkernum.py 内容：
+add_two_ints_server.py文件:
 ```python
-#!/usr/bin/env python
+from beginner_tutorials.srv import *
 import rospy
-from beginner_tutorials.msg import Num
 
-def talker():
-    pub = rospy.Publisher('chatternum', Num, queue_size=10)
-    rospy.init_node('talkernum', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    i = 0
-    while not rospy.is_shutdown():
-        i = i + 1
-        numi = i
-        rospy.loginfo(numi)
-        pub.publish(numi)
-        rate.sleep()
+def handle_add_two_ints(req):
 
-if __name__ == '__main__':
-    try:
-        talker()
-    except rospy.ROSInterruptException:
-        pass
-```
-> `from beginner_tutorials.msg import Num` 从beginner_tutorials包中的子包msg中导入Num模块。
+    print "Returning [%s + %s = %s]"%(req.a, req.b, (req.a + req.b))
+    return AddTwoIntsResponse(req.a + req.b)
 
-> `rospy.loginfo(numi)` `pub.publish(numi)` 也可以使用类的示例化调用。
 
-Num.msg的另一用用法：
-```python
-#!/usr/bin/env python
-import rospy
-from beginner_tutorials.msg import Num
-
-def talker():
-    pub = rospy.Publisher('chatternum', Num, queue_size=10)
-    rospy.init_node('talkernum', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    i = 0
-    while not rospy.is_shutdown():
-        i = i + 1
-        msg = Num()
-        msg.num = i
-        rospy.loginfo(msg)
-        pub.publish(msg)
-        rate.sleep()
-
-if __name__ == '__main__':
-    try:
-        talker()
-    except rospy.ROSInterruptException:
-        pass
-```
-
-## 创建Node 用来接受话题
-
-```shell
-$ roscd beginner_tutorials/scripts
-$ touch listenernum.py
-$ chmod +x listenernum.py
-```
-
-listenernum.py内容：
-
-```python
-#!/usr/bin/env python
-import rospy
-from beginner_tutorials.msg import Num
-
-def callback(msg):
-    rospy.loginfo(rospy.get_caller_id() + "I heard %d", msg.num)
-    
-def listener():
-    rospy.init_node('listenernum', anonymous=True)
-    rospy.Subscriber("chatternum", Num, callback)
-    # spin() simply keeps python from exiting until this node is stopped
+def add_two_ints_server():
+    rospy.init_node('add_two_ints_server')
+    s = rospy.Service('add_two_ints', AddTwoInts, handle_add_two_ints)
+    print "Ready to add two ints."
     rospy.spin()
 
-if __name__ == '__main__':
-    listener()
+if __name__ == "__main__":
+    add_two_ints_server()
 ```
+代码解析：
+```python
+from beginner_tutorials.srv import *
+#自动检索pythonpath中的所有python包，
+#此处即PYTHONPATH=/home/likun/catkin_ws/devel/lib/python2.7/dist-packages
+#beginner_tutorials.srv包 中包含_AddTwoInts.py文件，是由AddTwoInts.srv文件build而来，里面定义了服务AddTwoInts的内容，AddTwoIntsResponse 即为其中定义的class
+import rospy
 
-## 测试消息发布器和订阅器
+def handle_add_two_ints(req):
+	# req 即为int64 a 和 int64 b
+    print "Returning [%s + %s = %s]"%(req.a, req.b, (req.a + req.b))
+    # 打印a b 与 a+b
+    return AddTwoIntsResponse(req.a + req.b)
+    #在AddTwoInts.srv被编译后，生成的.py文件中，AddTwoIntsResponse是作为一个class存在的，
+    #作用就是将req.a + req.b的结果重新转换为AddTwoIntsResponse实例，也就是AddTwoInts.srv中定义的Response类型(---下半部分)，即int64 sum。AddTwoInt.srv文件在被build时，会在动在后面加Response，也就是 --.srv >> --Response()，所以这里才能用类AddTwoIntsResponse进行实例化。
 
-```shell
-# 新终端
-$ roscore
+def add_two_ints_server():
+    rospy.init_node('add_two_ints_server')
+    #初始化服务器节点的名字
+    s = rospy.Service('add_two_ints', AddTwoInts, handle_add_two_ints)
+    #service = rospy.Service('service_name', serviceClassName, handler)
+    #service_name 为服务名
+    #serviceClassName 为定义对应的 服务.srv 文件名
+    #handler 为处理函数，处理函数的传入参数为服务的请求，请求的数据即为在AddTwoInts.srv中定义的 int64 a 与 int64 b,参数a和b将传入handle_add_two_ints形参req
+    print "Ready to add two ints."
+    rospy.spin()
 
-# 新终端
-$ rosrun beginner_tutorials talkernum.py
+if __name__ == "__main__":
+    add_two_ints_server()
 
-# 新终端
-$ rosrun beginner_tutorials listenernum.py
 ```
-
