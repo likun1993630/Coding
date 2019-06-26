@@ -339,6 +339,44 @@ if __name__ == '__main__':
 代码解释：
 
 消息类型：
+```
+$ rosmsg show sensor_msgs/JointState
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+string[] name
+float64[] position
+float64[] velocity
+float64[] effort
+```
+```
+$ rostopic echo /joint_states       
+header: 
+  seq: 794
+  stamp: 
+    secs: 8191
+    nsecs: 286000000
+  frame_id: ''
+name: [joint_1, joint_2]
+position: [0.0, 0.0] # joint_1和joint_2 的角度
+velocity: []
+effort: []
+```
+```
+$ rosmsg show sensor_msgs/Image       
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+uint32 height
+uint32 width
+string encoding
+uint8 is_bigendian
+uint32 step
+uint8[] data
+```
+
 
 ```python
 #!/usr/bin/env python
