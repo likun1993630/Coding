@@ -405,7 +405,7 @@ from simple_arm.srv import *
 ```
 - 导入了Image消息类型，以便可以使用摄像机数据。
 
-```
+```python
 class LookAway(object):
     def __init__(self):
         rospy.init_node('look_away')
