@@ -337,6 +337,9 @@ if __name__ == '__main__':
         pass
 ```
 代码解释：
+
+消息类型：
+
 ```python
 #!/usr/bin/env python
 
@@ -365,7 +368,54 @@ class LookAway(object):
         rospy.spin()
 ```
 - LookAway Class and __init__ method
-- 
+- 我们为此节点定义一个类，以更好地跟踪机器人手臂的当前运动状态和位置历史。 就像之前的节点定义一样，使用ropsy.init_node初始化节点，并且在方法结束时使用rospy.spin（）来阻塞，直到节点收到关闭请求。
+- 第一个订阅者self.sub1订阅了/ simple_arm / joint_states主题。 编写节点仅在手臂不移动时检查摄像机，并且通过订阅/ simple_arm / joint_states，可以跟踪手臂位置的变化。 此主题的消息类型是JointState，并且对于每条消息，消息数据都将传递给joint_states_callback函数。
+- 第二个订阅者self.sub2订阅了/ rgb_camera / image_raw主题。 这里的消息类型是Image，并且对于每条消息，都会调用look_away_callback函数。
+- ServiceProxy是rospy如何通过节点调用服务。 这里的ServiceProxy是使用您希望调用的服务名称以及服务类定义创建的：在本例中为/ arm_mover / safe_move和GoToPosition。 对服务的实际调用将在下面的look_away_callback方法中进行。
+
+```python
+    def uniform_image(self, image):
+        return all(value == image[0] for value in image)
+
+    def coord_equal(self, coord_1, coord_2):
+        if coord_1 is None or coord_2 is None:
+            return False
+        tolerance = .0005
+        result = abs(coord_1[0] - coord_2[0]) <= abs(tolerance)
+        result = result and abs(coord_1[1] - coord_2[1]) <= abs(tolerance)
+        return result
+```
+- The helper methods
+- uniform_image方法将图像作为输入，并检查图像中的所有颜色值是否与第一个像素的值相同。 这基本上检查图像中的所有颜色值是否相同。（比如当摄像头指向仿真环境的天空时，像素点都是灰色的，那么就符合后面的图像与第一帧相同，如果移动到了指向墙壁的方向，就不是全灰，则不满足相等的条件。）
+- 如果坐标coord_1和coord_2在允许误差范围内具有相等分量，则coord_equal方法返回True。
+
+```python
+    def joint_states_callback(self, data):
+        if self.coord_equal(data.position, self.last_position):
+            self.arm_moving = False
+        else:
+            self.last_position = data.position
+            self.arm_moving = True
+
+    def look_away_callback(self, data):
+        if not self.arm_moving and self.uniform_image(data.data):
+            try:
+                rospy.wait_for_service('/arm_mover/safe_move')
+                msg = GoToPositionRequest()
+                msg.joint_1 = 1.57
+                msg.joint_2 = 1.57
+                response = self.safe_move(msg)
+
+                rospy.logwarn("Camera detecting uniform image. \
+                               Elapsed time to look at something nicer:\n%s", 
+                               response)
+
+            except rospy.ServiceException, e:
+                rospy.logwarn("Service call failed: %s", e)
+```
+- The callback functions
+- 当self.sub1在/ simple_arm / joint_states主题上收到消息时，消息将传递给变量数据中的joint_states_callback。 joint_states_callback使用coord_equal辅助方法来检查数据中提供的当前联合状态是否与先前的联合状态相同，这些状态存储在self.last_position中。 如果当前和先前的关节状态相同（达到指定的公差），则手臂已停止移动，因此self.arm_moving标志设置为False。 如果当前和先前的关节状态不同，则手臂仍在移动。 在这种情况下，该方法使用当前位置数据更新self.last_position，并将self.arm_moving设置为True。
+- look_away_callback正在从/ rgb_camera / image_raw主题接收数据。 此方法的第一行验证手臂是否移动，并检查图像是否均匀。 如果手臂没有移动且图像是均匀的，则使用safe_move服务创建并发送GoToPositionRequest（）消息，将两个关节角度移动到1.57。 该方法还会记录一条消息，警告您相机已检测到统一的图像以及返回更好的图像所用的时间。
 
 
 再次更改robot_spawn.launch 文件：
