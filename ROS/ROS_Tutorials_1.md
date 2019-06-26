@@ -652,6 +652,14 @@ geometry_msgs/Vector3 angular
   float64 y
   float64 z
 ```
+> 注意`geometry_msgs/Vector3` 也是一种内置的消息类型：
+```shell
+$ rosmsg show geometry_msgs/Vector3
+
+float64 x
+float64 y
+float64 z
+```
 
 ### 使用 rostopic pub
 rostopic pub可以把数据发布到当前某个正在广播的话题上。 
