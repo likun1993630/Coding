@@ -53,5 +53,22 @@ clamp_at_boundaries（）负责强制使每个关节始终处于v最小和最大
 
 每次调用clamp_at_boundaries（）时，都会从参数服务器检索最小和最大关节角度。 “〜”是私有名称空间限定符，表示我们希望得到的参数在此节点的私有名称空间/ arm_mover /中（例如~min_joint_1_angle解析为/ arm_mover / min_joint_1_angle）。 在rospy.get_param（）无法从param服务器获取参数的情况下，第二个参数是要返回的默认值。rospy.get_param（）调用时，如果参数服务器没有定义相应的参数，那么给定默认值就会以此默认值在参数服务器初始化这个参数。
 
+[命名空间Doc](http://wiki.ros.org/Names#Resolving)
+
+```python
+    if not min_j1 <= requested_j1 <= max_j1:
+        clamped_j1 = min(max(requested_j1, min_j1), max_j1)
+        rospy.logwarn('j1 is out of bounds, valid range (%s,%s), clamping to: %s',
+                      min_j1, max_j1, clamped_j1)
+
+    if not min_j2 <= requested_j2 <= max_j2:
+        clamped_j2 = min(max(requested_j2, min_j2), max_j2)
+        rospy.logwarn('j2 is out of bounds, valid range (%s,%s), clamping to: %s',
+                      min_j2, max_j2, clamped_j2)
+
+    return clamped_j1, clamped_j2
+```
+
+rospy.logwarn
 
 
