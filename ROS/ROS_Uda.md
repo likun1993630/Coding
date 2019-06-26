@@ -262,5 +262,119 @@ $ rosparam set /arm_mover/max_joint_2_angle 1.57
 $ rosservice call /arm_mover/safe_move "joint_1: 1.57
 joint_2: 1.57"
 # 最后就可以看到正确的相机视角了
+```
+
+## Look Away
+编写一个名为look_away的节点。 look_away节点将订阅/ rgb_camera / image_raw主题，该主题具有安装在机器人手臂末端的摄像头的图像数据。 每当相机指向不感兴趣的图像时 - 在这种情况下，图像具有均匀的颜色 - 回调功能会将手臂移动到更有趣的位置。 代码中还有一些额外的部分可以确保顺利执行此过程。
+
+创建 look_away脚本
+```shell
+$ cd ~/catkin_ws
+$ cd src/simple_arm/scripts
+$ touch look_away
+$ chmod u+x look_away
+```
+look_away.py
+```python
+#!/usr/bin/env python
+
+import math
+import rospy
+from sensor_msgs.msg import Image, JointState
+from simple_arm.srv import *
+
+class LookAway(object):
+    def __init__(self):
+        rospy.init_node('look_away')
+        self.last_position = None
+        self.arm_moving = False
+        rospy.wait_for_message('/simple_arm/joint_states', JointState)
+        rospy.wait_for_message('/rgb_camera/image_raw', Image)
+
+        self.sub1 = rospy.Subscriber('/simple_arm/joint_states',JointState, self.joint_states_callback)
+        self.sub2 = rospy.Subscriber("rgb_camera/image_raw", Image,self.look_away_callback)
+        self.safe_move = rospy.ServiceProxy('/arm_mover/safe_move',GoToPosition)
+        rospy.spin()
+
+    def uniform_image(self, image):
+        return all(value == image[0] for value in image)
+
+    def coord_equal(self, coord_1, coord_2):
+        if coord_1 is None or coord_2 is None:
+            return False
+        tolerance = .0005
+        result = abs(coord_1[0] - coord_2[0]) <= abs(tolerance)
+        result = result and abs(coord_1[1] - coord_2[1]) <= abs(tolerance)
+        return result
+
+    def joint_states_callback(self, data):
+        if self.coord_equal(data.position, self.last_position):
+            self.arm_moving = False
+        else:
+            self.last_position = data.position
+            self.arm_moving = True
+
+    def look_away_callback(self, data):
+        if not self.arm_moving and self.uniform_image(data.data):
+            try:
+                rospy.wait_for_service('/arm_mover/safe_move')
+                msg = GoToPositionRequest()
+                msg.joint_1 = 1.57
+                msg.joint_2 = 1.57
+                response = self.safe_move(msg)
+
+                rospy.logwarn("Camera detecting uniform image. \
+                               Elapsed time to look at something nicer:\n%s", 
+                               response)
+
+            except rospy.ServiceException, e:
+                rospy.logwarn("Service call failed: %s", e)
+
+if __name__ == '__main__':
+    try: 
+        LookAway()
+    except rospy.ROSInterruptException:
+        pass
+```
+代码解释：
+```python
+#!/usr/bin/env python
+
+import math
+import rospy
+from sensor_msgs.msg import Image, JointState
+from simple_arm.srv import *
+```
+- 导入了Image消息类型，以便可以使用摄像机数据。
+
+```
+class LookAway(object):
+    def __init__(self):
+        rospy.init_node('look_away')
+
+        self.sub1 = rospy.Subscriber('/simple_arm/joint_states', 
+                                     JointState, self.joint_states_callback)
+        self.sub2 = rospy.Subscriber("rgb_camera/image_raw", 
+                                     Image, self.look_away_callback)
+        self.safe_move = rospy.ServiceProxy('/arm_mover/safe_move', 
+                                     GoToPosition)
+
+        self.last_position = None
+        self.arm_moving = False
+
+        rospy.spin()
+```
+- LookAway Class and __init__ method
+- 
 
 
+再次更改robot_spawn.launch 文件：
+```shell
+$ cd ~/catkin_ws/src/simple_arm/launch
+$ vim robot_spawn.launch
+```
+添加以下内容：
+```
+<!-- The look away node -->
+  <node name="look_away" type="look_away" pkg="simple_arm"/>
+```
