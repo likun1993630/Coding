@@ -222,6 +222,7 @@ if __name__ == '__main__':
 ```
 
 ## Arm Mover: Launch and Interact
+测试服务
 
 编辑之前的launch.xml 文件：
 
@@ -238,8 +239,28 @@ $ vim launch.xml
       min_joint_1_angle: 0
       max_joint_1_angle: 1.57
       min_joint_2_angle: 0
-      max_joint_2_angle: 1.0
+      max_joint_2_angle: 1.0 #为了方便后面测试rosparam set命令
     </rosparam>
   </node>
 ```
+运行：
+```
+# 启动所有相关节点
+$ roslaunch simple_arm robot_spawn.launch
+
+# 初步查看是否正确
+$ rosnode list
+$ rosservice list
+
+# 查看摄像机图像流，可以使用命令rqt_image_view
+$ rqt_image_view /rgb_camera/image_raw
+
+# 由于在launch文件里初始的值为1，而最终需要1.57
+$ rosparam set /arm_mover/max_joint_2_angle 1.57
+
+# 命令行调用服务：
+$ rosservice call /arm_mover/safe_move "joint_1: 1.57
+joint_2: 1.57"
+# 最后就可以看到正确的相机视角了
+
 
