@@ -376,7 +376,24 @@ uint8 is_bigendian
 uint32 step
 uint8[] data
 ```
-
+```
+# 注意文件很大，需要尽快停止
+$ rostopic echo /rgb_camera/image_raw > a.txt
+$ cat a.txt | head -n 11
+header: 
+  seq: 210103
+  stamp: 
+    secs: 8434
+    nsecs: 528000000
+  frame_id: "camera_link"
+height: 480
+width: 640
+encoding: "rgb8"
+is_bigendian: 0
+step: 1920
+data：[27, 28, 28, 28, 27, 27, 27.......]
+#data 是图片的rgb二进制模式
+```
 
 ```python
 #!/usr/bin/env python
