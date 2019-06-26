@@ -104,7 +104,7 @@ $ chmod u+x param_talker.launch
   
     <node pkg="rospy_tutorials" name="param_talker" type="param_talker.py" output="screen">
     
-      <!-- set /foo/utterance/param_talker/topic_name -->
+      <!-- set /foo/param_talker/topic_name -->
       <param name="topic_name" value="chatter" />
       
     </node>
