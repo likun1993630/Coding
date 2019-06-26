@@ -413,6 +413,26 @@ $ rosrun beginner_tutorials listener.py
 
 ![](./res/turtlesim6.png)
 
+## 给消息发布器和订阅器制作launch文件
+在beginner_tutorials包下新建launch文件：
+```shell
+$ roscd beginner_tutorials
+$ mkdir launch
+$ cd launch
+$ touch talker-and-listener.launch
+$ chmod u+x talker-and-listener.launch
+```
+输入内容：
+```
+<launch>
+    <node name="talker" pkg="beginner_tutorials" type="talker.py" />
+    <node name="listener" pkg="beginner_tutorials" type="listener.py" />
+</launch>
+```
+运行launch：
+```shell
+$ roslaunch beginner_tutorials talker-and-listener.launch
+```
 
 # 使用自己创建的消息msg Num.msg
 
