@@ -216,8 +216,7 @@ PARAMETERS
  * /rosversion: 1.11.16
 
 NODES
-  /foo/
-    param_talker (beginner_tutorials/param_talker.py)
+  /foo/param_talker (beginner_tutorials/param_talker.py)
 
 ROS_MASTER_URI=http://192.168.0.88:11311
 
@@ -235,3 +234,7 @@ process[foo/param_talker-1]: started with pid [32684]
 [INFO] [WallTime: 1478587334.922108] Hello World
 [INFO] [WallTime: 1478587335.925285] Hello World
 ```
+- 总结：
+    - 当在创建节点的脚本.py文件内定义变量时，如`rospy.set_param('to_delete', 'baz')`，默认与该节点同级。
+    - 当在创建节点的脚本.py文件内定义变量时，如`rospy.set_param('~private_bar', 3)`，表示属于该节点命名空间下的变量。
+    - launch 文件内定义变量根据层级区分命名空间。
