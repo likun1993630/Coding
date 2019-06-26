@@ -360,6 +360,8 @@ rospy
 </package>
 ```
 
+> 注意：当创建包时如果不填加任何依赖项，则package.xml内只会自动生成一项buildtool_depend `<buildtool_depend>catkin</buildtool_depend>`
+
 # 编译ROS程序包
 ## 使用 catkin_make
 
