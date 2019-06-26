@@ -15,6 +15,8 @@ https://www.ncnynl.com/beginning.html
 CKZZros-python教程：
 https://www.ncnynl.com/category/ros-python/
 
+Uda推荐的书籍
+https://cse.sc.edu/~jokane/agitr/
 
 # 何时需要catkin_make 与 source .zshrc
 - 当在某一个ROS包中创建了一个python节点时，不需要make，如果想使用tab命令补全，需要source .zshrc
