@@ -483,3 +483,22 @@ $ vim robot_spawn.launch
 <!-- The look away node -->
   <node name="look_away" type="look_away" pkg="simple_arm"/>
 ```
+
+## 测试
+```shell
+# 启动包括服务和服务请求的节点
+$ roslaunch simple_arm robot_spawn.launch
+
+#新终端
+#打开摄像头的图像
+$ rqt_image_view /rgb_camera/image_raw
+
+# 将摄像头移动到指向正天空的位置
+# 这个过程观察机械壁的移动
+$ rosservice call /arm_mover/safe_move "joint_1: 0
+joint_2: 0"
+```
+
+总结：
+这个Look Away 实现的功能如下：
+终端调用自定义的服务使摄像头指向天空，在此过程中，当摄像头向上抬的过程中，摄像头采集的图片不满足与初始时刻相同的条件（初始时刻时朝上的全灰图片），并且机械臂一直在动，然后机械臂运动到一定的位置，这时摄像头采集的图片是全灰色的，但是机械臂还在运动，机械臂继续运动，当摄像头即指向正上方时，机械臂停止运动，并且满足图像为全灰，满足与初始时刻相同的条件，此时就满足了通过lookaway节点请求服务的条件，然后机械臂会从00（朝正上）又移动到1.57，1.57。
