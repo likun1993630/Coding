@@ -21,3 +21,25 @@ https://cse.sc.edu/~jokane/agitr/
 # 何时需要catkin_make 与 source .zshrc
 - 当在某一个ROS包中创建了一个python节点时，不需要make，如果想使用tab命令补全，需要source .zshrc
 - 当在某一个ROS包中创建了一个自定义msg之后，需要make生成该消息的源代码。
+
+# 运用/spawn 服务生成一个新小海龟
+```
+$ rosservice type /spawn 
+
+turtlesim/Spawn
+
+$ rosservice info /spawn 
+
+Node: /turtlesim
+URI: rosrpc://Ubuntu16:60567
+Type: turtlesim/Spawn
+Args: x y theta name
+
+
+$ rosservice call /spawn "x: 5.0
+y: 5.0
+theta: 0.0
+name: 'turtle2'"
+name: "turtle2"
+
+```
