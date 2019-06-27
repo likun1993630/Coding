@@ -23,7 +23,7 @@ https://cse.sc.edu/~jokane/agitr/
 - 当在某一个ROS包中创建了一个自定义msg之后，需要make生成该消息的源代码。
 
 # 运用/spawn 服务生成一个新小海龟
-```
+```shell
 $ rosservice type /spawn 
 
 turtlesim/Spawn
