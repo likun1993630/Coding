@@ -19,9 +19,10 @@ CKZZros-python教程：
 https://www.ncnynl.com/category/ros-python/
 
 中科院与Xbot视频教程+gitbook书籍（5星推荐）
-https://www.bilibili.com/video/av24585414
-https://legacy.gitbook.com/book/sychaichangkun/ros-tutorial-icourse163/details
-
+- https://www.bilibili.com/video/av24585414
+- https://legacy.gitbook.com/book/sychaichangkun/ros-tutorial-icourse163/details
+- https://github.com/sychaichangkun/ROS-Academy-for-Beginners
+- https://www.icourse163.org/learn/ISCAS-1002580008?tid=1002759011#/learn/announce
 
 
 
