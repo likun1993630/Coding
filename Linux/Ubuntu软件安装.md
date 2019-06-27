@@ -37,3 +37,12 @@ $ sudo apt-get install python3-pyqt5 -y;sudo apt-get install python3-xlib -y;sud
   ```
   然后使用蓝牙菜单设备进行连接。
   
+
+## Haroopad
+官网：
+http://pad.haroopress.com/user.html
+
+$ wget https://bitbucket.org/rhiokim/haroopad-download/downloads/haroopad-v0.13.1-x64.deb
+$ sudo apt-get install gdebi
+$ sudo gdebi haroopad-v0.13.1-x64.deb
+
