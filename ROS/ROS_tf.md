@@ -398,7 +398,7 @@ $ roscore
 $ rosrun tf_demo py_tf_broadcaster.py
 $ rosrun tf_demo py_tf_listerner.py
 ```
-![](/home/likun/ROS/res/tf_broadcaster_rqt.png) 
+![](./res/tf_broadcaster_rqt.png) 
 
 ```shell
 $ rostopic info /tf 
