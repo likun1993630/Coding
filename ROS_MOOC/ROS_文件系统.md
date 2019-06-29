@@ -8,7 +8,7 @@
 ## Catkin编译系统
 对于源代码包，我们只有编译才能在系统上运行。而Linux下的编译器有gcc、g++，随着源文件的增加，直接用gcc/g++命令的方式显得效率低下，人们开始用Makefile来进行编译。然而随着工程体量的增大，Makefile也不能满足需求，于是便出现了Cmake工具。CMake是对make工具的生成器，是更高层的工具，它简化了编译构建过程，能够管理大型项目，具有良好的扩展性。对于ROS这样大体量的平台来说，就采用的是CMake，并且ROS对CMake进行了扩展，于是便有了Catkin编译系统。
 
-![](/home/likun/ROS/res/catkin.jpg) 
+![](./res/catkin.jpg) 
 
 目前的ROS同时支持着rosbuild和Catkin两种编译系统，但ROS的核心软件包也已经全部转换为Catkin。rosbuild已经被逐步淘汰，所以建议初学者直接上手Catkin。
 
