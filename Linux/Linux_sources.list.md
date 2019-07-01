@@ -47,7 +47,7 @@ $ sudo cp /etc/apt/sources.list /etc/apt/sources.list.save1
 $ sudo subl /etc/apt/sources.list
 ```
 - 粘贴源并保存(此处以阿里源为例)
-```shell
+```shell 
 deb http://mirrors.aliyun.com/ubuntu/ trusty main restricted universe multiverse 
 deb http://mirrors.aliyun.com/ubuntu/ trusty-security main restricted universe multiverse 
 deb http://mirrors.aliyun.com/ubuntu/ trusty-updates main restricted universe multiverse 
@@ -62,5 +62,29 @@ deb-src http://mirrors.aliyun.com/ubuntu/ trusty-backports main restricted unive
 - 刷新列表
 ```shell
 $ sudo apt-get update
+```
+
+## sources.list.d/ 源
+etc/apt/sources.list.d/目录下的文件是通过sudo add-apt-repository命令安装的第三方源, 该文件夹下的文件是第三方软件的源，可以分别存放不同的第三源地址，只需“扩展名”为list即可。
+> `sudo apt-get update` 会同时更新sources.list.d/目录下的软件源，也就是第三方软件源。
+
+### 说明
+- 第三方软件源指的是某个软件的下载源，不是官方源或其镜像源（官方源或其镜像源不需要密钥的），比如docker的一个源是https://download.docker.com/linux/
+
+- 这里的密钥是用来和源服务器通信的，它们可能同步到了ubuntu第三方软件源的密钥服务器keyserver.ubuntu.com（统一存放第三方软件源密钥的服务器）上，提供用户使用【公钥和私钥都叫做密钥】
+
+- /etc/apt/source.list.d文件夹存放着各个第三方源，里面可以有多个.list文件；source.list是存放官方源或其镜像源的文件
+
+### 安装第三方源软件一般步骤：
+1. 添加该软件源的公钥，有两种方式：
+
+通过从keyserver.ubuntu.com上根据Fingerprint(指纹、密钥特征)下载导入公钥，这种方式要求你必须知道该软件源的uid(密钥名+email)的一部分才能搜索到
+```shell
+$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 这里是Fingerprint的值
+```
+
+通过下载公钥导入，一般第三方源的网址都有提供gpg文件的下载，或者通过keyserver.ubuntu.com上也可以得到:
+```shell
+$ sudo apt-key add 下载的公钥文件存放路径
 ```
 
