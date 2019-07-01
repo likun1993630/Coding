@@ -12,10 +12,10 @@
 - CKZZROS笔记
     - [使用参数](./ROS/ROS_CKZZ_使用参数.md)
 - ROS机器人操作系统入门-中国大学MOOC
-    - [环境准备](./ROS/ROS_prepare.md)
-    - [文件系统](./ROS/ROS_文件系统.md)
-    - [通讯构架](./ROS/ROS_通讯构架.md)
-    - [tf](./ROS/ROS_tf.md)
+    - [环境准备](./ROS_MOOC/ROS_prepare.md)
+    - [文件系统](./ROS_MOOC/ROS_文件系统.md)
+    - [通讯构架](./ROS_MOOC/ROS_通讯构架.md)
+    - [tf](./ROS_MOOC/ROS_tf.md)
 - ROS实践
 
 
