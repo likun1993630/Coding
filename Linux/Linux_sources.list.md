@@ -88,3 +88,21 @@ $ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 这里�
 $ sudo apt-key add 下载的公钥文件存放路径
 ```
 
+
+# 待学习：
+
+https://my.oschina.net/u/3628490/blog/1860168/
+
+https://baike.baidu.com/item/add-apt-repository/731681
+
+https://itsfoss.com/remove-install-software-ubuntu/
+
+https://linux.cn/article-10456-1.html
+
+https://imcn.me/ppa
+
+https://www.cnblogs.com/EasonJim/p/7119331.html
+
+https://zhidao.baidu.com/question/243134320363485284.html
+
+https://blog.csdn.net/u013270341/article/details/84637219
