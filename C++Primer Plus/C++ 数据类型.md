@@ -170,4 +170,43 @@ Lucky Sue!
 ```
 典型的整型溢出行为：
 
+![])(./res/3.intoverflow.png)
 
+## 整型字面值
+整型字面值（常量）是显式的书写的常量，如212。 C++中可以在代码中直接书写8进制，10进制和16进制的常量，如042，42 和 0x42.
+
+```cpp
+// hexoct1.cpp -- shows hex and octal literals
+#include <iostream>
+int main()
+{
+    using namespace std;
+    int chest = 42;     // decimal integer literal
+    int waist = 0x42;   // hexadecimal integer literal
+    int inseam = 042;   // octal integer literal
+
+    cout << "Monsieur cuts a striking figure!\n";
+    cout << "chest = " << chest << " (42 in decimal)\n";
+    cout << "waist = " << waist << " (0x42 in hex)\n";
+    cout << "inseam = " << inseam << " (042 in octal)\n";
+	// cin.get();
+    return 0; 
+}
+```
+结果
+```
+Monsieur cuts a striking figure!
+chest = 42 (42 in decimal)
+waist = 66 (0x42 in hex)
+inseam = 34 (042 in octal)
+```
+> 默认情况下cout以10进制格式显示整数。
+
+> cout 可使用控制符 dec,hex和oct格式显示整数
+
+### C++ 如何确定常量的类型
+
+- 整型变量通过声明告知编译器
+- 整型常量如`cout << "a = " << 12 ;` 默认存储为int类型，如果太长则使用long或者long long
+	- 可以通过后缀限定类型，如 `22022L ` 为long常量
+	
