@@ -88,8 +88,10 @@ Bits per byte = 8
 ```
 > climits 文件中包含下面类似的语句：
 ```cpp
-# define INT_MAX 32676
+# define INT_MAX 32767
 ```
+在C++编译过程中，首先将源代码传递给预处理器。在这里，#define 和 # include一样，也是一个预处理编译指令。该编译指令告诉预处理器：在程序中查找INT_MAX，并将所有的INT_MAX都替换为32767。因此#define编译指令的工作方式与文本编辑器的全局搜索并替换命令相似。修改后的程序将在完成这些替换后被编译。也可以使用#define 来定义自己的符号常量。
+> #define 编译指令是C语言遗留下来的，C++中还有更好的创建符号常量的方法（const）。
 
 ### 初始化
 初始化将赋值和声明合并在一起，如：`int n_int = INT_MAX;`
@@ -123,4 +125,49 @@ unsigned long long lang_lang;
 
 ### 整型溢出
 
-65页
+```cpp
+// exceed.cpp -- exceeding some integer limits
+#include <iostream>
+#define ZERO 0      // makes ZERO symbol for 0 value
+#include <climits>  // defines INT_MAX as largest int value
+int main()
+{
+    using namespace std;
+    short sam = SHRT_MAX;     // initialize a variable to max value
+    unsigned short sue = sam;// okay if variable sam already defined
+
+    cout << "Sam has " << sam << " dollars and Sue has " << sue;
+    cout << " dollars deposited." << endl
+         << "Add $1 to each account." << endl << "Now ";
+    sam = sam + 1;
+    sue = sue + 1; 
+    cout << "Sam has " << sam << " dollars and Sue has " << sue;
+    cout << " dollars deposited.\nPoor Sam!" << endl;
+    sam = ZERO;
+    sue = ZERO;
+    cout << "Sam has " << sam << " dollars and Sue has " << sue;
+    cout << " dollars deposited." << endl;
+    cout << "Take $1 from each account." << endl << "Now ";
+    sam = sam - 1;
+    sue = sue - 1;
+    cout << "Sam has " << sam << " dollars and Sue has " << sue;
+    cout << " dollars deposited." << endl << "Lucky Sue!" << endl;
+	// cin.get();
+    return 0; 
+}
+```
+
+结果：
+```
+Sam has 32767 dollars and Sue has 32767 dollars deposited.
+Add $1 to each account.
+Now Sam has -32768 dollars and Sue has 32768 dollars deposited.
+Poor Sam!
+Sam has 0 dollars and Sue has 0 dollars deposited.
+Take $1 from each account.
+Now Sam has -1 dollars and Sue has 65535 dollars deposited.
+Lucky Sue!
+```
+典型的整型溢出行为：
+
+
