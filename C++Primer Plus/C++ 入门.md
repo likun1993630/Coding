@@ -74,5 +74,178 @@ int main()
 
 - C++中所有变量都必须声明
 - 赋值语句:复制语句将值给存储单元
-- 
+- cout 与printf()
+	- printf() 为c语言的打印函数
+	- cout能够自动识别类型，另外cout是可以拓展的，比如可以重新定义<< 运算符，使cout能够识别和显示所开发的新数据类型。
+	
+- cout与cin
+	cout与cin分别使istream 和 ostream类的实例，这两个类在iostream文件中定义的。
 
+## cin
+```cpp
+//uses and displays a variable
+#include <iostream>
+
+int main()
+{
+	using namespace std;
+
+	int carrots;
+	cout << "How many carrots do you have? " << endl;
+	cin >> carrots;
+	cout << "Here are two more. ";
+	carrots = carrots + 2;
+	cout << "Now I have " << carrots << " carrots." <<endl;
+
+	return 0;
+}
+```
+> 有IDE中需要在cin前后各添加一个cin.get()。
+- Cin 也是一个智能对象，能判断carrots的类型
+
+## 使用库函数
+```cpp
+// sqrt.cpp -- using the sqrt() function
+#include <iostream>
+#include <cmath> //or math.h
+
+int main()
+{
+	using namespace std;
+
+	double area;
+	cout << "Enter the area: ";
+	cin >> area;
+	double side;
+	side = sqrt(area);
+	cout << "That is the equivalent of a square " << side
+			<< " feet to the side. " << endl;
+	cout << "fascinating!" << endl;
+
+	return 0;
+}
+```
+- C++ 库函数存储在库文件中。如果使用需要include
+
+## 定义无返回值函数
+```cpp
+// curfunc.cpp -- defining your own function
+
+#include <iostream>
+void simon(int);
+
+int main()
+{
+	using namespace std;
+	simon(3);
+	cout << "Pich an integer: ";
+	int count;
+	cin >> count;
+	simon(count);
+	cout << "Done! " <<endl;
+
+	return 0;
+}
+
+void simon(int n)
+{
+	using namespace std;
+	cout << "Simon says touch your toes " << n << " times." << endl;
+}
+```
+- 函数格式：
+```
+type functionname(argumentlist)
+{
+	statements
+}
+```
+
+- 函数头：
+```
+void simon(int n)
+```
+> 开头void表明simon()没有返回值
+
+- C++ 不允许将函数定义嵌套在另一个函数定义中，每个函数都是独立的。
+
+![](./res/2.functionlevel.png)
+
+- 函数原型：声明函数的返回类型，说明函数接收的参数数量和类型
+
+### main函数返回值问题
+`int mai() `开头为`int`，`main（）`返回一个整数值，空括号表明没有参数， `return 0` 来提供返回值。
+
+`main（）`函数的返回值并不是返回给程序的其他部分，而是返回给操作系统，因为`main（）`函数被计算机操作系统调用，操作系统可以看作调用程序。
+操作系统调用程序并测试他们的返回值时(通常叫做退出值)，通常约定退出值为0意味着程序运行成功，非零意味着存在问题。
+
+## 定义有返回值的函数
+```cpp
+// convert.cpp -- converts stone to pounds
+
+#include <iostream>
+
+int stonetolb(int);
+
+int main()
+{
+	using namespace std;
+	int stone;
+	cout << "Enter the weight in stone: ";
+	cin >> stone;
+	int pounds = stonetolb(stone);
+	cout << stone << " stone = ";
+	cout << pounds << " pounds. " << endl;
+	
+	return 0;
+} 
+
+int stonetolb(int sts)
+{
+	return 14 * sts;
+}
+```
+
+可以使用如下形式调用有返回值函数：
+```cpp
+int aunt = stonetolb(20);
+int aunts = aunt + stonetolb(10);
+```
+
+## 在多函数程序中使用using编译命令
+将using namespace 放在两个函数之前，就可以使两个函数都能够访问命名空间std。
+
+```cpp
+// curfunc.cpp -- defining your own function
+
+#include <iostream>
+using namespace std; //affects all function definitions in this file
+void simon(int);
+
+int main()
+{
+	simon(3);
+	cout << "Pich an integer: ";
+	int count;
+	cin >> count;
+	simon(count);
+	cout << "Done! " <<endl;
+
+	return 0;
+}
+
+void simon(int n)
+{
+	cout << "Simon says touch your toes " << n << " times." << endl;
+}
+```
+
+使用命名空间的四种方式：
+- 直接使用全名如： `std::cout << "hello world";`
+- 使用 `using namespace std；`放在函数定义之前，让文件中的所有函数都能使用命名空间std中所有的元素
+- 使用 `using namespace std；`放在特定函数中，让该函数能够使用命名空间std中的所有元素
+- 使用：`using std::cout;` ` using std::endl;` 让函数能后使用指定元素如`cout` `endl`: `cout << "hello world";`
+
+## 补充
+
+C++程序的模块叫作函数
