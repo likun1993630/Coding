@@ -4,7 +4,8 @@
 // 第一个c++程序
 #include <iostream>
 
-int main(){
+int main()
+{
 	using namespace std;
 	cout << "hello world.";
 	cout << endl;
