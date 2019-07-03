@@ -103,4 +103,133 @@ char tlifs[4] {'h', 'i', 112, '\0'}; //允许
 > C++标准模板库（STL）提供了一种数组替代品--模板类vector； C++11 新增了模板类array。
 
 ## 字符串
+字符串时存储在内存的连续字节中的一系列字符。这意味着可以将字符串存储在char数组中，其中每一个字符都位于数组的元素中。
+
+C++处理字符串的方式有两种：
+- 来自C语言的，常被称为C-风格字符串
+- 基于string类库的方法
+
+C风格字符串具有一种特殊的性质，以空字符结尾，空字符被写作`\0`，其ASCii码为0，用来标记字符串的结尾。
+```cpp
+char dog[8] = {'b','e','a','u','x',' ','I','I'}; //不是字符串
+char cat[8] = {'f','a','t','e','s','s','a','\0'}; //是字符串
+```
+以上两个数组都是char数组，但只有第二个数组是字符串。
+> cout处理c风格字符串，以空字符为停止标志。 不是字符串的字符数组没有这个停止标志，所以不能将它作为字符串处理
+
+**更好的将字符数组初始化为字符串的方法：**
+```cpp
+char bird[11] = "Mr. Cheeps"; //手动指定字符数组长度，该长度包含最后的空字符
+char fish[] = "Bubbles"; //让编译器自动计算数组长度
+```
+> 用双引号括起来的字符隐式的包含结尾的空字符。
+
+> C++ 对字符串长度没有限制。
+
+> 推荐让编译器自动计算数组长度
+
+![](./res/4.stringcharcstyle.png)
+
+> 注意: 字符串常量(使用双引号)不能与字符常量(使用单引号)互换. 
+    - 字符常量`'S'`代表了字符串编码83 (ASCii码)
+    - 字符串常量`"S"`是两个字符`'S'``'\0'`组成字符串，并且`"S"`实际上表示的是字符串所在的内存地址。
+
+### 拼接字符串常量
+以下三种写法是等效的：
+```cpp
+cout << "Id give my right arm to be" "a great violinist.\n";
+cout << "Id give my right arm to be a great violinist.\n";
+cout << "Id give my right ar"
+"m to be a great violinist.\n";
+```
+### 在数组中使用字符串
+将字符串存储到数组中，最常用的方法：
+- 直接在代码中书写，即，将数组初始化为字符串常量
+- 将键盘或文件输入读入到数组中
+
+```cpp
+// strings.cpp -- storing strings in an array
+#include <iostream>
+#include <cstring>  // for the strlen() function
+int main()
+{
+    using namespace std;
+    const int Size = 15;
+    char name1[Size];               // empty array
+    char name2[Size] = "C++owboy";  // initialized array
+    cout << "Howdy! I'm " << name2;
+    cout << "! What's your name?\n";
+    cin >> name1;
+    cout << "Well, " << name1 << ", your name has ";
+    cout << strlen(name1) << " letters and is stored\n";
+    cout << "in an array of " << sizeof(name1) << " bytes.\n";
+    cout << "Your initial is " << name1[0] << ".\n";
+    name2[3] = '\0';                // set to null character
+    cout << "Here are the first 3 characters of my name: ";
+    cout << name2 << endl;
+    return 0;
+}
+```
+结果：
+```
+Howdy! I'm C++owboy! What's your name?
+kun
+Well, kun, your name has 3 letters and is stored
+in an array of 15 bytes.
+Your initial is k.
+Here are the first 3 characters of my name: C++
+```
+> strlen(）返回数组中的字符串长度，只计算可见字符
+
+> sizeof 返回整个数组长度
+
+### 通过cin输入字符串
+cin使用空白（空格，制表符和换行符）来确定字符串的结束位置，也就是说cin只能读入有一个单词。
+
+```cpp
+// instr1.cpp -- reading more than one string
+#include <iostream>
+int main()
+{
+    using namespace std;
+    const int ArSize = 20;
+    char name[ArSize];
+    char dessert[ArSize];
+
+    cout << "Enter your name:\n";
+    cin >> name;
+    cout << "Enter your favorite dessert:\n";
+    cin >> dessert;
+    cout << "I have some delicious " << dessert;
+    cout << " for you, " << name << ".\n";
+    return 0; 
+}
+
+```
+结果：
+```
+Enter your name:
+Kun Li
+Enter your favorite dessert:
+I have some delicious Li for you, Kun.
+```
+> 原本想将 "Kun Li" 给name，结果只有前面的Kun给了name，后面的Li给了dessert。原因第一个cin只读取了Kun给name，然后将Li留在输入列队中，然后Li紧接着被第二个cin接收。
+
+### 每次读取一行字符串输入：
+因为cin每次只能读取一个单词，不能满足读入如"Hallo  World"的需求。
+
+istream中的类提供了getlin() 和 get()，这个两个函数都读取一行输入，直到到达换行符。
+
+getline()丢弃换行符
+get()保留换行符到输入序列中
+
+> 两个函数详细用法参见书籍p78
+
+## string类简介
+C++98标准添加了string类，string类用起来比数组简单。
+
+要使用string类必须在程序中包含头文件string。string类位于命名空间std中，因此需要使用using编译指令或使用std::string。
+
+
+
 
