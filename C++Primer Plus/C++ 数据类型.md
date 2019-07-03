@@ -317,6 +317,75 @@ ASCii码能表示的字符有限，所以C++可以使用其他字符集如Unicod
 int k\u00F6rper; //körper
 ```
 
-### signed
+### signed char 和 unsigned char
+char 在默认情况下是否有符号由C++ 实现决定。
 
+如果由需要，可以显示的将类型设置为signed char 或者 unsigned char：
 
+```cpp
+char foto; //也许是有符号，也许是无符号
+unsigned char bar; //定义无符号char
+signed char snark; //定义有符号char
+```
+
+## bool 类型
+
+布尔型的值为true 或 false
+
+```cpp
+bool is_ready = true; //初始化bool型变量
+int ans = true; // 将ans初始化为1
+int promise = false; //将promise初始化为0
+
+//任何数字值或者指针值都可以被隐式转换为boo值，任何非零值都被转化为true，而零被转换为false
+bool start = -100; //start值为true
+bool stop = 0; //stop 值为false
+```
+
+# const 限定符
+常量的符号名称指出常量表示的内容。
+如果程序在多个位置使用同一个常量，比如月份 12，可以直接在每个需要的位置输12，但是如果想把月份改为11，则需要修改多个位置，所以可以使用符号常量来代表12这个数值，需要修改该常量时，只需要修改一个符号定义即可。
+
+C++中提供了const限定符用来定义符号常量：
+```cpp
+const int Months = 12; //Months 是 12 符号名称
+```
+
+常量被初始化后，其值被固定，编译器将不允许再修改该常量的值。
+
+## `#define` 与const 的差别
+const的优点：
+- const明确指定了类型
+- 可以使用C++的作用域规则将定义限制在特定的函数或文件中
+- 可以将const用于更复杂的类型，如果数组和结构
+
+> 注意尽量使用const，而不使用`#define`
+
+# 浮点数
+
+C++ 中有三种浮点数类型：
+float，double 和 long double
+
+浮点数类型主要从两方面进行区分：
+- 有效位数（再内存中占有多少位）
+- 允许指数最小范围(1.69e13 中的13)
+
+> c++ 要求 float至少32位，double至少48位，且不少于float，long double 位数要大于等于double。
+> 通常 folat为32位，double为64位
+
+头文件cfloat（或float.h）
+头文件cfloat中可以找到各种浮点数类型长度的系统的限制
+
+## 浮点常量
+在程序中书写浮点常量的时候如8.24 或者2.4E8，程序默认将浮点常量设定为double类型.
+
+- 如果希望常量为float类型，需要使用f或F后缀
+- 如果希望常量为long double类型，需要使用l或者L后缀
+```cpp
+1.234f //float常量
+2.45E20F //folat常量
+2.3455545E28 //double常量
+2.2L //long double 常量
+```
+
+# C++ 算数运算符
