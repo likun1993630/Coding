@@ -224,3 +224,23 @@ char最常被用来处理字符，但是也可以也用做比short更短的整�
 
 字符与整数密切相关，因为它们在内部其实是被存储为整数。每个可打印的字符以及许多不可打印的字符都被分配一个唯一的数字。用于编码字符的最常见方法是 ASCII（美国信息交换标准代码的首字母简写）。当字符存储在内存中时，它实际上是存储的数字代码。当计算机被指示在屏幕上打印该值时，它将显示与数字代码对应的字符。例如，数字 65 对应大写字母 A，66 对应大写字母 B
 
+
+
+```cpp
+// chartype.cpp -- the char type
+#include <iostream>
+int main( )
+{
+    using namespace std;
+    char ch1 = '2'; //acsii = 50
+    char ch2 = '3'; //acsii = 51
+    char ch3;
+    ch3 = ch1 + ch2;
+    int ch4 = ch3;
+
+    // 'e' = 101
+    cout << ch3 << endl;
+    cout << ch4 << endl;
+    return 0;
+}
+```
