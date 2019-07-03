@@ -396,7 +396,38 @@ float，double 和 long double
 - `%` 求模（取余），要求两个操作数必须都是整型。
 
 ```cpp
-//程序清单3.10 arith.cpp
+// arith.cpp -- some C++ arithmetic
+#include <iostream>
+int main()
+{
+    using namespace std;
+    float hats, heads;
+
+    cout.setf(ios_base::fixed, ios_base::floatfield); // fixed-point
+    cout << "Enter a number: ";
+    cin >> hats;
+    cout << "Enter another number: ";
+    cin >> heads;
+
+    cout << "hats = " << hats << "; heads = " << heads << endl;
+    cout << "hats + heads = " << hats + heads << endl;
+    cout << "hats - heads = " << hats - heads << endl;
+    cout << "hats * heads = " << hats * heads << endl;
+    cout << "hats / heads = " << hats / heads << endl;
+    // cin.get();
+    // cin.get();
+    return 0;
+}
+```
+结果：
+```
+Enter a number: 50.25
+Enter another number: 11.17
+hats = 50.250000; heads = 11.170000
+hats + heads = 61.419998
+hats - heads = 39.080002
+hats * heads = 561.292480
+hats / heads = 4.498657
 ```
 > cout 输出默认会删掉小数点后的零，使用cout.setf()来设置cout保留小数点后的零
 
@@ -411,7 +442,7 @@ C++ 自动执行的类型转换包括：
 - 表达式中包含不同类型时，C++对其值进行转换
 - 将参数传递位函数时，C++将对其值进行转换
 
-1. 初始化和赋值进行的转换
+### 初始化和赋值进行的转换
 C++允许将一种类型的值赋给另一个类型的变量。
 
 例如：solong类型为long，thirty类型位short，可以通过语句`solong = thirty;`进行赋值。
@@ -419,9 +450,68 @@ C++允许将一种类型的值赋给另一个类型的变量。
 
 > 如果将取值范围大的类型赋值给取值范围小的类型有可能导致精度损失，如：将long值（21112222333）赋值给float变量将降低精度，因为float只有6位有效数字，因此这个值会被四舍五入为2.11122E9.
 
-2. 以{}方式初始化时进行的转换（C++11）
-C++11 将使用大括号的初始化称为列表初始化，因为这种初始化常用于给复杂数据类型提供值列表。这种初始化对类型转换要求更严格，列表初始化不允许缩窄，即变量的类型可能无法表示赋给它的值。
+### 以{}方式初始化时进行的转换（C++11）
+C++11 将使用大括号的初始化称为列表初始化，因为这种初始化常用于给复杂数据类型提供值列表。
 
+这种初始化对类型转换要求更严格，列表初始化不允许缩窄，即变量的类型可能无法表示赋给它的值。例如不允许将浮点型转换为整型。
+
+在不同的整数之前转换可能被允许，条件是编译器知道目标变量能够正确地存储赋给它的值。
+
+```cpp
+const int code = 66;
+int x = 66;
+char c1 {31325}; // 不允许，因为31325超出一个字节长度
+char c2 = {66}; //允许
+char c3 {code}; //同上
+char c4 = {x}; //不允许，因为x不是常量，虽然在我们看来x=66，但是编译器无法判断x的具体长度。
+
+// 但是再一般的赋值赋值语句中允许
+x = 31325;
+char c5 = x //允许，但是数据会改变
+```
+
+### 表达式中的转换
+
+1. 在计算表达式时，C++ 将boo,char,unsigned char,signed char 和 short值转换为int，这些转换称为整型提升：
+
+```cpp
+short a =20;
+short b = 35;
+shrot c = a + b;
+```
+> 在计算第三行时，C++程序获取a 和 b 的值，并将它们转换为int，然后计算完加法后，结果类型为int，最后将int转为short类型。
+
+2. 将不同类型进行算数运算时，也会进行一些转换，例如将int和float相加时。但运算涉及两种类型是，较小的类型将被转换为较大的类型。
+
+### 参数传递时的转换
+传递参数时的类型转换通常由C++函数原型控制。
+
+### 强制类型转换
+C++还允许通过强制类型转换机制显示地进行类型转换。
+
+强制类型转型的通用格式如下：
+```
+(typeName) value //来自C语言的格式
+typeName (value) //C++格式，即函数调用式
+
+如：
+cout << int('Q'); //输出Q的编码
+```
+
+另外C++还引入了另一种强值转换 `static_cast<typeName> (value)`,后面讲
+
+## C++ 中的auto声明
+C++11 新增了一个工具，让编译器能够根据初始值的类型推断变量的类型。
+
+如果使用关键字auto，而不指定变量的类型，编译器将把变量的类型设置为与初始值相同：
+
+```cpp
+auto n= 100; // int
+auto x= 1.5; //double
+auto y= 1.3e12L; //long double
+```
+
+> 注意auto并不是给这种简单情况设计的，而是为了更复杂的情况设计的，如标准模块库STL中类型。所以简单情况不要用auto。
 
 
 
