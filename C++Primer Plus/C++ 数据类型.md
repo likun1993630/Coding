@@ -225,7 +225,34 @@ char最常被用来处理字符，但是也可以也用做比short更短的整�
 字符与整数密切相关，因为它们在内部其实是被存储为整数。每个可打印的字符以及许多不可打印的字符都被分配一个唯一的数字。用于编码字符的最常见方法是 ASCII（美国信息交换标准代码的首字母简写）。当字符存储在内存中时，它实际上是存储的数字代码。当计算机被指示在屏幕上打印该值时，它将显示与数字代码对应的字符。例如，数字 65 对应大写字母 A，66 对应大写字母 B
 
 
+### 使用char类型
+```cpp
+// chartype.cpp -- the char type
 
+#include <iostream>
+
+int main()
+{
+	using namespace std;
+	char ch; //declare a char variable
+
+	cout << "Enter a character: " << endl;
+	cin >> ch;
+	cout << "Thank you for the " << ch << " character." <<endl;
+	return 0;
+}
+```
+结果：
+输入一个字符，如M
+```
+Enter a character:
+M
+Thank you for the M character.
+```
+> cout cin 能智能的判断变量的类型，并且输出。
+> 实际过程是将M存储为对应的编码77，然后输出是将77转化为M再打印到屏幕上
+
+### 一个关于字符类型运算的实例
 ```cpp
 // chartype.cpp -- the char type
 #include <iostream>
@@ -237,10 +264,59 @@ int main( )
     char ch3;
     ch3 = ch1 + ch2;
     int ch4 = ch3;
+    char ch5 = 50;
 
     // 'e' = 101
     cout << ch3 << endl;
     cout << ch4 << endl;
+    cout << ch5 << endl;
     return 0;
 }
 ```
+输出：
+```
+e
+101
+2
+```
+
+### char 字面值
+C++ 中书写字符常量的方式：
+- 通过单引号括起来如`'A'` 或者 `'1'`
+- 直接书写字符的ASCii码，如 `65` 代表`'A'`
+> 注意，如果系统默认不是ASCii编码，第二种就会出错，所以推荐第一种，让计算机自动编码解码。
+
+C++ 转义序列的编码：
+\a 表示振铃字符
+\n 表示换行
+\b 表示退格
+等等
+
+例如：
+```cpp
+char alarm = '\a';
+cout << alarm << "Dont do that again!\a\n";
+```
+
+换行符可代替endl：
+```cpp
+cout << endl;
+cout << '\n'; //以字符方式
+cout << "\n"; //以字符串方式
+```
+
+### 通用字符名
+通用字符名可以用来输入和使用键盘上没有的字符。使用ISO10646标准。
+ASCii码能表示的字符有限，所以C++可以使用其他字符集如Unicode。
+> ASCii是Unicode的子集
+
+通用字符集的用法类似于转义序列，以\u 或 \U 开头，紧接着跟着几个数字， \u后面是8个十六进制 \U后面是16个十六进制。
+
+如：
+```cpp
+int k\u00F6rper; //körper
+```
+
+### signed
+
+
