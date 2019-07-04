@@ -129,9 +129,40 @@ infatable guests[2] =
 struct torgle_register
 {
   unsigned int SN : 4; //4bits 给 SN的值
-  unsigned int : 4; //4bits 不用
-  bool goodIn : 1;
-  bool goodTorgle : 1;
+  unsigned int : 4; //4bits 空着不用
+  bool goodIn : 1; // 1bits 给googIn
+  bool goodTorgle : 1; // 1bits 给googTorgle
 }
+
+torgle_register tr = {14, true, false};
+....
+if (tr.goodIn)
+....
 ```
 
+# 共用体union
+共用体也是是一种数据格式，它能够存储不同的数据类型，但是只能同时存储其中的一种类型。
+
+例如：
+```cpp
+union one4all
+{
+  int int_val;
+  long long_val;
+  double double_val;
+};
+
+//使用方法：
+one4all pail;
+pail.int_val = 15; //存储 一个整型
+cout << pail.int_val;
+pail.double_val = 1.38; //存储一个double，但是之前的int被清空
+cout << pail.double_val;
+```
+
+因此，pail有时可以是int变量，有时可以是double变量。 由于共用体每次只能存储一个值，所以它必须有足够的空间来存储最大的成员，即共用体长度为其最大成员的长度。
+
+> 共用体通常用于节省内存，这对于嵌入式系统意义很大。
+
+# 枚举enum
+暂时略过
