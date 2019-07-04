@@ -221,16 +221,30 @@ I have some delicious Li for you, Kun.
 istream中的类提供了getlin() 和 get()，这个两个函数都读取一行输入，直到到达换行符。
 
 getline()丢弃换行符
-get()保留换行符到输入序列中
+
+get()保留换行符（这是指的是通过键盘回车键输入的）到输入序列中（输入序列中的内容会被下一个读入命令如cin捕获）
 
 > 两个函数详细用法参见书籍p78
+
+```cpp
+cin.getline(name,20); //将内容读入一个包含20个元素的name数组中，其中20数目中包含自动添加的`\n`，即只能手动输入19个字符
+
+cin.get(name,20); // 在此之后需要使用cin.get()吞掉输入序列中被保存的换行符。
+cin.get();
+cin.get(name1,20);
+```
 
 ## string类简介
 C++98标准添加了string类，string类用起来比数组简单。
 
 要使用string类必须在程序中包含头文件string。string类位于命名空间std中，因此需要使用using编译指令或使用std::string。
 
-有些方面，使用string对象的方式与使用字符数组相同
+有些方面，使用string对象的方式与使用字符数组相同：
+- 可以使用C风格字符串来初始化string对象，如 `"Hello World"`
+- 可以使用cin来将键盘输入存储到string对象中
+- 可以使用cout来显示string对象
+- 可以使用数组表示法来访问存储在string对象的中的字符，如 `str1[1]`
+
 
 实例：
 ```cpp
@@ -273,6 +287,52 @@ The third letter in jaguar is g
 The third letter in panther is n
 ```
 
+### C++11 字符串初始化
+C++11 允许将列表初始化用于C风格字符串和string对象，即`{}`
 
+```cpp
+char first_date[] = {"Le Chapon Dodu"};
+char second_date[] = {"The Elegant Plate"};
+string third_date = {"The Bread Bowl"};
+string fourth_date {"Hanks Fine Eats"};
+```
 
+### 赋值，拼接和附加
 
+不能将一个数组赋给另一个数组，但是可以将一个string对象赋给另一个string对象：
+
+```cpp
+char charr1[20]; // 建立一个空数组
+char charr2[20] = "jaguar"; // 初始化数组
+string str1; // 建立一个空string对象
+string str2 = "panther"; // 初始化一个string对象
+charr1 = charr2; // 不允许
+str1 =str2; // 允许
+```
+
+string类使用 `+` 合并两个string对象
+
+```cpp
+string str3;
+str3 = str1 + str2; //拼接两个str
+str1 += str2; //把str2追加到str1后
+```
+
+### string类和C风格字符串的其他操作
+
+C风格字符串可以使用cstring库完成复制和追加操作：
+```cpp
+strcpy(charr1, charr2); // 将charr2数组内容拷贝给charr1数组
+strcat(cahrr1, charr2); // 将charr2数组内容追加到charr1数组
+```
+> 使用字符数组时，总是存在目标数组过小，无法存储指定信息的危险。当需要存入数组的长度大于目标数组长度，将覆盖邻近内存，导致程序出错。
+
+> string类具有自动调整大小的功能，避免上述问题发生
+
+确定字符串字符数的方法：
+```cpp
+int len1 = str1.size(); //string类方法
+int len2 = strlen(charr1); //字符数组方法
+```
+
+### sting 类 I/O
