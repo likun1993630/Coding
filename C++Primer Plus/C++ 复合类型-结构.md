@@ -99,5 +99,39 @@ inflatable mayor {}；
 - 可以让函数返回一个结构
 - （成员赋值）可以使用赋值运算符（=）将结构赋给另一个**同类型**的结构，元素将一一对应
 
-### 结构数组
+## 结构数组
+infatable 结构包含一个数组（name）。也可以创建元素为结构的数组，方法和创建基本类型完全相同
+
+如：创建一个包含100个inflatable结构的数组：
+```cpp
+inflatable gifts[100]; 
+
+```
+> 结构数组gifts每个元素（从gift[0]到gift[99]）都是inflatable对象。
+
+```cpp
+cin >> gifts[0].volume;
+cout << gifts[99].price << endl;
+
+//初始胡结果数组
+infatable guests[2] = 
+{
+  {"Bambi", 0.5, 21.99}, //第一个结构
+  {"Godzilla", 2000, 565.99} //第二个结构
+};
+```
+
+## 结构中的位字段
+与C语言一样，C++ 允许只当占用特定位数的结构成员，这使得创建与某个硬件设备上的寄存器对应的数据结构非常方便。
+
+如：
+```cpp
+struct torgle_register
+{
+  unsigned int SN : 4; //4bits 给 SN的值
+  unsigned int : 4; //4bits 不用
+  bool goodIn : 1;
+  bool goodTorgle : 1;
+}
+```
 
