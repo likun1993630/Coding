@@ -380,4 +380,19 @@ Length of string in str after input: 12
 
 > 在键盘输入前，数组charr中字符串长度为3，原因是，未初始化的数组的内容是未定义的，是之前该内存区域的值，其次函数strlen（）从数组的第一个元素开始计算字节数，知道遇到空字符，在这里第4个字符就是一个空字符。
 
->
+> 注意getline(cin,str) 与 cin.getline(charr,20)的区别： cin.getline() 中的getline是istream类的一个类方法。  在istream类中没有处理string对象的方法。
+
+### 其他形式的字符串字面值
+
+```cpp
+wchat_t title[] = L"Chief Astrogator"; //w_char string
+char16_t name[] = u"Felonia";// char_16 string
+char32_t car[] = U"Humber Super Snipe"; //char_32 string
+
+cout << R"(Jim "King" "\n")"; //raw 字符串常量
+//输出为 Jim "King" \n
+```
+
+
+
+
