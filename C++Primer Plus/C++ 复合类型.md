@@ -325,7 +325,7 @@ C风格字符串可以使用cstring库完成复制和追加操作：
 strcpy(charr1, charr2); // 将charr2数组内容拷贝给charr1数组
 strcat(cahrr1, charr2); // 将charr2数组内容追加到charr1数组
 ```
-> 使用字符数组时，总是存在目标数组过小，无法存储指定信息的危险。当需要存入数组的长度大于目标数组长度，将覆盖邻近内存，导致程序出错。
+> 使用字符数组时，总是存在目标数组过小，无法存储指定信息的危险。当需要存入数组的内容的长度大于目标数组长度，将覆盖邻近内存，导致程序出错。
 
 > string类具有自动调整大小的功能，避免上述问题发生
 
@@ -336,3 +336,48 @@ int len2 = strlen(charr1); //字符数组方法
 ```
 
 ### sting 类 I/O
+```cpp
+// strtype4.cpp -- line input
+#include <iostream>
+#include <string>               // make string class available
+#include <cstring>              // C-style string library
+int main()
+{
+    using namespace std;
+    char charr[20]; 
+    string str;
+
+    cout << "Length of string in charr before input: " 
+         << strlen(charr) << endl;
+    cout << "Length of string in str before input: "
+         << str.size() << endl;
+    cout << "Enter a line of text:\n";
+    cin.getline(charr, 20);     // indicate maximum length
+    cout << "You entered: " << charr << endl;
+    cout << "Enter another line of text:\n";
+    getline(cin, str);          // cin now an argument; no length specifier
+    cout << "You entered: " << str << endl;
+    cout << "Length of string in charr after input: " 
+         << strlen(charr) << endl;
+    cout << "Length of string in str after input: "
+         << str.size() << endl;
+    return 0; 
+}
+```
+结果：
+```
+Length of string in charr before input: 3
+Length of string in str before input: 0
+Enter a line of text:
+Hello World!
+You entered: Hello World!
+Enter another line of text:
+Hello World!
+You entered: Hello World!
+Length of string in charr after input: 12
+Length of string in str after input: 12
+```
+
+> 在键盘输入前，数组charr中字符串长度为3，原因是，未初始化的数组的内容是未定义的，是之前该内存区域的值，其次函数strlen（）从数组的第一个元素开始计算字节数，知道遇到空字符，在这里第4个字符就是一个空字符。
+
+>
