@@ -15,7 +15,7 @@
     - [环境准备](./ROS_MOOC/ROS_prepare.md)
     - [文件系统](./ROS_MOOC/ROS_文件系统.md)
     - [通讯构架](./ROS_MOOC/ROS_通讯构架.md)
-    - [tf](./ROS_MOOC/ROS_tf.md)
+    - [tf](ROS_MOOC/ROS_tf.md)
 - ROS实践
 
 
