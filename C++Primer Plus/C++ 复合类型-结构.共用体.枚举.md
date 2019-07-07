@@ -113,7 +113,7 @@ inflatable gifts[100];
 cin >> gifts[0].volume;
 cout << gifts[99].price << endl;
 
-//初始胡结果数组
+//初始化结构数组
 infatable guests[2] = 
 {
   {"Bambi", 0.5, 21.99}, //第一个结构
