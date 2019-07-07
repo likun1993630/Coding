@@ -186,6 +186,10 @@ Here are the first 3 characters of my name: C++
 ### 通过cin输入字符串
 cin使用空白（空格，制表符和换行符）来确定字符串的结束位置，也就是说cin只能读入有一个单词。
 
+cin读入键盘输入的过程：
+
+键盘输入内容，包括各种字符或者空格等，按下键盘回车后，程序将键盘所有的输入都放到输入列队中，cin从输入列队中依次读取符合变量类型的内容，比如一个C风格字符串，cin遇到第一个空白输入后，就停止读入，将从输入列队读取的内容赋给数组，此后输入列队的剩下的内容还会被保存
+
 ```cpp
 // instr1.cpp -- reading more than one string
 #include <iostream>
