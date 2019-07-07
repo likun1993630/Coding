@@ -273,6 +273,41 @@ name: Ha
 name2: le World
 ```
 
+### 混合输入字符串和数字
+混合输入数字和面向行的字符串会导致问题：
+
+```cpp
+// numstr.cpp -- following number input with line input
+#include <iostream>
+int main()
+{
+    using namespace std;
+    cout << "What year was your house built?\n";
+    int year;
+    cin >> year;
+    // cin.get();
+    cout << "What is its street address?\n";
+    char address[80];
+    cin.getline(address, 80);
+    cout << "Year built: " << year << endl;
+    cout << "Address: " << address << endl;
+    cout << "Done!\n";
+    return 0; 
+}
+```
+结果：
+```
+What year was your house built?
+1003
+What is its street address?
+Year built: 1003
+Address:
+Done!
+```
+问题所在： cin读取年份后，将回车键生成的换行符留在了输入列队中，后面的cin.getline()看到换行符，认为是一个空行，并将一个空字符串留在了输入列队中。
+
+可以使用一个cin.get()来接受这个换行符。
+
 ## string类简介
 C++98标准添加了string类，string类用起来比数组简单。
 
