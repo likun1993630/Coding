@@ -223,20 +223,54 @@ I have some delicious Li for you, Kun.
 ### 每次读取一行字符串输入：
 因为cin每次只能读取一个单词，不能满足读入如"Hallo  World"的需求。
 
-istream中的类提供了getlin() 和 get()，这个两个函数都读取一行输入，直到到达换行符。
+istream中的类提供了cin.getline() 和 cin.get()，这个两个函数都读取一行输入，直到到达换行符。
 
-getline()丢弃换行符
+`cin.getline() //带参数`
+	- 函数读取整行，它使用通过回车键输入的换行符来确定输入结尾。
+	- 丢弃换行符 
+	- 如果目标长度不足以存输入序列的一行内容，多出来的内容将被保留在输入序列，还会设置失效位，并关闭后面的输入。
+	
 
-get()保留换行符（这是指的是通过键盘回车键输入的）到输入序列中（输入序列中的内容会被下一个读入命令如cin捕获）
+`cin.get() //带参数`
+	- 保留换行符（这是指的是通过键盘回车键输入的）到输入序列中（输入序列中的内容会被下一个读入命令如cin捕获）
+	- 如果目标长度不足以存输入序列的一行内容，多出来的内容将被保留在输入序列，下一条语句可以继续读取。
 
-> 两个函数详细用法参见书籍p78
+`cin.get() //不带参数`
+	- 从输入序列中读取一个字符，包括键盘输入的回车符
 
 ```cpp
 cin.getline(name,20); //将内容读入一个包含20个元素的name数组中，其中20数目中包含自动添加的`\n`，即只能手动输入19个字符
 
 cin.get(name,20); // 在此之后需要使用cin.get()吞掉输入序列中被保存的换行符。
-cin.get();
+cin.get(); // 不带参数的cin.get()可以读取包括换行符在内的下一个字符。可以用来开始一个新的输入行。
 cin.get(name1,20);
+```
+
+```cpp
+// chartype.cpp -- the char type
+#include <iostream>
+int main( )
+{
+    using namespace std;
+    char name[3];
+    char name2[20];
+    cout << "input to name: " << endl;
+    cin.get(name, 3);
+    cin.get();
+    cout << "input to name2: " << endl;
+    cin.get(name2, 20);
+    cout << "name: " << name << endl;
+    cout << "name2: " << name2 << endl;
+    return 0;
+}
+```
+结果：
+```
+input to name:
+Halle World	//键盘输入
+input to name2:
+name: Ha
+name2: le World
 ```
 
 ## string类简介
