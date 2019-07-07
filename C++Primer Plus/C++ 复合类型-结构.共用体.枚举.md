@@ -13,7 +13,7 @@ struct inflatable //structure declaration
   char name[20];
   float volume;
   double price;
-}
+};
 ```
 ![](./res/4.structinflatable.png)
 
