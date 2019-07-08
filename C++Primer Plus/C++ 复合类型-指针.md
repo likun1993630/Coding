@@ -348,9 +348,239 @@ cout << flower << "s are red\n"; //这里的flower也是字符串的首地址
 
 > 在cout和多数C++表达式中，char数组名，char指针以及用双引号括起来的字符串常量都被解释为字符串第一个字符的地址。
 
+创建一个指向C风格字符串的指针：
 
-# 从这里插入
+```cpp
+// ptrstr.cpp -- using pointers to strings
+#include <iostream>
+#include <cstring>              // declare strlen(), strcpy()
+int main()
+{
+    using namespace std;
+    char animal[20] = "bear";   // animal holds bear
+    char * ps = animal;  //初始化一个指向字符串(字符数组)的指针
+    cout << "ps: " << ps << endl;
+    return 0; 
+}
+```
 
+```
+ps: bear
+```
+
+## 使用new创建动态结构
+
+例如：创建一个未命名的inflatable类型，并将其地址赋给一个指针：
+
+```cpp
+inflatable * ps = new inflatable;
+```
+
+创建动态结构时，这种结构没有名字，只知道它的地址，所以不能将成员句点用于结构名。
+
+使用箭头成员运算符（->）,它可以用于指向结构的指针。例如：如果ps指向一个inflatable结构，则ps->price 时被指向的结构的成员。
+
+![1562582736303](res/1562582736303.png)
+
+另一种访问结构成员的方法：
+
+`ps`为指向结构的指针，`*ps`就是被指向的值--结构本身，`(*ps).price `就是该结构的price成员。
+
+```cpp
+// newstrct.cpp -- using new with a structure
+#include <iostream>
+struct inflatable   // structure definition
+{
+    char name[20];
+    float volume;
+    double price;
+};
+int main()
+{
+    using namespace std;
+    inflatable * ps = new inflatable; // allot memory for structure
+    cout << "Enter name of inflatable item: ";
+    cin.get(ps->name, 20);            // method 1 for member access
+    cout << "Enter volume in cubic feet: ";
+    cin >> (*ps).volume;              // method 2 for member access
+    cout << "Enter price: $";
+    cin >> ps->price;
+    cout << "Name: " << (*ps).name << endl;              // method 2
+    cout << "Volume: " << ps->volume << " cubic feet\n"; // method 1
+    cout << "Price: $" << ps->price << endl;             // method 1
+    delete ps;                        // free memory used by structure
+    return 0; 
+}
+```
+
+```
+Enter name of inflatable item: Hello
+Enter volume in cubic feet: 1.4
+Enter price: $27.9
+Name: Hello
+Volume: 1.4 cubic feet
+Price: $27.9
+```
+
+定义一个返回指向字符串的指针的函数：
+
+```cpp
+// delete.cpp -- using the delete operator
+#include <iostream>
+#include <cstring>      // or string.h
+using namespace std;
+char * getname(void);   // function prototype
+int main()
+{
+    char * name;        // create pointer but no storage
+
+    name = getname();   // assign address of string to name
+    cout << name << " at " << (int *) name << "\n";
+    delete [] name;     // memory freed
+
+    name = getname();   // reuse freed memory
+    cout << name << " at " << (int *) name << "\n";
+    delete [] name;     // memory freed again
+    return 0;
+}
+
+char * getname()        // return pointer to new string
+{
+    char temp[80];      // temporary storage
+    cout << "Enter last name: ";
+    cin >> temp;
+    //根据输入字符长度再申请一个合适的内存空间
+    char * pn = new char[strlen(temp) + 1]; //加1是为了结尾的空字符
+    strcpy(pn, temp);   // copy string into smaller space
+    return pn;          // temp lost when function ends
+}
+```
+```
+Enter last name: Hello
+Hello at 0xcfa000
+Enter last name: World
+World at 0xcf9ed0
+```
+
+> 数组不能作为函数的返回值，但是可以return指向数组的指针，就相当于返回了数组。
+
+## 自动存储，静态存储 和 动态存储
+
+根据用于分配内存的方法，C++有3种管理内存的方式：
+
+- 自动存储
+- 静态存储
+- 动态存储（或叫自由存储空间或堆heap）
+
+### 自动存储
+
+在函数内部定义的常规变量使用自动存储空间，被称为自动变量，这些变量在所属的函数被调用时自动产生，在该函数结束时消亡。
+
+自动变量是一个局部变量，其作用域为包含它的代码块。代码块是被包含在花括号中的一段代码。如果在函数的某个代码块定义了一个变量，则该变量仅在程序执行该代码块中的代码时存在。
+
+自动变量通常存储在栈中，栈使用先进后出规则。
+
+### 静态存储
+
+静态存储是整个程序执行期间都存在的存储方式。
+
+使变量成为静态的方式有两种：
+
+- 在函数外定义它
+- 在声明变量时使用关键字static
+
+### 动态存储
+
+new和delete运算符提供了一种比自动变量和静态变量更为灵活的方法。它们管理一个内存池，在C++中被称为自由存储空间或堆。该内存池同用于静态变量和自动变量的内存时分开的。
+
+### 内存泄漏
+
+如果使用new运算符在自由存储空间（堆）上创建变量后，没有调用delete就会产生内存泄漏，被泄漏的内存在程序的整个声明周期内都不可使用。
+
+## 类型组合
+
+```cpp
+// 声明一个结构体
+struct antaractina_years_end
+{
+    int year;
+};
+//创建结构体变量
+antaractina_years_end s01, s02, s03;
+// 创建可以指向这种结构的指针：
+antaractina_years_end * pa = &s02;
+// 使用间接访问成员运算符来访问成员：
+pa->year = 1999;
+// 创建结构数组
+antaractina_years_end trio[3];
+// 使用成员运算符访问元素成员
+trio[0].year = 2003;
+// 访问元素成员的另有一种方法
+(trio + 1)->year = 2004; // 等同于 trio[1].year = 2004;
+// 创建指向antaractina_years_end类型的指针数组
+// arp数组元素为指向结构的指针
+const antaractina_years_end	* arp[3] = {&s01, &s02, $s03};
+// 使用arp访问成员
+std::cout << arp[1]->year << std::endl; //arp[1]是指向结构的指针
+// 创建指针数组arp的指针：即指向结构指针的指针
+const antaractina_years_end ** ppa = arp;
+// 使用auto 自动推断arp的类型
+auto ppb = arp; //C++11新特性，ppa和ppb等效
+// 通过ppa访问结构成员
+//ppa指向arp的第一个元素，所以*ppa 为数组arp的第一个元素，即&s01
+std::cout << (*ppa)->year << std::endl;
+std::cout << (*(ppb+1))->year << std::endl;
+```
+
+## 数组的替代品
+
+- 模板类vector 
+- 模板类array（C++11） 
+
+### vector
+
+- 是一种动态数组，可以在运行阶段设置vector对象长度
+- 是使用new创建动态数组的替代品
+- vector对象存储在堆中
+- vector类的实现 使用了new和delete管理内存
+- 使用头文件 `#include <vector>`,使用命名空间`std`
+
+```cpp
+# include <vector>
+...
+using namespace std;
+vector<int> vi; //创建一个类型为int的空vector数组
+int n;
+cin >> n;
+vector<double> vd(n); //创建长度为n的double vector数组
+```
+
+一般形式：
+
+`vector <typeName> vt (n_elem)`
+
+> n_elem可以是整型常量和整型变量
+
+### array
+
+- array对象长度固定，使用栈（静态内存分配）
+- 是定长数组的替代品
+- 效率比vector高，与普通数组相同
+- 使用头文件`#include <array>` ，使用命名空间`std`
+
+```cpp
+#include <array>
+...
+using namespace std;
+array<int, 5> ai;
+array<double, 4> ad = {1.2, 2.1, 3.43, 4.3};
+```
+
+一般形式：
+
+`array<typeNamme, n_elem> arr;`
+
+> n_elem 不能是变量
 
 
 ## 关于指针自己的思考
