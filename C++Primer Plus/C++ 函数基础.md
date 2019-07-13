@@ -327,6 +327,7 @@ const double * const stick = &trouble;
 ## 函数与指针
 
 自己的总结，书上没有，不确定对错：
+- 参数传递-值传递，指针的值为地址，所以传递的是地址。
 - 当函数的形参为指针时，实参应为地址（可能使用&取地址符）或指针。
 - 当函数返回值为指针时，return语句一种可能为 指针。
 ```cpp
@@ -337,19 +338,19 @@ int * Add(int * a, int * b);
 
 int main()
 {
-
 	int x1 = 1;
 	int x2 = 10;
-	int * px1 = &x1;
+	int *px1 = &x1;
 	int * x3 = Add(px1, &x2);
 	cout << "x1 = " << x1 << endl;
 	cout << "x2 = " << x2 << endl;
 	cout << "&x1 = " << &x1 << endl;
 	cout << "&x2 = " << &x2 << endl;
+	cout << "px1 at " << &px1 << endl;	
 	cout << "*x3 = " << *x3 << endl;
 	cout << "x3 = " << x3 << endl;
-
-    return 0;
+	cout << "x3 at " << &x3 << endl;
+    	return 0;
 }
 
 int * Add(int * a, int * b)
@@ -358,19 +359,25 @@ int * Add(int * a, int * b)
 	*b += 2;
 	cout << "a = " << a << endl;
 	cout << "b = " << b << endl;
+	cout << "a at " << &a << endl;
+	cout << "b at " << &b << endl;
 	return a;
 }
 ```
 
 ```
-a = 0x6dfee8
-b = 0x6dfee4
+a = 0x6dfeec
+b = 0x6dfee8
+a at 0x6dfed0
+b at 0x6dfed4
 x1 = 2
 x2 = 12
-&x1 = 0x6dfee8
-&x2 = 0x6dfee4
+&x1 = 0x6dfeec
+&x2 = 0x6dfee8
+px1 at 0x6dfee4
 *x3 = 2
-x3 = 0x6dfee8
+x3 = 0x6dfeec
+x3 at 0x6dfee0
 ```
 
 ## 函数和二维数组
