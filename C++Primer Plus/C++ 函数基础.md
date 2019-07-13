@@ -324,6 +324,55 @@ const double * const stick = &trouble;
 // stick 只能指向trouble，而且stick不能用来修改trouble的值。
 ```
 
+## 函数与指针
+
+自己的总结，书上没有，不确定对错：
+- 当函数的形参为指针时，实参应为地址（可能使用&取地址符）或指针。
+- 当函数返回值为指针时，return语句一种可能为 指针。
+```cpp
+#include <iostream>
+using namespace std;
+
+int * Add(int * a, int * b);
+
+int main()
+{
+
+	int x1 = 1;
+	int x2 = 10;
+	int * px1 = &x1;
+	int * x3 = Add(px1, &x2);
+	cout << "x1 = " << x1 << endl;
+	cout << "x2 = " << x2 << endl;
+	cout << "&x1 = " << &x1 << endl;
+	cout << "&x2 = " << &x2 << endl;
+	cout << "*x3 = " << *x3 << endl;
+	cout << "x3 = " << x3 << endl;
+
+    return 0;
+}
+
+int * Add(int * a, int * b)
+{
+	*a += 1;
+	*b += 2;
+	cout << "a = " << a << endl;
+	cout << "b = " << b << endl;
+	return a;
+}
+```
+
+```
+a = 0x6dfee8
+b = 0x6dfee4
+x1 = 2
+x2 = 12
+&x1 = 0x6dfee8
+&x2 = 0x6dfee4
+*x3 = 2
+x3 = 0x6dfee8
+```
+
 ## 函数和二维数组
 
 ```cpp
