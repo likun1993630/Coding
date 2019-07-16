@@ -213,3 +213,181 @@ int main()
 
 ![1563280483491](res/1563280483491.png)
 
+### 自动变量和栈
+
+由于自动变量的数目随函数的开始和结束而增减，因此程序必须再运行时对自动变量进行管理，常用的方式是留出一段内存，并将其视为栈，以管理变量的增减。
+
+栈的默认长度取决于实现。新数据被放到原有数据的相邻的上面的内存单元中，程序使用在两个指针来跟踪栈，一个指针指向栈底--栈的开始位置，一个指向栈顶--下一个可用的内存单元。 
+
+当函数被调用时，其自动变量将被加入栈中，栈顶指针指向变量后面的下一个可用的内存单元。函数结束时，栈顶指针被重置为函数被调用前的值，从而释放新变量使用的内存。
+
+栈是LIFO（先进后出），最后加入栈的变量首先被弹出。
+
+![1563288442383](res/1563288442383.png)
+
+### 静态持续变量
+
+C++为静态存储持续性变量提供了3种链接特性：
+
+- 外部链接性（可在其他文件中访问）
+- 内部链接性（只能再当前文件中访问）
+- 无链接性（只能在当前函数或代码块中访问）
+
+这三种链接特性都在整个程序执行期间存在。因此程序不需要使用栈，编译器将分配固定的内存块来存储所有的静态变量。 
+
+所有的静态持续变量都有下述初始化特征：未被初始化的静态变量的所有位置都被置为0。
+
+3种链接特性的创建：
+
+- 外部链接性：必须在代码块的外面声明
+- 内部链接性：必须在代码块的外面声明，并使用static限定符
+- 无链接性：必须在代码块内声明，并使用static限定符
+
+例：
+
+```cpp
+....
+int global = 1000; //静态存储持续性，外部链接性
+static int one_file = 50; //静态存储持续性，内部链接性
+int main()
+{
+    ....
+}
+void funct1(int n)
+{
+    static int count = 0; //静态存储持续性，无链接性
+    int llama = 0;
+}
+void funct2(int q)
+{
+    ....
+}
+....
+```
+
+> funct1中llama 与 count的区别：即使funct1（）函数没有被执行，count也留在内存中。
+>
+> global 和 one_file 都可以在main（），funct1（）和funct2（）使用。one_file只能在包含上述代码的文件中使用。 global可以在其他文件中使用。
+
+![1563291220969](res/1563291220969.png)
+
+#### 静态变量的初始化
+
+初始化的方式：
+
+- 静态初始化：零初始化和常量表达式初始化被统称为静态初始化，在编译器处理文件(翻译单元)时初始化变量。
+  - 在常量表达式初始化之前会默认先零初始化，然后根据情况再进行常量表达式初始化
+- 动态初始化：变量将在编译后进行初始化。
+
+```cpp
+#include <cmath>
+int x; //零初始化
+int y = 5; //常量表达式初始化
+long z = 13 * 13; //常量表达式初始化
+int enough = 2 * sizeof(long) + 1; //常量表达式初始化
+const double pi = 4.0 * atan(1.0); //动态初始化
+// 首先xyz enough pi 都被零初始化，然后编译器计算常量表达式，并将y z enough 分别使用常量表达式进行初始化。 pi需要调用atan（）,需要等到该函数被链接且程序执行时才能再次初始化。
+```
+
+#### 静态持续性，外部链接性
+
+链接性为外部的变量通常简称为外部变量，它们的存储持续性为静态，作用域为整个文件。外部变量是在函数外部定义的，因此对所有函数而言都是外部的。例如，可以在main（）前面或头文件中定义它们。可以在文件中位于外部变量定义后面的任何函数中使用它，因此外部变量也称全局变量（相对于局部的自动变量）。
+
+在一个文件中声明或者初始化一个外部变量，在其他文件中如果想使用这个变量，只能使用关键字extern引用声明，并且不进行初始化。如果使用extern并且进行初始化则，就是初始化一个为新的外部变量。
+
+```cpp
+//file01.cpp
+extern int cats = 20; // 初始化
+int dogs = 22; // 初始化
+int fleas; // 声明
+
+//file02.cpp
+extern int cats; //引用声明
+extern int dogs; //引用声明
+
+//file98.cpp
+extern int cats; //引用声明
+extern int dogs; //引用声明
+extern int fleas; //引用声明
+```
+
+![1563294458451](res/1563294458451.png)
+
+示例：
+
+external.cpp
+
+```cpp
+// external.cpp -- external variable
+// compile with support.cpp
+#include <iostream>
+// external variable
+double warming = 0.3;       // warming defined
+
+// function prototypes
+void update(double dt);
+void local();
+
+int main()                  // uses global variable
+{
+    using namespace std;
+    cout << "Global warming is " << warming << " degrees.\n";
+    update(0.1);            // call function to change warming
+    cout << "Global warming is " << warming << " degrees.\n";
+    local();                // call function with local warming
+    cout << "Global warming is " << warming << " degrees.\n";
+    return 0;
+}
+```
+
+support.cpp
+
+```cpp
+// support.cpp -- use external variable
+// compile with external.cpp
+#include <iostream>
+extern double warming;  // use warming from another file
+
+// function prototypes
+void update(double dt);
+void local();
+
+using std::cout;
+void update(double dt)      // modifies global variable
+{
+    extern double warming;  // optional redeclaration 可选
+    warming += dt;          // uses global warming
+    cout << "Updating global warming to " << warming;
+    cout << " degrees.\n";
+}
+
+void local()                // uses local variable
+{
+    double warming = 0.8;   // new variable hides external one
+
+    cout << "Local warming = " << warming << " degrees.\n";
+        // Access global variable with the
+        // scope resolution operator
+    cout << "But global warming = " << ::warming;
+    cout << " degrees.\n";
+}
+```
+
+> local()函数中，局部变量warming将隐藏全局变量
+>
+> 作用域解析运算符`::` ，放在变量名前，该运算符表示使用变量的全局版本。
+
+外部存储尤其适合表示常量数据，可以使用const防止数据被修改。
+
+如：
+
+```cpp
+const char * const months[12] = {
+    "January", "February", "March",
+    ...
+}
+```
+
+### 静态持续性 内部链接性
+
+
