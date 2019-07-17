@@ -754,4 +754,361 @@ Memory contents:
 
 # 名称空间
 
-p324/341
+## 基本概念
+
+C++中的名称：
+
+变量，函数，结构，结构成员，枚举，类，类成员。
+
+声明区域：
+
+声明区域是可以在其中进行声明的区域，例如：
+
+- 可以在函数外声明全局变量，其声明区域为其声明所在的文件，
+- 对于在函数中声明的变量，其声明区域为其声明所在代码块
+
+潜在作用域：
+
+变量的潜在作用域从声明点开始，到期声明区域的结尾，因此潜在作用域比声明区域小，因为变量必须在声明后才能使用。
+
+变量并不是在其潜在作用域并的任何位置都是可见的。例如他可能被另一个在嵌套声明区域中声明的同名变量隐藏。
+
+作用域：
+
+变量对程序而言可见的范围被称为作用域。
+
+声明区域>= 潜在作用域 >= 作用域
+
+![1563395105425](res/1563395105425.png)
+
+![1563395121034](res/1563395121034.png)
+
+## 名称空间特性
+
+- 一个名称空间中的名称不会与另外一个名称空间的相同名称发生冲突。
+- 名称空间可以是全局的，也可以位于另一个名称空间，但不能位于代码块中，所以，默认情况下，在名称空间中声明的名称的链接性为外部（引用常量除外）
+- 全局名称空间包含用户自定义的名称空间，全局名称空间对应文件级声明区域。全局变量位于全局名称空间中。
+
+名称空间示例：
+
+```cpp
+namespace Jack{
+    double pial;
+    void fetch(); //函数原型
+    int pal; 
+    struct Well {...}; //结构声明
+}
+namespace Jill{
+    double bucket(double n) {...}; //函数定义
+    double fetch;
+    int pal;
+    struct Hill {...};
+}
+```
+
+可以把名称加入到已有的名称空间中：
+
+```cpp
+namespace Jill{
+    char * goose(const char *)
+}
+namespace Jack{
+    void fetch()
+    {
+        ...
+    }
+}
+```
+
+使用作用域解析运算符`::`访问名称空间内的名称：
+
+```cpp
+Jack::pail = 12.34;
+Jill::Hill mole;
+Jack::fetch();
+```
+
+## using
+
+C++提供了两种简化名称空间中名称的使用:
+
+- using声明，用来使特定的标识符可用
+- using编译指令，用来使整个名称空间可用
+
+using声明示例
+
+- using声明将特定名称添加到using语句所属的声明区域中：
+
+```cpp
+namespace Jill{
+    double bucket(double n) {...}; //函数定义
+    double fetch;
+    int pal;
+    struct Hill {...};
+}
+char fetch;
+int main()
+{
+    using Jill::fetch;
+    //double fetch;  //错误，fetch已存在
+    cin >> fetch; // Jill::fetch
+    cin >> ::fetch; //全局fetch
+}
+```
+
+- using声明将特定的名称添加到全局名称空间中：
+
+```cpp
+void other();
+namespace Jill{
+    double bucket(double n) {...}; //函数定义
+    double fetch;
+    struct Hill {...};
+}
+using Jill::fetch; // 将fetch放到全局名称空间
+int main()
+{
+    cin >> fetch; //Jill::fetch
+    other()
+    ...
+}
+void other()
+{
+    cout << fetch; //Jill::fetch
+}
+```
+
+using 编译指令示例：
+
+```cpp
+using namespace Jack;
+```
+
+- 在全局声明区域中使用using编译指令，将使该名称空间的名称全局可用：
+
+```cpp
+#include <iostream>
+using namespace std; //使名称全局可用
+```
+
+- 在函数中使用using编译指令，将使其中的名称在该函数中可用：
+
+```cpp
+int main()
+{
+    using namespace Jack;
+    ...
+}
+```
+
+- 隐藏特性(与using声明有不同之处，需要注意)：
+
+```cpp
+namespace Jill{
+    double bucket(double n) {...}; //函数定义
+    double fetch;
+    struct Hill {...};
+}
+char fetch;
+int main()
+{
+    using namespace Jill;
+    Hill Thrill;
+    double water = bucket(2);
+    double fetch; //正确，隐藏Jill::fetch
+    cin >> fetch; // local fetch
+    cin >> ::fetch; //全局fetch
+    cin >> Jill::fetch; // Jill:fetch
+}
+```
+
+### 名称空间的嵌套
+
+- 可以将名称空间声明进行嵌套：
+
+```cpp
+namespace elements
+{
+    namespace fire
+    {
+        int flame;
+        ...
+    }
+    float water;
+}
+
+//使用
+element::fire::flame = 1;
+using namespace elements::fire; //使用fire名称空间
+```
+
+- 可以在名称空间中使用using编译指令和using声明：
+
+```cpp
+namespace myth
+{
+    using Jill::fetch;
+    using namespace elements;
+    using std::cout;
+    using std::cin;
+}
+//使用：
+std::cin >> myth::fetch; //通过myth使用Jill::fetch
+std::cin >> Jill::fetch; //直接使用Jill::fetch
+
+using namespace myth;
+cin >> fetch; // std::cin 和 Jill::fetch
+```
+
+- using 编译指令可传递：
+
+```cpp
+using namespace myth;
+//等效于下面两条：
+using namespace myth;
+using namespace elements;
+```
+
+- 可以给命名空间创建别名：
+
+```cpp
+namespace newns = Jill; //newns是Jill的别名
+```
+
+### 名称空间示例：
+
+注意：在名称空间中声明的函数名作用域为整个名称空间，因此定义和声明必须位于同一个名称空间中。
+
+namesp.h
+
+```cpp
+// namesp.h
+#include <string>
+// create the pers and debts namespaces
+namespace pers
+{
+    struct Person
+    { 
+        std::string fname;
+        std::string lname;
+     };
+    void getPerson(Person &);
+    void showPerson(const Person &);
+}
+
+namespace debts
+{
+    using namespace pers;
+    struct Debt
+    {
+        Person name;
+        double amount;
+    };
+    
+    void getDebt(Debt &);
+    void showDebt(const Debt &);
+    double sumDebts(const Debt ar[], int n); 
+}
+```
+
+namesp.cpp
+
+```cpp
+// namesp.cpp -- namespaces
+#include <iostream>
+#include "namesp.h"
+
+namespace pers
+{
+    using std::cout;
+    using std::cin;
+    void getPerson(Person & rp)
+    {
+        cout << "Enter first name: ";
+        cin >> rp.fname;
+        cout << "Enter last name: ";
+        cin >> rp.lname;
+    }
+    
+    void showPerson(const Person & rp)
+    {
+        std::cout << rp.lname << ", " << rp.fname;
+    }
+}
+
+namespace debts
+{
+    void getDebt(Debt & rd)
+    {
+        getPerson(rd.name);
+        std::cout << "Enter debt: ";
+        std::cin >> rd.amount;
+    }
+    
+    void showDebt(const Debt & rd)
+    {
+        showPerson(rd.name);
+        std::cout <<": $" << rd.amount << std::endl;
+    }
+    
+    double sumDebts(const Debt ar[], int n)
+    {
+        double total = 0;
+        for (int i = 0; i < n; i++)
+            total += ar[i].amount;
+        return total;
+    }
+}
+```
+
+usenmsp.cpp
+
+```cpp
+// usenmsp.cpp -- using namespaces
+#include <iostream>
+#include "namesp.h"
+
+void other(void);
+void another(void);
+int main(void)
+{
+    using debts::Debt;
+	using debts::showDebt;
+    Debt golf = { {"Benny", "Goatsniff"}, 120.0 };
+    showDebt(golf);
+    other();
+    another(); 
+    return 0;
+}
+
+void other(void)
+{
+    using std::cout;
+    using std::endl;
+    using namespace debts;
+    Person dg = {"Doodles", "Glister"};
+    showPerson(dg);
+    cout << endl;
+    Debt zippy[3];
+    int i;
+    
+    for (i = 0; i < 3; i++)
+        getDebt(zippy[i]);
+
+    for (i = 0; i < 3; i++)
+        showDebt(zippy[i]);
+    cout << "Total debt: $" << sumDebts(zippy, 3) << endl;
+    
+    return;
+}
+
+void another(void)
+{
+    using pers::Person;;
+    
+    Person collector = { "Milo", "Rightshift" };
+    pers::showPerson(collector);
+    std::cout << std::endl; 
+}
+```
+
