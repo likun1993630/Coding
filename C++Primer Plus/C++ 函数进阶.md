@@ -173,6 +173,47 @@ wallet1 = $300 wallet2 = $350
 wallet1 = $300 wallet2 = $350
 ```
 
+### 返回值为引用的函数
+```cpp
+#include <iostream>
+using namespace std;
+
+int & test(int & n)
+{
+	return n += 1;
+}
+
+int main()
+{
+	int a = 10;
+	int b = test(a);
+
+	cout << "a: " << a << endl;
+	cout << "&a: " << &a << endl;
+	cout << "b: " << b << endl;
+	cout << "&b: " << &b << endl;
+	cout << "test: " << test(a) << endl;
+	cout << "&test: " << &test(a) << endl;
+
+	int * c = &test(a);
+	cout << "c: " << c << endl;
+	cout << "* c: " << *c << endl;
+
+	return 0;
+}
+```
+
+```
+a: 11
+&a: 0x6dfee8
+b: 11
+&b: 0x6dfee4
+test: 12
+&test: 0x6dfee8
+c: 0x6dfee8
+* c: 14
+```
+
 #### 临时变量，引用参数和const
 
 对于形参为const引用的C++函数，如果实参与引用形参不匹配，C++在一定条件下将生成临时变量来存储值。
