@@ -840,7 +840,7 @@ fout << result << endl;
   - 将基本类型转换为类类型
   - 将类类型转换为基本类型
 
-示例：
+### 将基本类型转换为类类型
 
 ```cpp
 // 构造函数原型
@@ -862,3 +862,173 @@ Stonewt::Stonewt(double lbs)
 Stonewt myCat; // 生成一个Stonewt对象
 myCat = 19.6; //使用 Stonewt(double) 将 19.6 转换为 Stonewt对象
 ```
+> 程序将使用构造函数Stonewt(double)来创建一个临时的Stonewt对象，并将19．6作为初始化值。随后，采用逐成员赋值方式将该临时对象的内容复制到myCat中。这一过程称为隐式转换，因为它是自动进行的，而不需要显式强制类型转换。
+
+只有接受一个参数的构造函数才能作为转换函数。构造函数有两个参数时，不能用来转换类型。
+
+这种使用一个参数的构造函数进行自动转换的特性可能导致意外的类型转换，可以使用关键字explicit关闭这种自动特性：
+
+```cpp
+// 构造函数原型
+explicit Stonewt(double lbs); // 不允许隐式转换
+```
+
+关闭隐式转换后，可以使用显示强制类型转换：
+
+```cpp
+Stonewt myCat;
+myCat = 19.6; //explicit不允许隐式转换
+myCat = Stonewt(19.6); //ok
+myCat = (Stonewt) 19.6; //ok,旧方式
+```
+
+使用Stonewt（double）进行隐式转换可能的情况：
+
+- 将Stonewt对象初始化为double值时
+
+- 将double值赋给Stonewt对象时
+
+- 将double值传递给接受Stonewt参数的函数时
+
+- 返回值被声明为Stonewt的函数试图返回double值时
+
+- 在上述任意一种情况下，使用可转换为double类型的内置类型时
+
+  ```cpp
+  Stonewt Jumbo(7000); //先将7000转换为double类型，再转换为Stonewt类型
+  Jumbo = 7300; //同上
+  ```
+
+  > 这种情况下，当且仅当转换不存在二义性时，才会进行第二步转换，例如类还定义了构造函数Stonewt(long) 时，就存在二义性。
+
+例程：
+
+stonewt.h
+
+```cpp
+// stonewt.h -- definition for the Stonewt class
+#ifndef STONEWT_H_
+#define STONEWT_H_
+class Stonewt
+{
+private:
+    enum {Lbs_per_stn = 14};      // pounds per stone
+    int stone;                    // whole stones
+    double pds_left;              // fractional pounds
+    double pounds;                // entire weight in pounds
+public:
+    Stonewt(double lbs);          // constructor for double pounds
+    Stonewt(int stn, double lbs); // constructor for stone, lbs
+    Stonewt();                    // default constructor
+    ~Stonewt();
+    void show_lbs() const;        // show weight in pounds format
+    void show_stn() const;        // show weight in stone format
+};
+#endif
+```
+
+stonewt.cpp
+
+```cpp
+// stonewt.cpp -- Stonewt methods
+#include <iostream>
+using std::cout;
+#include "stonewt.h"
+
+// construct Stonewt object from double value
+Stonewt::Stonewt(double lbs)
+{
+    stone = int (lbs) / Lbs_per_stn;    // integer division
+    pds_left = int (lbs) % Lbs_per_stn + lbs - int(lbs);
+    pounds = lbs;
+}
+
+// construct Stonewt object from stone, double values
+Stonewt::Stonewt(int stn, double lbs)
+{
+    stone = stn;
+    pds_left = lbs;
+    pounds =  stn * Lbs_per_stn +lbs;
+}
+
+Stonewt::Stonewt()          // default constructor, wt = 0
+{
+    stone = pounds = pds_left = 0;
+}
+
+Stonewt::~Stonewt()         // destructor
+{
+}
+
+// show weight in stones
+void Stonewt::show_stn() const
+{
+    cout << stone << " stone, " << pds_left << " pounds\n";
+}
+
+// show weight in pounds
+void Stonewt::show_lbs() const
+{
+    cout << pounds << " pounds\n";
+}
+```
+
+stone.cpp
+
+```cpp
+// stone.cpp -- user-defined conversions
+// compile with stonewt.cpp
+#include <iostream>
+using std::cout;
+#include "stonewt.h"
+void display(const Stonewt & st, int n);
+int main()
+{
+    Stonewt incognito = 275; // uses constructor to initialize
+    Stonewt wolfe(285.7);    // same as Stonewt wolfe = 285.7;
+    Stonewt taft(21, 8);
+
+    cout << "The celebrity weighed ";
+    incognito.show_stn();
+    cout << "The detective weighed ";
+    wolfe.show_stn();
+    cout << "The President weighed ";
+    taft.show_lbs();
+    incognito = 276.8;      // uses constructor for conversion
+    taft = 325;             // same as taft = Stonewt(325);
+    cout << "After dinner, the celebrity weighed ";
+    incognito.show_stn();
+    cout << "After dinner, the President weighed ";
+    taft.show_lbs();
+    display(taft, 2);
+    cout << "The wrestler weighed even more.\n";
+    display(422, 2);
+    cout << "No stone left unearned\n";
+    return 0;
+}
+
+void display(const Stonewt & st, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        cout << "Wow! ";
+        st.show_stn();
+    }
+}
+```
+
+```
+The celebrity weighed 19 stone, 9 pounds
+The detective weighed 20 stone, 5.7 pounds
+The President weighed 302 pounds
+After dinner, the celebrity weighed 19 stone, 10.8 pounds
+After dinner, the President weighed 325 pounds
+Wow! 23 stone, 3 pounds
+Wow! 23 stone, 3 pounds
+The wrestler weighed even more.
+Wow! 30 stone, 2 pounds
+Wow! 30 stone, 2 pounds
+No stone left unearned
+```
+
+> display()的原型表明，第一个参数应是Stonewt对象(Stonewt和Stonewt&形参都与Stonewt实参匹配）。遇到int参数时，编译器查找构造函数Stonewt(int)，以便将该int转换为Stonewt类型。由于没有找到这样的构造函数，因此编译器寻找接受其他内置类型(int可以转换为这种类型）的构造函数。Stone(double)构造函数满足这种要求，因此编译器将int转换为double，然后使用Stonewt(double)将其转换为一个Stonewt对象。
