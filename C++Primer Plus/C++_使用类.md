@@ -838,3 +838,25 @@ fout << result << endl;
 
 - 可以将类定义成与基本类型或另一个类相关，使得从一种类型转换为另一种类型是有意义的。可以指示C++如何自动进行转换，或通过强制类型转换来完成。
 
+示例：
+
+```cpp
+// 构造函数原型
+Stonewt(double lbs);
+Stonewt(int stn, double lbs);
+Stonewt();
+// 函数定义
+Stonewt::Stonewt(double lbs)
+{
+    stone = int(lbs) / Lbs_per_stn;
+    ...
+    pounds = lbs;
+}
+```
+
+构造函数原型`Stonewt(double lbs)`可用于将double类型转化为Stonewt类型：
+
+```cpp
+Stonewt myCat; // 生成一个Stonewt对象
+myCat = 19.6; //使用 Stonewt(double) 将 19.6 转换为 Stonewt对象
+```
