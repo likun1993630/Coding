@@ -437,7 +437,7 @@ void Stock::show() const
 // 构造函数原型
 Bozo(int a);
 // 初始化对象：
-Bozo dribble = bozo(44);
+Bozo dribble = Bozo(44);
 Bozo roon(66);
 Bozo tubby = 32;
 ```
