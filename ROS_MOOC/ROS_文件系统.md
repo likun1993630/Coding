@@ -244,7 +244,7 @@ CMakeLists.txt原本是Cmake编译系统的规则文件，而Catkin编译系统�
 
 CMakeLists.txt的基本语法都还是按照CMake，而Catkin在其中加入了少量的宏，总体的结构如下：
 
-```
+```cmake
 cmake_minimum_required() #CMake的版本号 
 project()                #项目名称 
 find_package()           #找到编译需要的其他CMake/Catkin package
