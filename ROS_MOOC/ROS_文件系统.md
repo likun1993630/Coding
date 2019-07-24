@@ -267,7 +267,7 @@ https://github.com/Akagi201/learning-cmake/blob/master/docs/cmake-practice.pdf
 ### CMakeLists例子
 以turtlesim小海龟这个pacakge为例，可以roscd到tuetlesim包下查看。
 
-```
+```cmake
 cmake_minimum_required(VERSION 2.8.3)
 #CMake至少为2.8.3版
 
@@ -362,7 +362,7 @@ pacakge.xml包含了package的名称、版本号、内容描述、维护人员�
 ### package.xml写法
 pacakge.xml遵循xml标签文本的写法，由于版本更迭原因，现在有两种格式并存（format1与format2），不过区别不大。老版本（format1）的pacakge.xml通常包含以下标签:
 
-```
+```xml
 <pacakge>           根标记文件  
 <name>              包名  
 <version>           版本号  
@@ -378,7 +378,7 @@ pacakge.xml遵循xml标签文本的写法，由于版本更迭原因，现在有
 
 在新版本（format2）中，包含的标签为：
 
-```
+```xml
 <pacakge>               根标记文件  
 <name>                  包名  
 <version>               版本号  
@@ -401,7 +401,7 @@ pacakge.xml遵循xml标签文本的写法，由于版本更迭原因，现在有
 
 老版本（format1）的写法:
 
-```
+```xml
 <?xml version="1.0"?>       <!--本示例为老版本的pacakge.xml-->
 <package>                   <!--pacakge为根标签，写在最外面-->
   <name>turtlesim</name>
@@ -449,7 +449,7 @@ pacakge.xml遵循xml标签文本的写法，由于版本更迭原因，现在有
 ```
 
 新版本（format2）:
-```
+```xml
 <?xml version="1.0"?>
 <package format="2">      <!--在声明pacakge时指定format2，为新版格式-->
   <name>turtlesim</name>
@@ -527,7 +527,7 @@ ROS里常见的Metapacakge有：
 
 CMakeLists.txt写法如下：
 
-```
+```cmake
 cmake_minimum_required(VERSION 2.8.3)
 project(ros_academy_for_beginners)
 find_package(catkin REQUIRED)
@@ -535,7 +535,7 @@ catkin_metapackage()   #声明本软件包是一个metapacakge
 ```
 
 pacakge.xml写法如下：
-```
+```xml
 <package>
     <name>ros_academy_for_beginners</name>
     <version>17.12.4</version>
