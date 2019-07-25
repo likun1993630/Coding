@@ -1,5 +1,5 @@
 # 目录：
-## [C++ Primer Plus Notebook](./C++Primer Plus/)
+## [C++ Primer Plus Notebook](./C++Primer&#32;Plus/)
 
 ## C++ 补充知识
 - [动态链接库与静态链接库](./C++Notebook/动态链接库与静态链接库.md)
