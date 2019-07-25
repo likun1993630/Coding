@@ -1032,3 +1032,171 @@ No stone left unearned
 ```
 
 > display()的原型表明，第一个参数应是Stonewt对象(Stonewt和Stonewt&形参都与Stonewt实参匹配）。遇到int参数时，编译器查找构造函数Stonewt(int)，以便将该int转换为Stonewt类型。由于没有找到这样的构造函数，因此编译器寻找接受其他内置类型(int可以转换为这种类型）的构造函数。Stone(double)构造函数满足这种要求，因此编译器将int转换为double，然后使用Stonewt(double)将其转换为一个Stonewt对象。
+
+### 转换函数（将类对象转换为基本类型）
+在C++中，可以定义转换函数，将类对象进行转换。
+
+#### 创建转换函数
+
+- 转换函数必须是类方法
+- 转换函数不能指定返回值类型
+- 转换函数不能有形参
+
+形式：
+
+```cpp
+operator typeName();
+// typeName 为类型
+//例如：
+operator double();
+operator int();
+```
+如果定义了Stonewt 到 double 的转化函数，就可以进行下面的转换。
+
+```cpp
+Stonewt wolfe(285.7);
+//显式转换
+double host = double (wolfe);
+double thinker = (double) wolfe;
+//隐式转换
+Stonewt wells(20,3);
+double star = wells;
+```
+
+#### 例程：
+
+stonewt1.h
+
+```cpp
+// stonewt1.h -- revised definition for the Stonewt class
+#ifndef STONEWT1_H_
+#define STONEWT1_H_
+class Stonewt
+{
+private:
+    enum {Lbs_per_stn = 14};      // pounds per stone
+    int stone;                    // whole stones
+    double pds_left;              // fractional pounds
+    double pounds;                // entire weight in pounds
+public:
+    Stonewt(double lbs);          // construct from double pounds
+    Stonewt(int stn, double lbs); // construct from stone, lbs
+    Stonewt();                    // default constructor
+    ~Stonewt();
+    void show_lbs() const;        // show weight in pounds format
+    void show_stn() const;        // show weight in stone format
+// conversion functions
+    operator int() const;
+    operator double() const;
+};
+#endif
+```
+
+stonewt1.cpp
+
+```cpp
+// stonewt1.cpp -- Stonewt class methods + conversion functions
+#include <iostream>
+using std::cout;
+#include "stonewt1.h"
+
+// construct Stonewt object from double value
+Stonewt::Stonewt(double lbs)
+{
+    stone = int (lbs) / Lbs_per_stn;    // integer division
+    pds_left = int (lbs) % Lbs_per_stn + lbs - int(lbs);
+    pounds = lbs;
+}
+
+// construct Stonewt object from stone, double values
+Stonewt::Stonewt(int stn, double lbs)
+{
+    stone = stn;
+    pds_left = lbs;
+    pounds =  stn * Lbs_per_stn +lbs;
+}
+
+Stonewt::Stonewt()          // default constructor, wt = 0
+{
+    stone = pounds = pds_left = 0;
+}
+
+Stonewt::~Stonewt()         // destructor
+{
+}
+
+// show weight in stones
+void Stonewt::show_stn() const
+{
+    cout << stone << " stone, " << pds_left << " pounds\n";
+}
+
+// show weight in pounds
+void Stonewt::show_lbs() const
+{
+    cout << pounds << " pounds\n";
+}
+
+// conversion functions
+Stonewt::operator int() const
+{
+    return int (pounds + 0.5);
+}
+
+Stonewt::operator double()const
+{
+    return pounds; 
+}
+```
+
+stone1.cpp
+
+```cpp
+// stone1.cpp -- user-defined conversion functions
+// compile with stonewt1.cpp
+#include <iostream>
+#include "stonewt1.h"
+
+int main()
+{
+    using std::cout;
+    Stonewt poppins(9,2.8);     // 9 stone, 2.8 pounds
+    double p_wt = poppins;      // implicit conversion
+    cout << "Convert to double => ";
+    cout << "Poppins: " << p_wt << " \n";
+    cout << "Convert to int => ";
+    cout << "Poppins: " << int (poppins) << " \n";
+    return 0; 
+}
+```
+
+```
+Convert to double => Poppins: 128.8
+Convert to int => Poppins: 129
+```
+
+> 注意，同时定义多个转换函数可能出现二义性，如这里的double和int：
+>
+> `long gone = poppins; `// 首先需要将对象poppins进行转换，编译器有两个选择doubl和int，从而产生二义性。
+>
+> 但依旧可以使用显式强制转换：
+>
+> `long gone = int (poppins);`
+
+#### 转换函数的问题
+
+一般转换函数由于允许自动隐式的转换，所以会出现在不希望转换时，转换函数也可能进行转换。
+
+可以使用关键字explicit关闭这种特性:
+
+```cpp
+class Stonewt
+{
+    explicit operator int() const;
+    explicit operator double() const;
+};
+```
+
+### 转换函数和友元函数
+
+略。详见书籍P429
