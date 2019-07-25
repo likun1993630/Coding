@@ -369,7 +369,7 @@ Stock::Stock(const string & co, long n, double pr)
 
 创建对象(定义上述非默认构造函数和默认构造函数的一种时)：
 
-​```cpp
+```cpp
 Stock first; // 隐式的调用默认构造函数
 Stock first = Stock(); // 显式的调用默认构造函数
 Stock *prelief = new Stock; // 隐式的调用默认构造函数
