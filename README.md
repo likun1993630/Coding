@@ -30,7 +30,7 @@
 ## [Linux 入门](./Linux/)
 
 
-
-
+## Tips for Coding
+- [Tips](Tips.md)
 
 
