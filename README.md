@@ -1,7 +1,8 @@
 # 目录：
 ## C++ Primer Plus Notebook
-- [C++ 入门](./C++Primer Plus/C++ 入门.md)
-- []()
+
+## C++ 补充知识
+- [动态链接库与静态链接库](./C++Notebook/动态链接库与静态链接库.md)
 
 
 ## ROS
@@ -22,6 +23,8 @@
     - [通讯构架](./ROS_MOOC/ROS_通讯构架.md)
     - [tf](ROS_MOOC/ROS_tf.md)
 - ROS实践
+    - [笔记1](./ROS/ROS1.md)
+    - [URDF](./ROS/ROS_urdf.md)
 
 
 ## [Linux 入门](./Linux/Linux1.md)
