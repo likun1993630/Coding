@@ -1,6 +1,6 @@
 # 目录：
 ## C++ Primer Plus Notebook
-- [C++ 入门](/C++Primer Plus/C++ 入门.md)
+- [C++ 入门](./C++Primer Plus/C++ 入门.md)
 - []()
 
 
