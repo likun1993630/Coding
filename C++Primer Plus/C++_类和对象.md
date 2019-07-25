@@ -362,8 +362,6 @@ Stock::Stock(const string & co, long n, double pr)
   // 或者
   Stock::Stock(){}
   ```
-```
-  
   
   > 两种方法不能共存
 
