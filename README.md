@@ -1,7 +1,11 @@
 # 目录：
 ## [C++ Primer Plus Notebook](./C++Primer&#32;Plus/)
 - [C++ 入门](./C++Primer&#32;Plus/C++&#32;入门.md)
-- 
+- [C++ 数据类型](./C++Primer&#32;Plus/C++_数据类型.md)
+- [C++ 复合类型-指针](./C++Primer&#32;Plus/C++&#32;复合类型-指针.md)
+- [C++ 复合类型-数组.字符串.string](./C++Primer&#32;Plus/C++r&#32;复合类型-数组.字符串.string.md)
+
+
 
 ## C++ 补充知识
 - [动态链接库与静态链接库](./C++Notebook/动态链接库与静态链接库.md)
