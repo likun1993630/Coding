@@ -1,4 +1,7 @@
 # 目录：
+## Python
+- [Lesson 1](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson1.ipynb)
+
 ## [C++ Primer Plus Notebook](./C++Primer&#32;Plus/)
 - [C++ 入门](./C++Primer&#32;Plus/C++&#32;入门.md)
 - [C++ 数据类型](./C++Primer&#32;Plus/C++_数据类型.md)
