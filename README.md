@@ -1,6 +1,13 @@
 # 目录：
 ## Python
 - [Lesson 1](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson1.ipynb)
+- [Lesson 2](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson2.ipynb)
+- [Lesson 3](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson3.ipynb)
+- [Lesson 4](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson4.ipynb)
+- [Lesson 5](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson5.ipynb)
+- [Lesson 6](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson6.ipynb)
+- [Lesson 7](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson7.ipynb)
+- [Lesson 8](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson8.ipynb)
 
 ## [C++ Primer Plus Notebook](./C++Primer&#32;Plus/)
 - [C++ 入门](./C++Primer&#32;Plus/C++&#32;入门.md)
