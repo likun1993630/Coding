@@ -273,6 +273,43 @@ invalid initialization of non-const reference of type 'int&' from an rvalue of t
 
 > 原因： 如果函数接受引用参数的函数的意图是修改作为参数传递的变量，则如果像const引用那样创建临时变量就无法对被传递的变量进行修改，所以编译器拒绝这种行为。
 
+#### 非const和const引用形参与返回引用的关系（自己的思考）
+
+> 注意对于基本类型，需要通过函数修改某变量时，建议使用指针
+>
+> 这里使用const 引用只为为了演示
+
+```cpp
+// 允许
+int & test( int & n, const int & m) //此处只为了演示，对于不修改值的int类型可以直接按值传递
+{	
+	return n;
+}
+// 允许
+const int & test( int & n, const int & m)
+{
+	return n;
+}
+
+// 不允许，因为对m是const引用，返回m时需要使用 const int &
+int & test( int & n, const int & m)
+{
+	return m;
+}
+
+// 允许
+const int & test( int & n, const int & m)
+{
+	return m;
+}
+
+// 不允许
+int & test( const int & n, const int & m)
+{
+	return n;
+}
+```
+
 ### 应尽可能使用const
 
 将引用参数声明为常量数据的引用有三个理由：
