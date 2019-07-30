@@ -275,9 +275,8 @@ invalid initialization of non-const reference of type 'int&' from an rvalue of t
 
 #### 非const和const引用形参与返回引用的关系（自己的思考）
 
-> 注意对于基本类型，需要通过函数修改某变量时，建议使用指针
->
-> 这里使用const 引用只为为了演示
+> 注意对于基本类型，作为函数参数需要被修改时，建议使用指针（参考下面的建议）
+> 这里使用const 引用只是为了演示
 
 ```cpp
 // 允许
