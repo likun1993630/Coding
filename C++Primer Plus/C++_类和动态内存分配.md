@@ -782,3 +782,365 @@ force1 + force2 = net; //此时程序计算force1 和force2的和，将结果复
 
 ## 使用指向对象的指针
 
+### 指向对象的指针的形式：
+
+示例：
+
+```cpp
+// String为自定义类
+String stringobj;
+String * pstring = & stringobj; // String类指针pstring指向 stringobj对象
+```
+
+示例：
+
+```cpp
+// String为自定义类
+// sayings为String类对象数组
+// String类已重载 <， =， << 
+...
+String * shortest = &sayings[0]; // initialize to first object
+String * first = &sayings[0];
+for (i = 1; i < total; i++)
+{
+    if (sayings[i].length() < shortest->length())
+        shortest = &sayings[i];
+    if (sayings[i] < *first)     // compare values // *first解引用为对象本身
+        first = &sayings[i];     // assign address
+}
+cout << "Shortest saying:\n" << * shortest << endl;
+cout << "First alphabetically:\n" << * first << endl;
+```
+
+### 使用new初始化对象指针：
+
+调用默认构造函数的初始化形式：
+
+```cpp
+// Class_name 是类名
+Class_name * ptr = new Class_name;
+```
+
+调用自定义构造函数的初始化形式：
+
+```cpp
+// Class_name 是类名，value的类型为Type_name
+Class_name * pclass = new Class_name(value);
+// 上述语句将会调用如下构造函数
+Class_name(Type_name);
+//或者：
+Class_name(const Type_name &)
+```
+
+> 这种情情况下如果不存在二义性，可能发生由原型匹配导致的转换（如从int到double）
+
+### 类对象指针与 new和delete
+
+示例：
+
+```cpp
+// sayings[0] 为String类对象
+String * favorite = new String(sayings[0]);
+cout << "My favorite saying:\n" << *favorite << endl;
+delete favorite;
+```
+
+- 这里的new是为对象分配内存，将自动调用构造函数为String的数据成员str和len分配内存，此外用于保存字符串的内存也被分配，并将字符串的地址赋值给str。
+- 使用delete删除favorite指针和其指向的动态内存（String对象），将自动调用析构函数释放String对象本身和str指针所指向的内存。
+
+![1565523489810](res/1565523489810.png)
+
+（回忆）何时析构函数被调用
+
+- 如果对象时自动变量，则当执行完定义该对象的程序块时，将调用该对象的析构函数
+- 如果对象是静态变量，则在程序结束时将调用对象的析构函数
+- 如果对象是用new创建的，则仅当显式使用delete删除对象时，其析构函数才会被调用。
+
+### 指针与对象小结
+
+- 使用常规表示法来声明指向对象的指针：
+
+  ```cpp
+  String * glamour;
+  ```
+
+- 可以将指针初始化为指向已有的对象：
+
+  ```cpp
+  String * first = &sayings[0];
+  ```
+
+- 可以使用new初始化指针，将创建一个新的对象，通过调用相应的类构造函数来初始化新创建的对象
+
+  ```cpp
+  // 调用默认构造函数
+  String * gleep = new String;
+  // 调用 String(const char *) 构造函数
+  String * glop = new String("my my my");
+  // 调用 String(const String &)复制构造函数
+  String * favorita = new String(sayings[1]);
+  ```
+
+
+- 可以使用-> 运算符通过指针访问类方法
+
+  ```cpp
+  if (sayings[i].length() < shortest->length())
+  ```
+
+- 可以对对象指针应用解除引用运算符（*）来获得对象：
+
+  ```cpp
+  if (sayings[i] < *first)
+      first = &sayings[i];
+  ```
+
+  ![1565726569722](res/1565726569722.png)
+
+  ![1565726599021](res/1565726599021.png)
+
+### 类对象与 定位new 运算符
+
+定位new 运算符可以实现在分配内存时指定内存位置。
+
+例程：
+
+```cpp
+// placenew2.cpp  -- new, placement new, no delete
+#include <iostream>
+#include <string>
+#include <new>
+using namespace std;
+const int BUF = 512;
+
+class JustTesting
+{
+private:
+    string words;
+    int number;
+public:
+    JustTesting(const string & s = "Just Testing", int n = 0) 
+    {words = s; number = n; cout << words << " constructed\n"; }
+    ~JustTesting() { cout << words << " destroyed\n";}
+    void Show() const { cout << words << ", " << number << endl;}
+};
+int main()
+{
+    char * buffer = new char[BUF];       // get a block of memory
+    JustTesting *pc1, *pc2;
+    pc1 = new (buffer) JustTesting;      // place object in buffer
+    pc2 = new JustTesting("Heap1", 20);  // place object on heap
+    
+    cout << "Memory block addresses:\n" << "buffer: "
+        << (void *) buffer << "    heap: " << pc2 <<endl;
+    cout << "Memory contents:\n";
+    cout << pc1 << ": ";
+    pc1->Show();
+    cout << pc2 << ": ";
+    pc2->Show();
+
+    JustTesting *pc3, *pc4;
+// fix placement new location
+    pc3 = new (buffer + sizeof (JustTesting)) JustTesting("Better Idea", 6);
+    pc4 = new JustTesting("Heap2", 10);
+    
+    cout << "Memory contents:\n";
+    cout << pc3 << ": ";
+    pc3->Show();
+    cout << pc4 << ": ";
+    pc4->Show();
+    
+    delete pc2;           // free Heap1         
+    delete pc4;           // free Heap2
+// 显式的调用析构函数用于删除使用定位new初始化的对象
+    pc3->~JustTesting();  // destroy object pointed to by pc3
+    pc1->~JustTesting();  // destroy object pointed to by pc1
+    delete [] buffer;     // free buffer
+    return 0;
+}
+```
+
+- 确保内存的偏移量，以免pc3直接覆盖pc1的内存：
+
+  ```cpp
+  pc1 = new (buffer) JustTesting;      // place object in buffer
+  pc3 = new (buffer + sizeof (JustTesting)) JustTesting("Better Idea", 6);
+  ```
+
+- 使用delete 删除 buffer 之前需要手动调用析构函数，以删除对象
+
+  ```cpp
+  // 注意删除顺序，与创建顺序相反，由于晚创建的对象可能依赖于早创建的对象
+  // 仅当所有对象都被销毁后，才能安全的释放用于存储这些对象的缓冲区
+  pc3->~JustTesting();  // destroy object pointed to by pc3
+  pc1->~JustTesting();  // destroy object pointed to by pc1
+  delete [] buffer;     // free buffer
+  ```
+
+  > 这是需要显式调用析构函数的少数几种情况之一
+  >
+  > 试想：如果不手动删除对象，当对象包含使用new动态分配内存的成员，该对象成员指向缓存区buffer外的内存，直接删除缓存区，该对象指向的缓存区外的内存还将存在而且没有对象指向它，只有使用正确的析构函数才能释放该内存，并安全删除该对象。
+
+```
+Just Testing constructed
+Heap1 constructed
+Memory block addresses:
+buffer: 0xbaa6c8    heap: 0xba6cf0
+Memory contents:
+0xbaa6c8: Just Testing, 0
+0xba6cf0: Heap1, 20
+Better Idea constructed
+Heap2 constructed
+Memory contents:
+0xbaa6e4: Better Idea, 6
+0xbaa508: Heap2, 10
+Heap1 destroyed
+Heap2 destroyed
+Better Idea destroyed
+Just Testing destroyed
+```
+
+## 小结
+
+### 重载 << 运算符
+
+建议使用友元函数：
+
+```cpp
+// 函数原型
+friend ostream & operator<<(ostream & os, const className & obj);
+// 函数定义
+ostream & operator<<(ostream & os, const className & obj)
+{
+    os << ...; //打印对象
+    return os; //实现连续输出多个对象
+}
+```
+
+### 转换函数
+
+- 将单个值转换为类类型，需要创建原型如下所示的类构造函数：
+
+  ```cpp
+  className(type_name value);
+  // 例如：
+  String(const char * s); // type_name = const char *  // value = s
+  ```
+
+- 将类型转换为其他类型，需要创建原型如下所示的类成员函数：
+
+  ```cpp
+  operator type_name();
+  // 例如：
+  operator double();
+  ```
+
+  > 没有声明返回值类型，但应返回所需类型的值
+  >
+  > 可使用关键字 explicit 防止隐式转换
+
+### 构造函数使用new的类需要注意的问题
+
+如果类使用new运算符来分配类成员指向的内存，则需要按照以下规则进行规范：
+
+- 使用new分配，必须在析构函数使用delete
+- new与delete形式应该相对应， new--delete / new[ ]--delete[ ]
+- 应定义一个重新分配内存的复制构造函数
+- 应定义一个重载赋值运算符的类成员函数
+
+# 队列模拟
+
+问题描述 ：设计一个Queue类，模拟在ATM排队取钱的场景
+
+问题抽象：队列queue，先进先出（FIFO）
+
+要求：
+
+- 队列存储有序的项目序列；
+- 队列所能容纳的项目数有一定的限制；
+- 应当能够创建空队列；
+- 应当能够检查队列是否为空；
+- 应当能够检查队列是否是满的；
+- 应当能够在队尾添加项目；
+- 应当能够从队首删除项目；
+- 应当能够确定队列中项目数。
+
+## Queue类的接口
+
+根据需求，Queue类的公有接口应该如下：
+
+```cpp
+class Queue
+{
+    enum {Q_SIZE = 10};
+    private:
+    // 待添加
+    public:
+        Queue(int qs = Q_SIZE); // 构造函数，可指定队长度
+    	~Queue();
+        bool isempty() const;
+        bool isfull() const;
+        int queuecount() const;
+        bool enqueue(const Item &item); // 向队列最后添加item //Item 为自定义数据类型
+        bool dequeue(Item &item); // 删除队列第一位置的item
+}
+```
+
+使用：
+
+```cpp
+Queue line1; // queue with 10-item limit
+Queue line2(20); //queue with 20-item limit
+```
+
+## Queue类的实现
+
+使用链表实现：
+
+链表由节点序列构成，每个节点中都包含要保存到链表中的信息以及一个指向下一个节点的指针。
+
+单向列表：每个节点都只包含一个指向其他节点的指针，知道第一个节点的地址后，就可以沿着指针找到后面的每一个节点。通常链表最后一个节点中的指针被设置为NULL（C++11中: nullptr），以指出后面没有节点了。
+
+C++ 实现链表的一种形式：
+
+```cpp
+struct Node // 一个节点
+{
+    Item item; //用于存储保存到链表的信息
+    struct Node * next; //指向下一个节点的指针
+}
+```
+
+![1565734100738](res/1565734100738.png)
+
+可以让Queue类的一个数据成员指向链表的起始位置，可以沿节点链找到任何节点。为了方便在队列队尾添加新项目，需要包含一个指向最后一个节点的数据成员。
+
+![1565734179344](res/1565734179344.png)
+
+```cpp
+class Queue
+{
+    private:
+        // 在类内嵌套结构声明，其作用域为整个类
+        struct Node {Item item; struct Node * next;};
+        enum {Q_SIZE = 10};
+        // 私有数据成员
+        Node * front; // 指向Queue头部的指针
+        Node * rear; // 指向Queue尾部的指针
+        int items; // 实时的节点数目
+        const int qsize; //最大节点的数目
+    public:
+        //...
+};
+```
+
+- 在类中嵌套结构和类声明
+
+  通过将Node声明放在Queue类中，可以使用作用域为整个类。可以使用Node来声明类成员，也可以将Node作为类方法中的类型名称，但只能在类中使用。
+
+嵌套结构和类
+
+在类声明中声明的结构、类或枚举被称为是被嵌套在类中，其作用域为整个类。这种声明不会创建数据对象，而只是指定了可以在类中使用的类型。如果声明是在类的私有部分进行的，则只能在这个类使用被声明的类型；如果声明是在公有部分进行的，则可以从类的外部通过作用域解析运算符使用被声明的类型。例如，假设如果Node是在Queue类的公有部分声明的，则可以在类的外面声明Queue::Node类型的变量。
+
+## 类方法
+
