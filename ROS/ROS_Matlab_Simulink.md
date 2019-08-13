@@ -110,3 +110,10 @@ https://ww2.mathworks.cn/help/robotics/ug/configure-ros-network-addresses.html
 Get Started with Gazebo and a Simulated TurtleBot
 
 https://ww2.mathworks.cn/help/robotics/examples/get-started-with-gazebo-and-a-simulated-turtlebot.html
+
+其他参考：
+http://www.guyuehome.com/1006
+
+https://blog.csdn.net/banzhuan133/article/details/79381605
+
+https://www.cnblogs.com/yrm1160029237/p/9923694.html
