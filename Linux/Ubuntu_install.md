@@ -7,6 +7,7 @@ sudo apt-get install exfat-utils
 sudo apt-get install git
 ```
 3. Surface pro4 内核
+
 https://github.com/jakeday/linux-surface
 ```shell
 # 终端输入：
@@ -19,8 +20,11 @@ reboot
 ```
 
 4. 主题
+
 参考：
+
 https://blog.csdn.net/White_Idiot/article/details/78973575
+
 https://www.linuxidc.com/Linux/2017-10/147431.htm
 
 ```shell
@@ -35,11 +39,14 @@ sudo apt-get update
 sudo apt-get install ultra-flat-icons
 ```
 安装完成后，打开unity-tweak-tool软件，修改主题和图标：
+
 进入Theme，修改为Flatabulous
+
 图标，修改为ultra-flat
 
 苹果主题
 https://blog.csdn.net/liudsl/article/details/80145254
+
 苹果工具栏
 https://www.jianshu.com/p/bd7b12a1c071
 
@@ -55,7 +62,9 @@ chsh -s $(which zsh)
 
 
 6.安装Clion
+
 https://blog.csdn.net/qq_32599479/article/details/81088837
+
 https://blog.csdn.net/u011068702/article/details/55190353/
 
 官网下载压缩包
@@ -71,8 +80,10 @@ UI安装界面逐步安装
 
 
 7. 安装 CMake
+
 参考
 https://blog.csdn.net/lj402159806/article/details/76408597/
+
 ```shell
 sudo apt install cmake
 ```
@@ -119,10 +130,12 @@ source /opt/ros/kinetic/setup.zsh
 #原来在bash中的形式是source /opt/ros/kinetic/setup.bash
 ```
 参考：
+
 https://cloud.tencent.com/developer/news/62201
 
 
 软件源：
+
 https://www.cnblogs.com/EasonJim/p/7119156.html
 https://blog.csdn.net/maizousidemao/article/details/79127695
 
