@@ -1,3 +1,18 @@
+## 修改root用户密码
+```shell
+sudo passwd root
+# 此后就可以使用su 来切换到root用户
+```
+
+## 使用 .sh 文件快速安装软件
+
+```shell
+# home目录下创建一个 install.sh 文件
+# 然后将shell 命令拷贝进去
+# 使用sh 命令执行 .sh 文件：
+sh install.sh
+```
+
 ## 安装对exfat格式的支持
 ```shell
 sudo apt-get install exfat-utils
@@ -129,7 +144,100 @@ https://www.cnblogs.com/EasonJim/p/7119156.html
 https://blog.csdn.net/maizousidemao/article/details/79127695
 
 
+## 安装 Sublime Text 3
 
+```shell
+wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+sudo apt-get install apt-transport-https
+echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+sudo apt-get update
+sudo apt-get install sublime-text
+
+# 完成后既可以通过 subl 启动
+```
+
+## 安装Typora
+
+https://www.typora.io/#linux
+
+```shell
+# or run:
+# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BA300B7755AFCFAE
+wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add -
+
+# add Typora's repository
+sudo add-apt-repository 'deb https://typora.io/linux ./'
+sudo apt-get update
+
+# install typora
+sudo apt-get install typora
+```
+## SSD 速度测试
+
+```shell
+# 首先在home目录下建立一个文件test
+touch ~/test
+# 向test文件写入8G的数据，并输出速度和时间
+# dd命令将/dev/zero中的无限输入写到test文件中
+time dd if=/dev/zero of=~/test bs=8k count=1000000
+
+```
+
+```
+记录了1000000+0 的读入
+记录了1000000+0 的写出
+8192000000 bytes (8,2 GB, 7,6 GiB) copied, 19,0835 s, 429 MB/s
+
+real	0m19.090s
+user	0m0.448s
+sys	0m7.231s
+
+```
+
+```shell
+# 测试纯读速度，我们还是利用dd命令
+time dd if=~/test of=/dev/null bs=8k count=1000000
+```
+```
+记录了1000000+0 的读入
+记录了1000000+0 的写出
+8192000000 bytes (8,2 GB, 7,6 GiB) copied, 15,0281 s, 545 MB/s
+
+real	0m15.034s
+user	0m0.626s
+sys	0m4.520s
+```
+
+```shell
+# 测试读写速度
+touch ~/test1
+time dd if=~/test of=~/test1 bs=8k count=1000000
+```
+```
+记录了1000000+0 的读入
+记录了1000000+0 的写出
+8192000000 bytes (8,2 GB, 7,6 GiB) copied, 46,0595 s, 178 MB/s
+
+real	0m46.061s
+user	0m0.409s
+sys	0m10.356s
+```
+
+## SSD 优化
+https://blog.csdn.net/hzwwpgmwy/article/details/80313272
+
+## swap优化
+swappiness的值的大小对如何使用swap分区是有着很大的联系的。swappiness=0的时候表示最大限度使用物理内存，然后才是 swap空间，swappiness＝100的时候表示积极的使用swap分区，并且把内存上的数据及时的搬运到swap空间里面。linux的基本默认设置为60
+```shell
+# 查看系统当前swappiness值
+cat /proc/sys/vm/swappiness
+
+# 设置swappiness值
+su
+echo "vm.swappiness=1" >> /etc/sysctl.conf
+
+# 注销重新登录之后就被修改了
+```
 
 ## Surface pro4 wifi 崩溃问题
 不安装第三方内核的情况下
