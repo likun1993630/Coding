@@ -1144,3 +1144,489 @@ class Queue
 
 ## 类方法
 
+### 成员初始化列表
+
+```cpp
+// 类的声明
+...
+const int qsize;
+...;
+// 类方法
+Queue::Queue(int qs)
+{
+    front = rear = NULL;
+    items = 0;
+    // qsize = qs; // 错误的语法
+}
+```
+
+- qsize为常量，所以只能初始化，不能赋值。调用构造函数时，对象将括号中的代码执行之前被创建。
+- 从概念上说，调用构造函数时，对象将在括号中的代码执行之前被创建．因此，调用Queue(int qs)构造函数将导致程序首先给4个成员变量分配内存。然后，程序流程进入到括号中，使用常规的赋值方式将值存储到内存中。因此，对于const数据成员，必须在执行到构造函数体之前，即创建对象时进行初始化。
+- c++提供了一种特殊的语法来完成上述工作，它叫做成员初始化列表(memberInitializerlist)。成员初始化列表由逗号分隔的初始化列表组成（前面带冒号)。它位于参数列表的右括号之后、函数一体左括号之前，如果数据成员的名称为mdata，并需要将它初始化为val。则初始化器为mdata(val)。
+
+使用成员初始化列表，可以这样编写Queue的构造函数：
+
+```cpp
+Queue::Queue(int qs) : qsize(qs)
+{
+    front = rear = NULL;
+    items = 0;
+}
+// 或者：
+Queue::Queue(int qs) : qsize(qs), front(NULL), rear(NULL), items(0) {}
+```
+
+### 初始化列表的要点：
+
+- 只有构造函数可以使用这种初始化列表语法
+- 只能使用这种格式或者C++11的类内初始化来对非静态const数据成员进行初始化
+- 只能用这种格式来初始化引用数据成员
+
+- 可用于简单数据成员，使用成员初始化列表和在函数体中使用赋值没有什么区别。
+- 对于本身就是类对象的成员来说，使用成员初始化列表的效率更高。
+
+- 数据成员被初始化的顺序与它们出现在类声明中的顺序相同，与初始化器中的排列顺序无关
+
+示例：
+
+```cpp
+class Agency {...};
+class Agent
+{
+    private:
+    Agency & belong; //必须使用初始化列表进行初始化
+    ...
+};
+Agent::Agent(Agency & a) : belong(a) {...}
+```
+
+```cpp
+Classy::Classy(int n, int m):men1(n), men2(0),men3(n*m + 2)
+{
+    //...
+}
+```
+
+### C++11 的类内初始化
+
+C++11 允许在类内直接对成员进行初始化
+
+```cpp
+class Classy
+{
+    int mem1 = 10;  // 类内初始化
+    const int mem2 = 20; // 类内初始化
+    //...
+};
+
+// 与在构造函数中使用成员初始化列表等价
+Classy::Classy() : mem1(10), mem2(20) {...}
+```
+
+- 类内初始化和成员初始化列表都存在时，成员初始化列表会覆盖类内初始化的值。
+
+### Queue类方法
+
+#### 构造函数
+
+- 列队最初是空的，因此队首和队尾指针都设置为NULL（0 或 nullptr），并将items设置为0。
+- 列队的最大长度qsize设置为构造函数参数qs的值
+
+```cpp
+Queue::Queue(int qs) : qsize(qs)
+{
+    front = rear = NULL;
+    items = 0;
+}
+```
+
+#### 入队函数 enqueue
+
+主要的步骤：
+
+- 将新的节点初始化
+  - 首先为新的节点（即最后的节点）申请内存空间
+  - 然后将新的节点的item赋值，将新节点的指针赋值为空指针，因为它之后已无对象
+- 更新前一个节点的next指针，使其指向新的节点
+- 更新rear指针
+
+```cpp
+bool Queue::enqueue(const Item & item)
+{
+    if (isfull())
+        return false;
+    Node * add = new Node;  // create node
+// on failure, new throws std::bad_alloc exception
+    add->item = item;       // set node pointers
+    add->next = NULL;       // or nullptr;
+    items++;
+    if (front == NULL)      // if queue is empty,
+        front = add;        // place item at front
+    else
+        rear->next = add;   // else place at rear
+    rear = add;             // have rear point to new node
+    return true;
+}
+```
+
+#### 出队函数dequeue
+
+主要步骤：
+
+- 初始化一个新的Node指针对象temp，然后将首节点的地址赋值给新Node对象
+- 使front指针指向下一个节点
+- 使用temp指针删除delete首节点，以释放内存空间
+
+```cpp
+bool Queue::dequeue(Item & item)
+{
+    if (front == NULL)
+        return false;
+    item = front->item;     // set item to first item in queue
+    items--;
+    Node * temp = front;    // save location of first item
+    front = front->next;    // reset front to next item
+    delete temp;            // delete former first item
+    if (items == 0)
+        rear = NULL;
+    return true;
+}
+```
+
+#### 析构函数
+
+- 虽然enqueue函数和dequeue函数有成对的 new和delete，但是不能保证列队到期时为空，所以需要显式的析构函数
+- 析构函数从链表头开始，依次删除其中的每一个节点：
+
+```cpp
+Queue::~Queue()
+{
+    Node * temp;
+    while (front != NULL)
+    {
+        temp = front;
+        front = front->next;
+        delete temp;
+    }
+}
+```
+
+#### 复制构造函数和赋值运算符
+
+首先考虑复制构造函数和赋值运算符的必要性：
+
+- 复制Queue对象的成员将生成一个新的对象，该对象指向链表原来的头和尾。将产生问题，所以需要提供复制构造函数和重载赋值运算符
+
+解决方法：
+
+- 提供复制构造函数和重载赋值运算符
+- 使用伪私有方法，来关闭对象的复制
+
+#### 伪私有方法
+
+- 可以阻止自动生成默认的类方法定义，如复制构造函数等
+- 因为方法是私有的，所以不能被广泛的使用
+- 此时对象不能被按值传递（和返回对象），因为按值传递将调用复制构造函数
+- 不能创建临时对象，因为临时对象将调用复制构造函数
+
+```cpp
+class Queue
+{
+    private:
+    Queue(const Queue & q):qsize(0) {}
+    Queue & operator=(const Queue & q) {return * this;}
+    //...
+};
+```
+
+```cpp
+// 如果使用了上述伪私有方法：
+// nip 和 tuck 是Queue对象
+Queue snick(nip);  //不允许
+tuck = nip;  //不允许
+```
+
+## Customer类
+
+Customer即为Item，用来描述ATM客户的属性：
+
+- 客户何时进入列队
+- 客户交易所需时间
+
+当模拟生成新客户时，程序将创建一个新的客户对象，并在其中存储客户的到达时间以及一个随机生成的交易时间。当客户到达队首时，程序将记录此时的时间，并将其与进入队列的时间相减，得到客户的等候时间。
+
+```cpp
+class Customer
+{
+private:
+    long arrive;        // arrival time for customer
+    int processtime;    // processing time for customer
+public:
+    Customer() : arrive(0), processtime (0){}
+    void set(long when);
+    long when() const { return arrive; }
+    int ptime() const { return processtime; }
+};
+void Customer::set(long when)
+{
+    processtime = std::rand() % 3 + 1;
+    arrive = when; 
+}
+// std::rand() 返回0到RAND_MAX（包括0和RAND_MAX）之间的伪随机整数值。
+// std::rand() % 3 范围为0~2
+// std::rand() % 3 + 1 范围为1~3
+```
+
+### ATM 模拟
+
+- 思路：写一个循环，不断循环更新列队和顾客信息，如设置每个1分钟更新一次列队，假设需要顾客平均每6分钟来一个，则等效的在每一个循环里，也就是一分钟内来新顾客的概率为1/6。
+
+queue.h
+
+```cpp
+// queue.h -- interface for a queue
+#ifndef QUEUE_H_
+#define QUEUE_H_
+// This queue will contain Customer items
+class Customer
+{
+private:
+    long arrive;        // arrival time for customer
+    int processtime;    // processing time for customer
+public:
+    Customer() : arrive(0), processtime (0){}
+    void set(long when);
+    long when() const { return arrive; }
+    int ptime() const { return processtime; }
+};
+
+typedef Customer Item;
+
+class Queue
+{
+private:
+// class scope definitions
+    // Node is a nested structure definition local to this class
+    struct Node { Item item; struct Node * next;};
+    enum {Q_SIZE = 10};
+// private class members
+    Node * front;       // pointer to front of Queue
+    Node * rear;        // pointer to rear of Queue
+    int items;          // current number of items in Queue
+    const int qsize;    // maximum number of items in Queue
+    // preemptive definitions to prevent public copying
+    Queue(const Queue & q) : qsize(0) { }
+    Queue & operator=(const Queue & q) { return *this;}
+public:
+    Queue(int qs = Q_SIZE); // create queue with a qs limit
+    ~Queue();
+    bool isempty() const;
+    bool isfull() const;
+    int queuecount() const;
+    bool enqueue(const Item &item); // add item to end
+    bool dequeue(Item &item);       // remove item from front
+};
+#endif
+```
+
+queue.cpp
+
+```cpp
+// queue.cpp -- Queue and Customer methods
+#include "queue.h"
+#include <cstdlib>         // (or stdlib.h) for rand()
+
+// Queue methods
+Queue::Queue(int qs) : qsize(qs)
+{
+    front = rear = NULL;    // or nullptr
+    items = 0;
+}
+
+Queue::~Queue()
+{
+    Node * temp;
+    while (front != NULL)   // while queue is not yet empty
+    {
+        temp = front;       // save address of front item
+        front = front->next;// reset pointer to next item
+        delete temp;        // delete former front
+    }
+}
+
+bool Queue::isempty() const
+{
+    return items == 0;
+}
+
+bool Queue::isfull() const
+{
+    return items == qsize;
+}
+
+int Queue::queuecount() const
+{
+    return items;
+}
+
+// Add item to queue
+bool Queue::enqueue(const Item & item)
+{
+    if (isfull())
+        return false;
+    Node * add = new Node;  // create node
+// on failure, new throws std::bad_alloc exception
+    add->item = item;       // set node pointers
+    add->next = NULL;       // or nullptr;
+    items++;
+    if (front == NULL)      // if queue is empty,
+        front = add;        // place item at front
+    else
+        rear->next = add;   // else place at rear
+    rear = add;             // have rear point to new node
+    return true;
+}
+
+// Place front item into item variable and remove from queue
+bool Queue::dequeue(Item & item)
+{
+    if (front == NULL)
+        return false;
+    item = front->item;     // set item to first item in queue
+    items--;
+    Node * temp = front;    // save location of first item
+    front = front->next;    // reset front to next item
+    delete temp;            // delete former first item
+    if (items == 0)
+        rear = NULL;
+    return true;
+}
+
+// customer method
+
+// when is the time at which the customer arrives
+// the arrival time is set to when and the processing
+// time set to a random value in the range 1 - 3
+void Customer::set(long when)
+{
+    processtime = std::rand() % 3 + 1;
+    arrive = when; 
+}
+```
+
+bank.cpp
+
+```cpp
+// bank.cpp -- using the Queue interface
+// compile with queue.cpp
+#include <iostream>
+#include <cstdlib> // for rand() and srand()
+#include <ctime>   // for time()
+#include "queue.h"
+const int MIN_PER_HR = 60;  //每小时60分钟
+
+bool newcustomer(double x); // is there a new customer?
+
+int main()
+{
+    using std::cin;
+    using std::cout;
+    using std::endl;
+    using std::ios_base;
+// setting things up
+    std::srand(std::time(0));    //  random initializing of rand()
+
+    cout << "Case Study: Bank of Heather Automatic Teller\n";
+    cout << "Enter maximum size of queue: ";
+    int qs;
+    cin >> qs;
+    Queue line(qs);         // line queue holds up to qs people
+
+    cout << "Enter the number of simulation hours: ";
+    int hours;              //  hours of simulation
+    cin >> hours;
+    // simulation will run 1 cycle per minute
+    long cyclelimit = MIN_PER_HR * hours; // # of cycles
+
+    cout << "Enter the average number of customers per hour: ";
+    double perhour;         //  average # of arrival per hour
+    cin >> perhour;
+    double min_per_cust;    //  average time between arrivals
+    min_per_cust = MIN_PER_HR / perhour;
+
+    Item temp;              //  new customer data
+    long turnaways = 0;     //  turned away by full queue
+    long customers = 0;     //  joined the queue
+    long served = 0;        //  served during the simulation
+    long sum_line = 0;      //  cumulative line length
+    int wait_time = 0;      //  time until autoteller is free
+    long line_wait = 0;     //  cumulative time in line
+
+
+// running the simulation
+    for (int cycle = 0; cycle < cyclelimit; cycle++)
+    {
+        if (newcustomer(min_per_cust))  // 如果来了一个新顾客
+        {
+            if (line.isfull()) // 拒绝顾客排队
+                turnaways++;
+            else	// 接受顾客排队
+            {
+                customers++;
+                temp.set(cycle);    // 初始化顾客排入队伍的时刻
+                line.enqueue(temp); // add newcomer to line
+            }
+        }
+        if (wait_time <= 0 && !line.isempty())
+        {
+            line.dequeue (temp);      // attend next customer
+            wait_time = temp.ptime(); // for wait_time minutes
+            line_wait += cycle - temp.when();
+            served++;
+        }
+        if (wait_time > 0)
+            wait_time--;
+        sum_line += line.queuecount();
+    }
+
+// reporting results
+    if (customers > 0)
+    {
+        cout << "customers accepted: " << customers << endl;
+        cout << "  customers served: " << served << endl;
+        cout << "         turnaways: " << turnaways << endl;
+        cout << "average queue size: ";
+        cout.precision(2);
+        cout.setf(ios_base::fixed, ios_base::floatfield);
+        cout << (double) sum_line / cyclelimit << endl;
+        cout << " average wait time: "
+             << (double) line_wait / served << " minutes\n";
+    }
+    else
+        cout << "No customers!\n";
+    cout << "Done!\n";
+    return 0;
+}
+
+//  x = average time, in minutes, between customers
+//  return value is true if customer shows up this minute
+bool newcustomer(double x)
+{
+    return (std::rand() * x / RAND_MAX < 1); 
+}
+```
+
+```
+C:\Users\likun\OneDrive\桌面\Primer Plus\Chapter 12>a.exe
+Case Study: Bank of Heather Automatic Teller
+Enter maximum size of queue: 10
+Enter the number of simulation hours: 4
+Enter the average number of customers per hour: 30
+customers accepted: 118
+  customers served: 113
+         turnaways: 9
+average queue size: 5.58
+ average wait time: 11.47 minutes
+Done!
+```
+
