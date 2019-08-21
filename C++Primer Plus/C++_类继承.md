@@ -868,3 +868,235 @@ int main()
 
 ## 静态联编和动态联编
 
+程序调用函数时，将使用哪个可执行的代码块是由编译器决定的。将源代码中的函数调用解释为执行特定的函数代码块，这被称为函数名联编。由于C++的多态，编译器必须查看函数参数以及函数名才能确定使用哪个函数。 C++ 编译器可以在编译过程中完成这种联编。
+
+在编译过程中进行联编被称为静态联编。
+
+然而对于虚函数，使用哪一个函数是不能在编译时确定的，因为编译器不知道用户选择哪种类型的对象。所以编译器必须生成能够在程序运行时选择正确的虚方法的代码，这被称为动态联编。
+
+### 指针和引用类型的兼容性
+
+在C++中，动态联编与通过指针和引用调用方法相关，从某种程度上说，这是由继承控制的。公有继承建立is-a关系的一种方法是如何处理指向对象的指针和引用。
+
+通常，c+不允许将一种类型的地址赋给另一种类型的指针，也不允许一种类型的引用指向另一种类型：
+
+```cpp
+double x = 2.5;
+int * pi = &x; //错误，类型不匹配
+long & r1 = x; //错误，类型不匹配
+```
+
+但是，指向基类的引用或指针可以引用派生类对象，而不必进行显式类型转换。
+
+```cpp
+BrassPlus dilly("Annie Dill", 4345345, 2343);
+Brass * pb = &dilly;
+Brass & rb = dilly;
+```
+
+向上强制转换：
+
+- 将派生类引用或指针转换为基类引用或指针被称为向上强制转换
+- 向上强制转换，使公有继承不需要进行显式类型转换
+- 向上强制转换是is-a关系的一部分
+- BrassPIus对象都是Brass对象，因为它继承了Brass对象所有的数据成员和成员函数。所以，可以对Brass对象执行的任何操作，都适用于BrassPlus对象。因此，为处理Brass引用而设计的函数可以对BrassPIus对象执行同样的操作，而不必担心会导致任何问题。将指向对象的指针作为函数参数时，也是如此。向上强制转换是可传递的，也就是说，如果从BrassPIus派生出BrassPIusPIus类，则Brass指针或引用可以引用Brass对象、BrassPIus对象或BrassPlusPlus对象。
+
+向下强制转换：
+
+- 将基类指针或引用转换为派生类指针或引用被称为向下强制转换
+- 如果不使用显式类型转换，则向下强制转换是不允许的。原因是is-a关系通常是不可逆的。
+- 派生类可以新增数据成员，因此使用这些数据成员的类成员函数不能应用于基类。
+
+对于使用基类引用或指针作为参数的函数调用，将进行向上转换：
+
+```cpp
+// ViewAcct() 为虚方法
+void fr(Brass & rb){ rb.ViewAcct() };
+void fp(Brass * pb){ pb->ViewAcct() };
+void fv(Brass b){ b.ViewAcct };
+int main()
+{
+    Brass b("haleo", 32423 ,234234.0);
+    BrassPlus bp("sdfasdf", 234234,543534.0);
+    fr(b); // 调用 Brass::ViewAcct()
+    fr(bp); // 调用 BrassPlus:::ViewAcct()
+    fp(b); // 调用 Brass::ViewAcct()
+    fp(bp); // 调用 BrassPlus:::ViewAcct()
+    fv(b); // 调用 Brass::ViewAcct()
+    fv(bp); // 调用 Brass::ViewAcct()
+}
+```
+
+- 按值传递导致只将BrassPlus对象的Brass部分传递给函数fv()。
+- 但随引用和指针发生的隐式向上转换导致函数fr() 和 fp() 分别为Brass对象和BrassPlus对象使用Brass::ViewAcct(）和BrassPIus::ViewAcct()
+- 隐式向上强制转换使基类指针或引用可以指向基类对象或派生类对象，因此需要动态联编。C++使用
+  虚成员函数来满足这种需求。
+
+### 虚成员函数和动态联编
+
+```cpp
+BrassPlus ophelia; // 派生类
+Brass * bp; // 基类
+bp = &ophelia;
+bp->ViewAcct(); // 这里会调用哪个版本的函数？
+```
+
+- 如果基类中没有将ViewAcct（）声明为虚的，则bp->ViewAcct()将根据指针类型（Brass *）调用 Brass::ViewAcct(). 指针类型在编译时已知，因此编译器在编译时，可以将ViewAcct()关
+  联到Brass::ViewAcct()0总之，编译器对非虚方法使用静态联编。
+- 如果在基类中将ViewAcct()声明为虚的，则bp->ViewAcct()根据对象类型（BrassPlus）调用
+  BrassPlus::ViewAcct()。所以编译器生成的代码将在程序执行时，根据对象类型将ViewAcct(）关联
+  到Brass::ViewAcct(）或BrassPlus::ViewAcct()。总之，编译器对虚方法使用动态联编。
+
+### 静态联编和动态联编对比
+
+- 效率：
+  - 静态联编效率高，因为动态联编有额外的开销，所以C++默认使用静态联编
+  - 仅当程序设计确实需要虚函数时，才使用动态联编
+- 概念模型：
+  - 在设计类时，应仅将那些预期在派生类中被重新定义的方法声明为虚的。否则，设置为非虚方法
+
+## 虚函数的注意事项
+
+上文已提到的：
+
+- 在基类方法的声明中使用关键字virtual可使该方法在基类以及所有的派生类（包括从派生类派生
+  出来的类）中是虚的。
+- 如果使用指向对象的引用或指针来调用虚方法，程序将使用为对象类型定义的方法，而不使用为引用或指针类型定义的方法。这称为动态联编或晚期联编。这种行为非常重要，因为这样基类指针或引用可以指向派生类对象。
+- 如果定义的类将被用作基类，则应将那些要在派生类中重新定义的类方法声明为虚的。
+
+### 构造函数
+
+- 构造函数不能是虚函数
+- 创建派生类对象时，将调用派生类的构造函数，而不是基类的构造函数，然后，派生类的构造函数将使用基类的一个构造函数，这种顺序不同于继承机制。
+- 派生类不继承基类的构造函数，所以将类构造函数声明为虚的没什么意义。
+
+### 析构函数
+
+- 析构函数应当是虚函数，除非类不用做基类（也就是不进行派生）
+- 通常应给基类提供一个虚析构函数，即使它并不需要析构函数
+- 形如：`virtual ~BaseClass() {}`
+
+例如: 
+
+假设Employee是基类，Singer是派生类，并添加一个char*成员，该成员指向由new分配的内存。当Singer对象过期时，必须调用~Singer()析构函数来释放内存。
+
+```cpp
+Employee * pe = new Singer; //允许
+...
+delete pe; // 此处应该调用哪个析构函数？
+```
+
+- 如果析构函数是虚的，则先调用~Singer析构函数释放由Singer组件指向的内存，然后，再调用~Employee() 析构函数来释放由Employee组件指向的内存
+
+### 友元
+
+- 友元不能是虚函数，因为友元不是类成员，而只有成员才能是虚函数
+
+### 没有重新定义函数
+
+- 如果派生类没有重新定义函数，将使用该函数的基类版本
+
+### 重新定义将隐藏方法
+
+- 注意：在派生类中重新定义的方法并不是重载，也就是说，在派生类中重新定义同名函数，但是参数类型不同，则派生类中新的定义将覆盖掉基类的函数定义：
+
+  ```cpp
+  class Dwelling
+  {
+      public:
+      virtual void showperks(int a) const;
+      ...
+  };
+  class Hovel : public Dwelling
+  {
+  	public:
+  	virtual void showperks() const;
+  	...
+  };
+  
+  // 上述代码有如下含义：
+  Hovel trump;
+  trump.showperks(); // 允许
+  trump.showperks(5); // 不允许
+  // 因为基类中的不带参数的 showperks() 被 派生类中带int形参showperks(int) 隐藏，所以相当于没有定义不带参数的变式。
+  ```
+
+- 如果重新定义继承的方法，应该保证与原来的原型完全相同，但如果返回类型是基类引用或指针，则可以修改为指向派生类的引用或指针。 这种特性叫返回类型协变，因此允许返回类型随类类型的变化而变化。
+
+  ```cpp
+  class Dwelling
+  {
+      public:
+      virtual Dwelling & build(int n) ;
+      ...
+  };
+  class Hovel : public Dwelling
+  {
+  	public:
+  	virtual Hovel & build(int n);
+  	...
+  };
+  ```
+
+- 如果基类声明被重载了（注意是在基类的声明中，对基类的成员函数进行了函数重载，就是定义了多个不同形参的同名函数），则应在派生类中重新定义所有的基类版本：
+
+  ```cpp
+  class Dwelling
+  {
+      public:
+      virtual void showperks(int a) const;
+      virtual void showperks(double x) const;
+      virtual void showperks() const;
+      ...
+  };
+  class Hovel : public Dwelling
+  {
+  	public:
+  	virtual void showperks(int a) const;
+  	virtual void showperks(double x) const;
+  	virtual void showperks() const;
+  	...
+  };
+  ```
+
+  - 假如在派生类只重新定义一个版本，则另外两个版本将被隐藏，派生类对象将无法使用它们
+
+  - 习惯： 这里对于不需要修改基类版本，可以在新定义中调用基类的版本。
+
+    ```cpp
+    void Hovel:::showperks() const {Dwelling::showperks();}
+    ```
+
+
+
+## 访问控制：protected
+
+关键字protected的含义：
+
+- 在类外只能公有类成员来访问protectd部分中的类成员。
+- 派生类成员可以直接访问基类的保护成员（对比私有成员，派生类不能直接访问基类的私有成员）
+- 因此，对于外部世界，保护成员的行为与私有成员相似；对于派生类，保护成员的行为与公有成员相似
+
+例如：
+
+```cpp
+// 基类声明
+calss Brass
+{
+protected：
+	double balance;
+	...
+};
+// 派生类函数定义
+void BrassPlus::Withdraw(double amt)
+{
+    ...
+    balance -= amt; //可以直接使用基类中的保护成员
+    ...
+}
+```
+
+
+
+## 抽象基类(ABC)
+
