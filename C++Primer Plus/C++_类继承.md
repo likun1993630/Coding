@@ -1100,3 +1100,456 @@ void BrassPlus::Withdraw(double amt)
 
 ## 抽象基类(ABC)
 
+## 为什么需要抽象基类
+
+比如圆和椭圆，圆是椭圆的一个特殊情况，长轴和短轴等长的椭圆，描述圆的参数比椭圆的要少，如果从椭圆类派生一个圆类，会使信息冗余。
+
+单独定义椭圆类：
+
+```cpp
+class Ellipse
+{
+private:
+    double x;//中心坐标
+    double y;//中心坐标
+    double a;//长轴
+    double b;//短轴
+    double angle;//长轴与x轴的夹角
+    ...
+public:
+    ...
+    void Move(int nx,ny){x = nx; y = ny;}
+    double Area() const {return 3.1415926*a*b;}
+    void Rotate(double nang){angle += nang;}
+    void Scale(double sa, double sb){a*=sa; b*=sb;}
+    ...
+};
+```
+
+单独定义圆类：
+
+```cpp
+class Circle
+{
+private:
+    double x;//中心坐标
+    double y;//中心坐标
+	double r;
+    ...
+public:
+    ...
+    void Move(int nx,ny){x = nx; y = ny;}
+    double Area() const {return 3.1415926*r*r;}
+    void Scale(double sr){r *= sr;}
+    ...
+};
+```
+
+为了解决从椭圆派生圆的不合理性，可以从Ellipse和Circle类中抽象出它们的共性，将这些共性放到一个ABC中，然后从该ABC派生出Circle和Ellipse类，这样可以使用基类指针数组同时管理Circle和Ellipse对象。
+
+从上面代码中，看出对于圆和椭圆虽然都有 Area（） 函数，但是实现的方法却不同，在ABC中，对于这个问题C++通过使用纯虚函数提供未实现的函数。
+
+纯虚函数：
+
+- 纯虚数声明的结尾处为` =0`
+- 但类声明中包含纯虚函数是，则不能创建该类的对象。即包含纯虚函数的类只能作基类
+- ABC必须至少包含一个纯虚数
+- 纯虚函数只需要在类声明中有函数原型，函数定义可以没有
+
+```cpp
+class BaseEllipse
+{
+    private:
+    double x;
+    double y;
+    public:
+    BaseEllipse(double x0=0, double y0=0):x(x0),y(y0){}
+    virtual ~BaseEllipse(){}
+    void Move(int nx, ny){x = nx; y = ny;}
+    virtual double Area() const = 0;// 纯虚函数
+}
+```
+
+- C++也允许纯虚函数有定义，即类声明中声明该函数为纯虚函数，在类定义中定义该函数
+
+## 应用ABC概念
+
+定义一个AcctABC的类，这个类包含Brass和BrassPlus类共有的所有方法和数据成员。
+
+acctabc.h:
+
+```cpp
+// acctabc.h  -- bank account classes
+#ifndef ACCTABC_H_
+#define ACCTABC_H_
+#include <iostream>
+#include <string>
+
+// Abstract Base Class
+class AcctABC
+{
+private:
+    std::string fullName;
+    long acctNum;
+    double balance;
+protected:
+    struct Formatting 
+    {
+         std::ios_base::fmtflags flag;
+         std::streamsize pr;
+    };
+    const std::string & FullName() const {return fullName;}
+    long AcctNum() const {return acctNum;}
+    Formatting SetFormat() const;
+    void Restore(Formatting & f) const;
+public: 
+    AcctABC(const std::string & s = "Nullbody", long an = -1,
+                double bal = 0.0);
+    void Deposit(double amt) ;
+    virtual void Withdraw(double amt) = 0; // pure virtual function
+    double Balance() const {return balance;};
+    virtual void ViewAcct() const = 0;     // pure virtual function
+    virtual ~AcctABC() {}
+};
+
+// Brass Account Class
+class Brass :public AcctABC
+{
+public:
+    Brass(const std::string & s = "Nullbody", long an = -1,
+           double bal = 0.0) : AcctABC(s, an, bal) { }
+    virtual void Withdraw(double amt);
+    virtual void ViewAcct() const;
+    virtual ~Brass() {}
+};
+
+//Brass Plus Account Class
+class BrassPlus : public AcctABC
+{
+private:
+    double maxLoan;
+    double rate;
+    double owesBank;
+public:
+    BrassPlus(const std::string & s = "Nullbody", long an = -1,
+            double bal = 0.0, double ml = 500,
+            double r = 0.10);
+    BrassPlus(const Brass & ba, double ml = 500, double r = 0.1);
+    virtual void ViewAcct()const;
+    virtual void Withdraw(double amt);
+    void ResetMax(double m) { maxLoan = m; }
+    void ResetRate(double r) { rate = r; };
+    void ResetOwes() { owesBank = 0; }
+};
+#endif
+```
+
+
+```cpp
+// acctabc.cpp -- bank account class methods
+#include <iostream>
+#include "acctabc.h"
+using std::cout;
+using std::ios_base;
+using std::endl;
+using std::string;
+
+// Abstract Base Class
+AcctABC::AcctABC(const string & s, long an, double bal)
+{
+    fullName = s;
+    acctNum = an;
+    balance = bal;
+}
+
+void AcctABC::Deposit(double amt)
+{
+    if (amt < 0)
+        cout << "Negative deposit not allowed; "
+             << "deposit is cancelled.\n";
+    else
+        balance += amt;
+}
+
+void AcctABC::Withdraw(double amt)
+{
+    balance -= amt;
+}
+
+// protected methods for formatting
+AcctABC::Formatting AcctABC::SetFormat() const
+{
+ // set up ###.## format
+    Formatting f;
+    f.flag = 
+        cout.setf(ios_base::fixed, ios_base::floatfield);
+    f.pr = cout.precision(2);
+    return f; 
+}
+
+void AcctABC::Restore(Formatting & f) const
+{
+    cout.setf(f.flag, ios_base::floatfield);
+    cout.precision(f.pr);
+}
+
+// Brass methods
+void Brass::Withdraw(double amt)
+{
+    if (amt < 0)
+        cout << "Withdrawal amount must be positive; "
+             << "withdrawal canceled.\n";
+    else if (amt <= Balance())
+        AcctABC::Withdraw(amt);
+    else
+        cout << "Withdrawal amount of $" << amt
+             << " exceeds your balance.\n"
+             << "Withdrawal canceled.\n";
+}
+
+void Brass::ViewAcct() const
+{
+   
+    Formatting f = SetFormat();
+    cout << "Brass Client: " << FullName() << endl;
+    cout << "Account Number: " << AcctNum() << endl;
+    cout << "Balance: $" << Balance() << endl;
+    Restore(f);
+}
+
+// BrassPlus Methods
+BrassPlus::BrassPlus(const string & s, long an, double bal,
+           double ml, double r) : AcctABC(s, an, bal)
+{
+    maxLoan = ml;
+    owesBank = 0.0;
+    rate = r; 
+}
+
+BrassPlus::BrassPlus(const Brass & ba, double ml, double r)
+           : AcctABC(ba)   // uses implicit copy constructor
+{
+    maxLoan = ml;
+    owesBank = 0.0;
+    rate = r;
+}
+
+void BrassPlus::ViewAcct() const
+{
+    Formatting f = SetFormat();
+
+    cout << "BrassPlus Client: " << FullName() << endl;
+    cout << "Account Number: " << AcctNum() << endl;
+    cout << "Balance: $" << Balance() << endl;
+    cout << "Maximum loan: $" << maxLoan << endl;
+    cout << "Owed to bank: $" << owesBank << endl;
+    cout.precision(3);
+    cout << "Loan Rate: " << 100 * rate << "%\n";
+    Restore(f);
+}
+
+void BrassPlus::Withdraw(double amt)
+{
+    Formatting f = SetFormat();
+
+    double bal = Balance();
+    if (amt <= bal)
+        AcctABC::Withdraw(amt);
+    else if ( amt <= bal + maxLoan - owesBank)
+    {
+        double advance = amt - bal;
+        owesBank += advance * (1.0 + rate);
+        cout << "Bank advance: $" << advance << endl;
+        cout << "Finance charge: $" << advance * rate << endl;
+        Deposit(advance);
+        AcctABC::Withdraw(amt);
+    }
+    else
+        cout << "Credit limit exceeded. Transaction cancelled.\n";
+    Restore(f); 
+}
+```
+
+- 在Brass类和BrassPlus类中都使用了保护方法FullName()和AcctNum()来定义自己的ViewAcct()函数（保护成员可以直接被派生类访问）
+
+usebrass3.cpp
+
+```cpp
+// usebrass3.cpp -- polymorphic example
+// compile with acctacb.cpp
+#include <iostream>
+#include <string>
+#include "acctabc.h"
+const int CLIENTS = 4;
+
+int main()
+{
+   using std::cin;
+   using std::cout;
+   using std::endl;
+
+   AcctABC * p_clients[CLIENTS];
+   std::string temp;
+   long tempnum;
+   double tempbal;
+   char kind;
+
+   for (int i = 0; i < CLIENTS; i++)
+   {
+       cout << "Enter client's name: ";
+       getline(cin,temp);
+       cout << "Enter client's account number: ";
+       cin >> tempnum;
+       cout << "Enter opening balance: $";
+       cin >> tempbal;
+       cout << "Enter 1 for Brass Account or "
+            << "2 for BrassPlus Account: ";
+       while (cin >> kind && (kind != '1' && kind != '2'))
+           cout <<"Enter either 1 or 2: ";
+       if (kind == '1')
+           p_clients[i] = new Brass(temp, tempnum, tempbal);
+       else
+       {
+           double tmax, trate;
+           cout << "Enter the overdraft limit: $";
+           cin >> tmax;
+           cout << "Enter the interest rate "
+                << "as a decimal fraction: ";
+           cin >> trate;
+           p_clients[i] = new BrassPlus(temp, tempnum, tempbal,
+                                        tmax, trate);
+        }
+        while (cin.get() != '\n')
+            continue;
+   }
+   cout << endl;
+   for (int i = 0; i < CLIENTS; i++)
+   {
+       p_clients[i]->ViewAcct();
+       cout << endl;
+   }
+              
+   for (int i = 0; i < CLIENTS; i++)
+   {
+       delete p_clients[i];  // free memory
+   }
+   cout << "Done.\n";    
+   return 0; 
+}
+```
+
+## 继承和动态内存分配
+
+如果基类构造函数使用了new来初始化数据成员，同时定义了析构函数，复制构造函数和重载赋值运算符。
+
+- 派生类不使用new：
+  - 派生类不需要显式定义析构函数，复制构造函数和重载赋值运算符
+  - 析构函数：如果没有定义派生类析构函数，编译器将定义一个不执行任何操作的默认构造函数，该默认构造函数会调用基类析构函数，所以默认析构函数是合适的
+  - 复制构造函数：成员复制将根据数据类型采用相应的复制方式，复制类成员或继承的类组件时，使用该类的复制构造函数完成，比如 lacksDMA类的默认复制构造函数使用显式baseDMA复制构造函数来复制lacksDMA对象的baseDMA部分。 再比如string类作为类成员时，类对象被复制时，string成员会被使用string定义的复制构造函数进行复制。
+  - 赋值运算符：类的默认赋值运算符将自动使用基类的赋值运算符来对基类组件进行赋值。
+
+- 派生类使用new
+
+  - 必须为派生类定义显式析构函数，复制构造函数和赋值运算符
+
+  - 析构函数：只需要负责释放派生类中new申请的空间
+
+    ```cpp
+    baseDMA::~baseDMA()
+    {
+        delete [] label; //负责基类
+    }
+    hasDMA::~hasDMA()
+    {
+        delete [] style; //负责派生类
+    }
+    ```
+
+  - 复制构造函数：派生类需要调用基类的赋值构造函数来完成基类成员复制
+
+    ```cpp
+    baseDMA::baseDMA(const baseDMA & rs)
+    {
+        label = new char[std::strlen(rs.label)+1];
+        std::strcy(label, rs.label);
+    	...
+    }
+    
+    hasDMA::hasDMA(const hasDMA & hs)
+        :baseDMA(hs)//基类的引用可以指向派生类，baseDMA形参为基类引用，所以可以将hasDMA作为参数
+    {
+        style = new char[std::strlen(hs.style)+1];
+        std::strcpy(style, hs.style);
+    }
+    ```
+
+  - 赋值运算符：派生类的显式赋值运算符必须负责所有继承的基类对象的赋值，可以通过显式调用基类赋值运算符来实现。
+
+    ```cpp
+    baseeDMA & baseeDMA::operator=(const baseeDMA &rs)
+    {
+        if(this == hs)
+            return *this;
+        delete[] label;
+        label = new char[std::strlen(hs.label)+1];
+        std::strcpy(label, rs.label);
+        ...
+        return *this;
+    }
+    
+    hasDMA & hasDMA::operator=(const hasDMA &hs)
+    {
+        if(this == hs)
+            return *this;
+        baseDMA::operator=(hs);//负责复制基类的成员
+        delete[] style;
+        style = new char[std::strlen(hs.style)+1];
+        std::strcpy(style, hs.style);
+        return *this;
+    }
+    ```
+
+### 使用动态内存分配和友元的继承示例：
+
+派生类如何使用基类的友元:
+
+```cpp
+// class lacksDMA :public baseDMA
+// class hasDMA :public baseDMA
+
+// 声明
+// baseDMA
+friend std::ostream & operator<<(std::ostream & os, const baseDMA & rs);
+// lacksDMA
+friend std::ostream & operator<<(std::ostream & os,const lacksDMA & rs);
+// hasDMA
+friend std::ostream & operator<<(std::ostream & os, const hasDMA & rs);
+
+// 定义
+// baseDMA
+std::ostream & operator<<(std::ostream & os, const baseDMA & rs)
+{
+    os << "Label: " << rs.label << std::endl;
+    os << "Rating: " << rs.rating << std::endl;
+    return os;
+}
+// lacksDMA
+std::ostream & operator<<(std::ostream & os, const lacksDMA & ls)
+{
+    os << (const baseDMA &) ls;
+    // 匹配原型 operator<<(std::ostream & , const baseDMA & )
+    os << "Color: " << ls.color << std::endl; //color 为lacksDMA的成员
+    return os;
+}
+
+// hasDMA
+std::ostream & operator<<(std::ostream & os, const hasDMA & hs)
+{
+    os << (const baseDMA &) hs;
+    os << "Style: " << hs.style << std::endl; //style为hasDMA的成员
+    return os;
+}
+```
+
+- 使用强制类型转换将派生类转换为基类，以便使用基类的友元函数
+
