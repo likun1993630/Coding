@@ -164,5 +164,11 @@ git push -u origin master # 用作第一次向某一个库提交更改
 git push origin master
 ```
 
+###  从github的最新内容更新到本地
 
+比如，我在另一台电脑上修改github库的内容，我想把最新的库更新到当前电脑的本地库，只需要使用：
+
+```shell
+git pull
+```
 
