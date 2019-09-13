@@ -33,6 +33,9 @@ https://cse.sc.edu/~jokane/agitr/
 
 https://blog.csdn.net/ZhangRelay/article/details/52244746
 
+# ros 官网列出的书籍列表（比较权威）
+
+http://wiki.ros.org/Books
 
 
 # 何时需要catkin_make 与 source .zshrc
