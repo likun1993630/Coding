@@ -61,7 +61,66 @@ $ catkin_make
 # /opt/ros/kinetic/share/ar_track_alvar/launch
 ```
 
+二进制包提供如下节点：
 
+```shell
+➜ ar_track_alvar tree
+.
+├── createMarker
+├── findMarkerBundles
+├── findMarkerBundlesNoKinect
+├── individualMarkers
+├── individualMarkersNoKinect
+└── trainMarkerBundle
+# /opt/ros/kinetic/lib/ar_track_alvar
+```
 
 ## 生成 AR tags
+
+使用 createMarker 节点来生成AR tag
+
+```shell
+# 如果不带参数则会出现菜单，可以根据菜单进行选择
+rosrun ar_track_alvar createMarker
+
+# 可以通过参数指定ARtag
+## 使用默认边长，指定ID
+rosrun ar_track_alvar createMarker 0
+## 指定边长和ID，边长为5cm，ID = 1
+rosrun ar_track_alvar createMarker -s 5 1
+```
+
+> 由于打印在纸上，边长会变大或变小，所以要实际测量一下边长，然后在launch文件内配置
+>
+> 在当前目录生成的png图片
+
+![MarkerData_1](res/MarkerData_1.png)
+
+## Detecting individual tags
+
+检测和跟踪单个的即非捆绑的ARtag（视频中的所有ARtag都被视为单独的），与之相关的两个节点：
+
+- individualMarkers
+  - 默认kinect为相机，因此可以集成深度数据以获得更好的位姿估计
+- individualMarkersNoKinect
+  - 没有使用kinect时或者不想使用深度数据，即单目摄像机
+
+```shell
+├── individualMarkers
+├── individualMarkersNoKinect
+```
+
+以上两个节点采用以下命令行参数：
+
+- `marker_size` (double) -- The width in centimeters of one side of the black square marker border 
+
+- `max_new_marker_error` (double) -- A threshold determining when new markers can be detected under uncertainty 
+
+- `max_track_error` (double) -- A threshold determining how much tracking error can be observed before an tag is considered to have disappeared 
+
+- `camera_image`  (string) -- The name of the topic that provides camera frames for  detecting the AR tags.  This can be mono or color, but should be an  UNrectified image, since rectification takes place in this package 
+
+- `camera_info` (string) -- The name of the topic that provides the camera calibration parameters so that the image can be rectified 
+
+- `output_frame` (string) -- The name of the frame that the published Cartesian locations of the AR tags will be relative to 
 
