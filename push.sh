@@ -21,6 +21,9 @@ case $input in
 		echo "+++++++++++++++++++++++++++++++++++++"
 		echo "Update Finished!"
 		echo "+++++++++++++++++++++++++++++++++++++"
+
+		echo "    "
+		echo "    "
 		;;
 
     [nN][oO]|[nN])
