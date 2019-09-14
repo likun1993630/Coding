@@ -239,7 +239,49 @@ echo "vm.swappiness=1" >> /etc/sysctl.conf
 # 注销重新登录之后就被修改了
 ```
 
+## 修改系统home文件夹内自带文件夹位置
+
+在home下新建 System文件夹，将如下七个文件夹剪切到System下
+
+```
+System
+├── Desktop
+├── Documents
+├── Download
+├── Music
+├── Pictures
+├── Public
+├── Templates
+└── Videos
+
+```
+
+修改相关配置文件：
+
+```shell
+subl .config/user-dirs.dirs
+# 将内容更改为
+```
+
+```
+XDG_DESKTOP_DIR="$HOME/System/Desktop"
+XDG_DOWNLOAD_DIR="$HOME/System/Download"
+XDG_TEMPLATES_DIR="$HOME/System/Templates"
+XDG_PUBLICSHARE_DIR="$HOME/System/Public"
+XDG_DOCUMENTS_DIR="$HOME/System/Documents"
+XDG_MUSIC_DIR="$HOME/System/Music"
+XDG_PICTURES_DIR="$HOME/System/Pictures"
+XDG_VIDEOS_DIR="$HOME/System/Videos"
+```
+
+可能出现的问题：
+
+需要修改蓝牙文件接收路径，`sudo blueman-services`，修改路径，然后重启，注意要重启，注销不行。
+
+
+
 ## Surface pro4 wifi 崩溃问题
+
 不安装第三方内核的情况下
 
 https://askubuntu.com/questions/791976/installing-ubuntu-on-surface-pro-4
