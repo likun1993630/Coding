@@ -10,7 +10,9 @@ read -r -p "Do you want to push the local Repo to github? [Y/n] " input
 
 case $input in
     [yY][eE][sS]|[yY])
+		echo "    "
 		echo "---------- Start uploading ---------"
+		echo "    "
 
 		git add .
 		git commit -m "add note"
