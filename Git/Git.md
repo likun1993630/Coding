@@ -172,3 +172,35 @@ git push origin master
 git pull
 ```
 
+### 撤销，放弃本地修改
+
+#### 未使用 git add 缓存代码时
+
+```shell
+git checkout -- filepathname # 注意中间的 --
+
+# 例如放弃某个文件：
+git checkout -- readme.md
+# 放弃所有修改：
+git checkout .
+```
+
+>  此命令用来放弃掉所有还没有加入到缓存区（就是 git add 命令）的修改：内容修改与整个文件删除。但是此命令不会删除掉刚新建的文件。因为刚新建的文件还没已有加入到 git 的管理系统中。所以对于git是未知的。自己手动删除就好了。
+
+#### 已经使用了  git add 缓存了代码
+
+```shell
+git reset HEAD filepathname
+
+# 例如放弃某个add
+git reset HEAD readme.md
+# 放弃所有缓存
+git reset HEAD .
+```
+
+此命令用来清除 git  对于文件修改的缓存。相当于撤销 git add 命令所在的工作。在使用本命令后，本地的修改并不会消失，而是回到了未使用 git add 的状态。继续用`git checkout -- filepathname`就可以放弃本地的修改。
+
+#### 已经用 git commit  提交了代码
+
+略
+
