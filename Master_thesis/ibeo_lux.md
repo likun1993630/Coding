@@ -9,8 +9,8 @@ echo "source ~/ifF/devel/setup.zsh" >> ~/.zshrc
 cd ~/ifF/src
 git clone https://github.com/astuff/network_interface
 git clone https://github.com/astuff/ibeo_core
-git clone https://github.com/astuff/ibeo_lux.git
-git clone https://github.com/astuff/astuff_sensor_msgs.git
+git clone https://github.com/astuff/ibeo_lux
+git clone https://github.com/astuff/astuff_sensor_msgs
 cd ~/ifF
 # rosdep install --from-paths src --ignore-src --rosdistro=kinetic -y
 catkin_make
@@ -188,3 +188,6 @@ PING 192.168.0.100 (192.168.0.100) 56(84) bytes of data.
 ......
 ```
 
+
+
+可以使用Wireshark来监测TCP消息
