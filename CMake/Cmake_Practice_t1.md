@@ -1,4 +1,4 @@
-# 入门示例
+# Cmake Practice t1
 
 ```shell
 mkdir -p test/t1
@@ -52,6 +52,17 @@ Scanning dependencies of target hello
 Hello World form t1 Main! 
 ```
 
+在build文件夹生成了如下文件：
+
+```
+...
+cmake_install.cmake
+Makefile
+...
+```
+
+其中最重要就是 Makefile。
+
 项目清理：
 
 ```shell
@@ -67,11 +78,17 @@ ${ }
 PROJECT( projectname [CXX] [C] [Java])
 
 - `projectname` 为工程名
+
 - [CXX] [C] [Java] 指定支持的语言列表，可忽略，默认支持所有语言
+
 - 这个指令隐式的定义了两个 cmake 变量:
   `<projectname>_BINARY_DIR `以及`<projectname>_SOURCE_DIR`,这里就是
   `HELLO_BINARY_DIR `和 `HELLO_SOURCE_DIR`(所以 CMakeLists.txt 中两个 MESSAGE
   指令可以直接使用了这两个变量)
+  
+  这里是采用的外部编译，`HELLO_SOURCE_DIR`代指的是工程路径，即`.../test/t1`
+  
+  `HELLO_BINARY_DIR `指的是编译路径，即`.../test/t1/build`
 
 SET(VAR [VALUE] [CACHE TYPE DOCSTRING [FORCE]])
 
