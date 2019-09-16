@@ -278,7 +278,15 @@ XDG_VIDEOS_DIR="$HOME/System/Videos"
 
 需要修改蓝牙文件接收路径，`sudo blueman-services`，修改路径，然后重启，注意要重启，注销不行。
 
+## 安装资源监视器indicator-sysmonitor
 
+```shell
+sudo add-apt-repository ppa:fossfreedom/indicator-sysmonitor
+sudo apt-get update
+sudo apt-get install indicator-sysmonitor
+```
+
+打开，配置开机启动，然后配置显示内容
 
 ## Surface pro4 wifi 崩溃问题
 
