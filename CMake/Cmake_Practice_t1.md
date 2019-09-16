@@ -6,6 +6,14 @@ cd test/t1
 touch main.cpp CMakeLists.txt
 ```
 
+文件目录
+
+```
+t1
+├── CMakeLists.txt
+└── main.cpp
+```
+
 main.cpp
 
 ```cpp
