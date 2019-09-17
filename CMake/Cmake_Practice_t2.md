@@ -181,3 +181,51 @@ runhello.sh
 hello
 ```
 
+编译：
+
+```shell
+# build 目录下
+cmake -DCMAKE_INSTALL_PREFIX=~/tmp/t2/usr .. #指定安装路径的前缀
+make
+make install #安装
+```
+
+make install 终端打印的信息：
+
+```
+Install the project...
+-- Install configuration: ""
+-- Installing: /home/likun/tmp/t2/usr/share/doc/cmake/t2/COPYRIGHT
+-- Installing: /home/likun/tmp/t2/usr/share/doc/cmake/t2/README
+-- Installing: /home/likun/tmp/t2/usr/bin/runhello.sh
+-- Up-to-date: /home/likun/tmp/t2/usr/share/doc/cmake/t2
+-- Installing: /home/likun/tmp/t2/usr/share/doc/cmake/t2/hello.txt
+-- Installing: /home/likun/tmp/t2/usr/bin/hello
+```
+
+安装目录：
+
+```
+➜ ~ tree tmp/t2/usr/
+tmp/t2/usr/
+├── bin
+│   ├── hello
+│   └── runhello.sh
+└── share
+    └── doc
+        └── cmake
+            └── t2
+                ├── COPYRIGHT
+                ├── hello.txt
+                └── README
+```
+
+
+
+安装目录的其他选择
+
+- 如果你要直接安装到系统,可以使用如下指令设置路径前缀:
+  - `cmake -DCMAKE_INSTALL_PREFIX=/usr ..`
+
+- 如果没有定义 CMAKE_INSTALL_PREFIX 会安装到什么地方?
+  - `CMAKE_INSTALL_PREFIX` 的默认定义是/usr/local
