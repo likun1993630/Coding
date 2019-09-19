@@ -1,9 +1,3 @@
-1. 需要在src文件夹内的cmakelists内加入一个：
-
-   ```shell
-   INSTALL(TARGETS hello RUNTIME DESTINATION bin)
-   ```
-
 2. 需要设置环境变量，以执行hello和runhello.sh
 
    ```shell
@@ -13,6 +7,10 @@
    ➜ ~ runhello.sh 
    Hello World form t1 Main! 
    ```
+
+3. 什么是标准路径
+
+   
 
 3. linux下C/C++编译时系统搜索 include 和 链接库 文件路径的指定
 
@@ -49,5 +47,6 @@
 
       ![1568152634860](res/1568152634860.png)
 
-      
+
+
 

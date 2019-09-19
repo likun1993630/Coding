@@ -10,17 +10,23 @@ ROS : [usb_cam](http://wiki.ros.org/usb_cam)
 sudo apt-get install ros-kinetic-usb-cam
 ```
 
-查看 usb_cam包
+查看 usb_cam包内容
 
 ```shell
-roscd usb_cam
-tree
-```
+/opt/ros/kinetic/
 
-```
-.
+include/usb_cam
+└── usb_cam.h
+
+lib/libusb_cam.so # usb_cam的共享库，生成于add_library(usb_cam src/usb_cam.cpp)
+lib/pkgconfig/usb_cam.pc
+
+lib/usb_cam/
+└── usb_cam_node #即包的唯一的节点，可执行文件
+
+share/usb_cam/
 ├── cmake
-│   ├── usb_camConfig.cmake
+│   ├── usb_camConfig.cmake  # 用与cmake(CMakeLists.txt)的Find_Package
 │   └── usb_camConfig-version.cmake
 ├── launch
 │   └── usb_cam-test.launch
