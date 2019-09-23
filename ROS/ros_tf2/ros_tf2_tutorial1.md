@@ -1,8 +1,6 @@
-# 	Writing a tf2 static broadcaster
+# 	TF2
 
- 将编写代码以将静态变换发布到tf2。
-
-## Create a learning_tf2 package
+## 创建一个learning_tf2包
 
 ```shell
 $ catkin_create_pkg learning_tf2 tf2 tf2_ros roscpp rospy turtlesim
@@ -10,7 +8,7 @@ $ catkin_create_pkg learning_tf2 tf2 tf2_ros roscpp rospy turtlesim
 
 - 包依赖于 tf2 tf2_ros roscpp rospy turtlesim
 
-- 目录结构：
+- 自动生成的目录结构：
 
   ```
   ➜ learning_tf2 tree
@@ -22,7 +20,7 @@ $ catkin_create_pkg learning_tf2 tf2 tf2_ros roscpp rospy turtlesim
   └── src
   ```
 
-- CMakeLists.txt
+- 自动生成的CMakeLists.txt
 
   ```makefile
   cmake_minimum_required(VERSION 2.8.3)
@@ -41,7 +39,7 @@ $ catkin_create_pkg learning_tf2 tf2 tf2_ros roscpp rospy turtlesim
   )
   ```
 
-- package.xml
+- 自动生成的package.xml
 
   ```xml
   <?xml version="1.0"?>
@@ -74,9 +72,9 @@ $ catkin_create_pkg learning_tf2 tf2 tf2_ros roscpp rospy turtlesim
   </package>
   ```
 
-## How to broadcast transforms
+## 编写一个tf2静态广播器
 
-目的：将坐标系广播到tf2。 在这种情况下，我们希望在海龟四处移动时广播海龟不断变化位置的坐标系。
+目的： 将编写代码以将静态变换发布到tf2。
 
 代码文件：
 
@@ -114,7 +112,10 @@ int main(int argc, char **argv)
 
   }
   static_turtle_name = argv[1]; // 作为child_frame_name
-  static tf2_ros::StaticTransformBroadcaster static_broadcaster; //静态发布对象，用来发布tf消息
+  static tf2_ros::StaticTransformBroadcaster static_broadcaster; 
+    // 静态对象，用来发布tf消息
+    // StaticTransformBroadcaster内其实就是声明了nodehandle句柄，
+    // 声明ros::Publisher对象，并且使用了publish()函数发布消息
   geometry_msgs::TransformStamped static_transformStamped; //tf消息对象
 
   static_transformStamped.header.stamp = ros::Time::now();
@@ -140,17 +141,24 @@ int main(int argc, char **argv)
 };
 ```
 
-## Running the Static Broadcaster
+## 运行节点
 
-修改 `CMakeLists.txt` 内容，以编译该节点
+修改 `CMakeLists.txt`
 
 ```makefile
+cmake_minimum_required(VERSION 2.8.3)
+project(learning_tf2)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy tf2 tf2_ros turtlesim)
+catkin_package()
+include_directories(${catkin_INCLUDE_DIRS})
 add_executable(static_turtle_tf2_broadcaster src/static_turtle_tf2_broadcaster.cpp)
 target_link_libraries(static_turtle_tf2_broadcaster  ${catkin_LIBRARIES} )
 # 链接ros的其他库文件
 ```
 
-编译包，并运行：
+package.xml可保持不变
+
+## 编译包，并运行：
 
 ```shell
 $ catkin_make
@@ -158,10 +166,9 @@ $ roscore
 $ rosrun learning_tf2 static_turtle_tf2_broadcaster mystaticturtle 0 0 1 0 0 0
 ```
 
-## Checking the results
-
 ```shell
 $ rostopic echo /tf_static
+# 查看静态tf话题
 ```
 
 ```
@@ -186,7 +193,7 @@ transforms:
         w: 1.0
 ```
 
-## The proper way to publish static transforms
+## 发布静态转换的正确方法
 
 上面的实例是为了说明如何使用StaticTransformBroadcaster发布静态转换。 但是在实际开发过程中，您不必自己编写此代码，并且应该使用专用的tf2_ros工具来执行此操作。tf2_ros提供了一个名为static_transform_publisher的可执行文件，可用作命令行工具或可添加到启动文件的节点。 
 
