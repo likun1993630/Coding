@@ -904,7 +904,7 @@ const double * (*pa[3])(const double *, int) = {f1, f2, f3};
 
 > 注意这里不能使用auto，因为自动类型推断指针用于单值初始化，而不能用于初始化列表
 >
-> 但是声明数组pa后，声明同类型的数组可以用auto
+> 但是声明数组pa后，声明同类型的数组可以用auto，因为数组名是指向第一个元素的指针，不再是列表
 
 ```cpp
 auto pb = pa;
@@ -935,8 +935,141 @@ const y = *(*pb[1])(av,3); //使用pb指针调用f2
 // 使用c++11 auto
 auto pc = &pa;
 // 手动写类型
-const double *()
+const double *(*(*pd)[3])(const double *, int) = &pa;
 ```
 
+- `*pd[3] ` 是 指针数组，即数组元素是三个指针
+- `(*pd)[3] `是 指针，即指向有三个元素的数组的指针
 
+使用`指向函数指针数组的指针`
+
+pd 指向数组，那么`*pd`就是数组，而(*pd)[i] 是数组中的元素，即函数指针
+
+```cpp
+const double * px = (*pd)[0](av,3); //使用pd指针调用f1,简单形式
+const double * py = (*(*pd)[1])(av,3); //使用pd指针调用f2，复杂形式
+
+double x = *(*pd)[0](av,3); //使用pd指针调用f1，并解引用返回值
+double y = *(*(*pd)[1])(av,3); //使用pd指针调用f2,并解引用返回值
+```
+
+> 注意pa与&pa之间的区别。
+>
+> 在大多数情况下，pa都是数组第一个元素的地址，即&pa[0]，因此pa是单个指针的地址
+>
+> 而 &pa是整个数组（即三个指针块）的地址
+>
+> 从数字上说，pa和&pa的值相同，但他们类型不同。一种差别是，pa+1 为数组中的下一个元素的地址，而&pa+1 为整个数组pa后面一个12字节的内存快的地址（假设地址为占用4字节）。另一个差别是，要得到第一个元素的值，只需要对pa解除一次引用，而对&pa需要解除两次引用：
+>
+> **&pa == *pa == pa[0]
+
+例程：
+
+arfupt.cpp
+
+```cpp
+// arfupt.cpp -- an array of function pointers
+#include <iostream>
+// 不同的函数名，相同的返回值和特征标识（形参类型）
+const double * f1(const double ar[], int n);
+const double * f2(const double [], int);
+const double * f3(const double *, int);
+
+int main()
+{
+    using namespace std;
+    double av[3] = {1112.3, 1542.6, 2227.9};
+    // 初始化函数指针
+    const double *(*p1)(const double *, int) = f1;
+    auto p2 = f2;  // c++11 自动推断类型
+    cout << "Using pointers to functions:\n";
+    cout << " Address  Value\n";
+    cout <<  (*p1)(av,3) << ": " << *(*p1)(av,3) << endl;
+    cout << p2(av,3) << ": " << *p2(av,3) << endl;
+
+	//初始化指针数组，不能使用auto
+    const double *(*pa[3])(const double *, int) = {f1,f2,f3};
+    // but it does work for initializing to a single value
+    // pb a pointer to first element of pa
+    auto pb = pa;
+    //或 // const double *(**pb)(const double *, int) = pa;
+    cout << "\nUsing an array of pointers to functions:\n";
+    cout << " Address  Value\n";
+    for (int i = 0; i < 3; i++)
+        cout << pa[i](av,3) << ": " << *pa[i](av,3) << endl;
+    cout << "\nUsing a pointer to a pointer to a function:\n";
+    cout << " Address  Value\n";
+    for (int i = 0; i < 3; i++)
+        cout << pb[i](av,3) << ": " << *pb[i](av,3) << endl;
+
+    cout << "\nUsing pointers to an array of pointers:\n";
+    cout << " Address  Value\n";
+    // 初始化指向函数指针数组的指针
+    auto pc = &pa; 
+    cout << (*pc)[0](av,3) << ": " << *(*pc)[0](av,3) << endl;
+    // hard way to declare pd
+    const double *(*(*pd)[3])(const double *, int) = &pa;
+    // store return value in pdb
+    const double * pdb = (*pd)[1](av,3);
+    cout << pdb << ": " << *pdb << endl;
+    cout << (*(*pd)[2])(av,3) << ": " << *(*(*pd)[2])(av,3) << endl;
+    return 0;
+}
+// 函数定义：
+const double * f1(const double * ar, int n)
+{
+    return ar; //返回数组的第一个元素的地址
+}
+const double * f2(const double ar[], int n)
+{
+    return ar+1; //返回数组的第二个元素的地址
+}
+const double * f3(const double ar[], int n)
+{
+    return ar+2; //返回数组的第三个元素的地址
+}
+```
+
+```
+Using pointers to functions:
+ Address  Value
+0x7fff9ea2bb50: 1112.3
+0x7fff9ea2bb58: 1542.6
+
+Using an array of pointers to functions:
+ Address  Value
+0x7fff9ea2bb50: 1112.3
+0x7fff9ea2bb58: 1542.6
+0x7fff9ea2bb60: 2227.9
+
+Using a pointer to a pointer to a function:
+ Address  Value
+0x7fff9ea2bb50: 1112.3
+0x7fff9ea2bb58: 1542.6
+0x7fff9ea2bb60: 2227.9
+
+Using pointers to an array of pointers:
+ Address  Value
+0x7fff9ea2bb50: 1112.3
+0x7fff9ea2bb58: 1542.6
+0x7fff9ea2bb60: 2227.9
+```
+
+### 使用typedef进行简化
+
+关键字typedef的一般用法：
+
+```cpp
+typedef double real;
+```
+
+创建函数指针类型的别名：
+
+```cpp
+typedef const double *(*p_fun)(const double *, int);  //p_fun 即可作为一个类型名使用
+p_fun p1 = f1; // p1 指向 f1() 函数
+
+p_fun pa[3] = {f1, f2, f3}; // pa 为函数指针数组
+p_fun (*pd)[3] = &pa; //pd 指向函数指针数组
+```
 
