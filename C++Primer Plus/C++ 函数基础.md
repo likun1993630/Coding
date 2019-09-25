@@ -694,5 +694,249 @@ Counting down ... 0
 
 与数据相似，函数也有地址。函数地址是存储其机器语言代码的内存的开始地址。
 
-略。
+例如，我们可以编写将另一个函数的地址作为参数的函数，这样第一个函数将能够找到第二函数，并运行它。这与直接调用另一个函数相比，这种方法虽然笨拙，但是它允许在不同的时间传递不同函数的地址，这意味着可以在不同的时间使用不同的函数。
+
+### 函数指针基础知识
+
+案例：
+
+假设要设计一个名为estimate()的函数，项目大佬用该函数来估算不同码农编写指定行数的代码所需要的时间，以便更合理的为每个码农安排工作量。
+
+码农们需要自己提供一个估算自己每行代码所用平均时间的函数，比如码农1的函数是coder1() ， 码农2的函数是coder2()，以此类推。码农们的函数的地址将被传递给estimate() 函数。
+
+estimate() 函数接受coderx() 函数指针作为参数，所以要对不同码农编写给定数量的代码所用时间进行估计时，estimate() 函数是一样，变的只是传递给estimate() 函数的参数。
+
+试想，如果不采用函数指针的方式，采用直接调用函数的方式，则不同码农的estimate() 函数是不同的，比如需要估计码农1的时间，需要由于给码农1的专属estimate() 函数。
+
+要实现此案例，需要完成下面三个:
+
+- 获取函数的地址(coder1(),coder2(),...coderx() 的地址)
+- 声明一个函数指针 (指向coderx() )
+- 使用函数指针来调用函数
+
+### 获取函数的地址
+
+函数名即为函数的地址
+
+比如，think()是一个函数，则think就是该函数的地址。
+
+要将函数作为参数进行传递，必须传递函数名。
+
+```cpp
+// 要区分传递的是函数的地址还是函数的返回值
+process(think); //传递地址
+thought(think()); //传递think（）函数的返回值
+```
+
+### 声明函数指针
+
+声明指向某种类型的指针时，必须指定指针指向的类型，同样，声明指向函数的指针时，也必须指定指针指向的函数类型。
+
+也就是说，声明应指定函数的返回类型以及函数的特征标识(参数列表)
+
+```cpp
+double pam(int); // 函数原型
+double (*pf)(int); // 对应的函数指针声明
+// 可以理解为将函数原型中的 pam 替换为 （*pf）
+// pf 即为函数指针
+// (*pf) 即为函数
+```
+
+在函数指针声明中，必须使用括号将`*pf`括起来，因为括号的优先级比`*`运算符高
+
+```cpp
+double (*pf) (int); //pf 指向一个返回值为double的函数
+double *pf(int); //pf（）是一个返回值为 double指针 的函数
+```
+
+在声明pf后，便可以将相应函数的地址赋给它
+
+```cpp
+double pam(int);
+double (*pf)(int);
+pf = pam; //pf 现在指向 pam() 函数
+```
+
+注意，pam（）特征标识和返回类型必须与pf相同，如果不同吗，编译器将拒绝这种赋值：
+
+```cpp
+double ned(double);
+int ted(int);
+double (*pf)(int);
+pf = ned; // 错误，形参不匹配
+pf = ted; // 错误，返回值不匹配
+```
+
+对于estimate() 函数，假设要将pam()函数的地址传递给它，则其原型将如下：
+
+```cpp
+void estimate(int lines, double (*pf)(int));
+// 第二个参数是一个函数指针，它指向的函数接受一个int参数，并返回一个double值
+
+double pam(int); // pam()函数原型
+estimate(50, pam); // 将pam()函数的地址传递给estimate()
+```
+
+### 使用指针来调用函数
+
+即使用指针来调用被指向的函数
+
+```cpp
+// 函数原型
+double pam(int);
+// 函数指针声明
+double (*pf)(int);
+// 指针赋值
+pf = pam;
+// 直接调用函数
+double x = pam(4);
+// 使用指针调用函数
+double y = (*pf)(5);
+// 使用指针调用函数（两种方式都可以）
+double y = pf(5);
+```
+
+### estimate() 函数实现
+
+函数 besty() 和 函数 pam() 的地址将被传递给estimate函数。
+
+指针的方式使得，在不修改estimate() 函数的源代码的情况下，修改estimate() 函数的行为。
+
+fun_ptr.cpp
+
+```cpp
+// fun_ptr.cpp -- pointers to functions
+#include <iostream>
+double betsy(int);
+double pam(int);
+// 第二个参数是指向一个参数类型为int，返回值为double函数的函数指针
+void estimate(int lines, double (*pf)(int));
+
+int main()
+{
+    using namespace std;
+    int code;
+
+    cout << "How many lines of code do you need? ";
+    cin >> code;
+    cout << "Here's Betsy's estimate:\n";
+    estimate(code, betsy);
+    cout << "Here's Pam's estimate:\n";
+    estimate(code, pam);
+    return 0;
+}
+
+double betsy(int lns)
+{
+    return 0.05 * lns;
+}
+
+double pam(int lns)
+{
+    return 0.03 * lns + 0.0004 * lns * lns;
+}
+
+void estimate(int lines, double (*pf)(int))
+{
+    using namespace std;
+    cout << lines << " lines will take ";
+    cout << (*pf)(lines) << " hour(s)\n";
+}
+```
+
+```
+How many lines of code do you need? 30
+Here's Betsy's estimate:
+30 lines will take 1.5 hour(s)
+Here's Pam's estimate:
+30 lines will take 1.26 hour(s)
+```
+
+### 深入探讨函数指针
+
+在使用函数指针时，函数的特征标识和返回值类型需要格外注意：
+
+```cpp
+// 比如如下的三种函数原型的特征标识和返回值都想同
+const double * f1(const double ar[], int n);
+const double * f1(const double [], int); // 省略了标识符
+const double * f1(const double *, int);
+```
+
+假设要声明一个指向f1() 函数的指针pa：（只需要将函数原型中的函数名替换为(*pa)）
+
+```cpp
+// 函数f1原型
+const double * f1(const double *, int);
+// 声明p1指针
+const double * (*p1)(const double *, int);
+// 或者声明并同时初始化
+const double * (*p1)(const double *, int) = f1;
+// 使用C++11自动类型推断
+auto p2 = f2; //声明并初始化f2函数指针 p2
+// 使用指针
+cout << (*p1)(av,3) << ":" <<*(*p1)(av,3) << endl;
+cout << p2(av,3) << ":" << *(*p1)(av,3) << endl;
+/*
+(*p1)(av,3)和p2(av,3) 是f1和f2的返回值，即指针
+*(*p1)(av,3)和*(*p1)(av,3) 是返回的指针指向的实际值
+*/
+```
+
+#### 函数指针数组
+
+```cpp
+// f1 f2 f3 的函数原型
+const double * f1(const double *, int);
+const double * f2(const double *, int);
+const double * f3(const double *, int);
+// 声明并初始化 函数指针数组
+const double * (*pa[3])(const double *, int) = {f1, f2, f3};
+// [] 优先级高于 * ,所以 pa[3]表示包含三个元素的数组， 
+// *pa[3] 表示这三个元素为指针，即pa是一个包含三个指针的数组，
+// 声明的其他部分指出了每个指针指向的是什么：
+// 特征标识为 const double *, int，返回值为 const double * 的函数，
+/*
+即，pa是一个包含三个指针的数组，其中每一个指针都指向这样的函数，
+即将const double * 和 int 作为参数，并返回一个 const double *
+*/
+```
+
+> 注意这里不能使用auto，因为自动类型推断指针用于单值初始化，而不能用于初始化列表
+>
+> 但是声明数组pa后，声明同类型的数组可以用auto
+
+```cpp
+auto pb = pa;
+```
+
+#### 使用函数指针数组
+
+因为数组名是指向第一个元素的指针，因此pa和pb都是指向函数指针的指针。
+
+pa[i], pb[i] 都表示数组中的指针
+
+```cpp
+// 返回值
+const double * px = pa[0](av,3); //使用pa指针调用f1
+const double * py = (*pb[1])(av,3); //使用pb指针调用f2
+
+// 返回值的解引用
+const x = *pa[0](av,3); //使用pa指针调用f1
+const y = *(*pb[1])(av,3); //使用pb指针调用f2
+```
+
+创建指向函数指针数组的指针
+
+- 因为是单值，所以可以使用auto
+- 可以手动写声明中的类型
+
+```cpp
+// 使用c++11 auto
+auto pc = &pa;
+// 手动写类型
+const double *()
+```
+
+
 
