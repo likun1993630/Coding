@@ -678,4 +678,216 @@ drivel(p2); //void drivel(const char *)
 ```
 
 # 函数模板
-略
+函数模板是通用的函数描述，也就是说，它们使用泛型来定义函数，其中的泛型可以用具体的类型（如int或者double）替换。通过将类型作为参数传递给模板，可使编译器生成该类型的函数。
+
+定义函数模板
+
+```cpp
+template <typename T> 
+void Swap(T &a, T &b)
+{
+    T temp;
+    temp = a;
+    a = b;
+    b = temp;
+}
+```
+
+- 第一行指出，要建立一个模板，并将类型命名为T
+- 关键字 typename 可以使用 class 替换， 两者等价
+- 类型名 T 可以任意选择，只要遵守C++命名规则即可
+- 模板并不创建任何函数，而只是告诉编译器如何定义函数
+- 当在程序中使用Swap()函数时，编译器将检查所使用的参数类型，并生成相应的函数
+
+示例：
+
+```cpp
+// funtemp.cpp -- using a function template
+#include <iostream>
+// 函数模板原型
+template <typename T>  // or class T
+void Swap(T &a, T &b);
+
+int main()
+{
+    using namespace std;
+    int i = 10;
+    int j = 20;
+    cout << "i, j = " << i << ", " << j << ".\n";
+    cout << "Using compiler-generated int swapper:\n";
+    Swap(i,j);  // 生成函数 void Swap(int &, int &)
+    cout << "Now i, j = " << i << ", " << j << ".\n";
+
+    double x = 24.5;
+    double y = 81.7;
+    cout << "x, y = " << x << ", " << y << ".\n";
+    cout << "Using compiler-generated double swapper:\n";
+    Swap(x,y);  // 生成函数 void Swap(double &, double &)
+    cout << "Now x, y = " << x << ", " << y << ".\n";
+    return 0;
+}
+// 函数模板定义
+template <typename T>  // 或 class T
+void Swap(T &a, T &b)
+{
+    T temp;   // temp 的类型为 T
+    temp = a;
+    a = b;
+    b = temp; 
+}
+```
+
+- 第一个Swap()函数接受两个int参数，因此编译器生成该函数的int版本，也就是使用int替代模板内所有的T，生成如下定义：
+
+  ```cpp
+  void Swap(int &a, int &b)
+  {
+      int temp;
+      temp = a;
+      a = b;
+      b = temp;
+  }
+  ```
+
+- 第二个Swap() 则生成如下定义：
+
+  ```cpp
+  void Swap(double &a, double &b)
+  {
+      double temp;
+      temp = a;
+      a = b;
+      b = temp;
+  }
+  ```
+
+- 函数模板并不能缩短可执行程序，最终仍然有两个独立的函数定义，就像以手工方式定义了这些函数一样。最终的代码不包含任何模板，而只包含了为程序生成的实际函数
+- 推荐将模板放在头文件中，并在需要使用模板的文件中包含头文件。
+
+## 重载的模板
+
+需要多个对不同类型使用同一种算法的函数时，可使用模板。然而，并非所有的类型都使用相同的算法，为满足这种需求，可以像重载常规函数定义那样重载模板定义。和常规重载一样，被重载的模板的函数特征标必须不同。
+
+示例：
+
+```cpp
+// twotemps.cpp -- using overloaded template functions
+#include <iostream>
+template <typename T>     // 原始模板
+void Swap(T &a, T &b);
+
+template <typename T>     // 重载的模板
+void Swap(T *a, T *b, int n);
+
+void Show(int a[]);
+const int Lim = 8;
+int main()
+{
+    using namespace std;
+    int i = 10, j = 20;
+    cout << "i, j = " << i << ", " << j << ".\n";
+    cout << "Using compiler-generated int swapper:\n";
+    Swap(i,j);              // 匹配原始模板
+    cout << "Now i, j = " << i << ", " << j << ".\n";
+
+    int d1[Lim] = {0,7,0,4,1,7,7,6};
+    int d2[Lim] = {0,7,2,0,1,9,6,9};
+    cout << "Original arrays:\n";
+    Show(d1); 
+    Show(d2);
+    Swap(d1,d2,Lim);        // 匹配重载的模板
+    cout << "Swapped arrays:\n";
+    Show(d1);
+    Show(d2);
+    return 0;
+}
+
+template <typename T>
+void Swap(T &a, T &b) 
+{
+    T temp;
+    temp = a;
+    a = b;
+    b = temp;
+}
+
+template <typename T>
+void Swap(T a[], T b[], int n)
+{
+    T temp;
+    for (int i = 0; i < n; i++)
+    {
+        temp = a[i];
+        a[i] = b[i];
+        b[i] = temp;
+    }
+}
+
+void Show(int a[])
+{
+    using namespace std;
+    cout << a[0] << a[1] << "/";
+    cout << a[2] << a[3] << "/";
+    for (int i = 4; i < Lim; i++)
+        cout << a[i];
+    cout << endl;
+}
+```
+
+- 原来的模板的特征标为（T&,  T&），而新模板的特征标为（T[ ], T[ ],  int）
+- 在后一个模板中，最后一个参数的类型为具体类型(int)，而不是泛型，并非所有的模板参数都必须是模板参数类型。
+
+## 模板的局限性
+
+假设有如下模板函数：
+
+```cpp
+template <class T>
+void f(T a, T b)
+{
+    a = b;
+    if (a > b)
+        ...
+    T c = a*b;
+    T d = a+b;
+    ...
+}
+```
+
+以上模板并不能处理所有的数据类型，比如乘法运算符不能用于数组，指针或结构。
+
+对此有两种解决方案：
+
+- 重载运算符，比如重载加法运算符，使之能够用于特定的结构或类，这样使用运算符+的模板便可以处理重载了运算符+的结构
+- 为特定类型提供具体化的模板定义
+
+## 显示具体化
+
+假设定义了如下结构：
+
+```cpp
+struct job
+{
+    char name[40];
+    double salary;
+    int floor;
+};
+```
+
+如果想通过Swap模板函数交换结构体 job的 salary和floor成员，而不交换name成员，就不能使用上面定义的模板即：
+
+```cpp
+template <typename T> 
+void Swap(T &a, T &b)
+{
+    T temp;
+    temp = a;
+    a = b;
+    b = temp; 
+}
+```
+
+因为如果使用该模板，name成员也会被交换，所以需要更改此模板的代码，但是Swap()的参数不变（即特征标不变），即两个job结构的引用，因此无法使用模板重载来完成。
+
+这里需要使用**显示具体化**，即提供一个具体化的函数定义，其中包含所需要的代码，当编译器找到与函数调用匹配的具体化定义时，将使用该定义，而不再寻找模板。
+
