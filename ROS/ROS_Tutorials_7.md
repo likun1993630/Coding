@@ -178,7 +178,7 @@ private:
 	ros::NodeHandle node_;
 	ros::Subscriber subscriber_;
 	static void gpsCallback(const topic_demo_class::gps::ConstPtr &msg);
-	 // 为什么要必须是静态成员函数？？？ 需要搞明白
+	 // Callback函数必须是静态成员函数
 public:
 	Listener();
 };
@@ -201,7 +201,11 @@ void Listener::gpsCallback(const topic_demo_class::gps::ConstPtr &msg)
 #endif
 ```
 
-
+- 静态成员函数的特性：
+  - 可以在还没有任何对象生成时就访问一个类的静态成员（包括数据成员和成员函数）
+  - 静态成员函数能访问静态成员数据、其他静态成员函数和类外部的其他函数（包括类外的数据，变量）
+- Callback函数必须是静态成员函数，因为在Listener的构造函数将通过Callback函数的指针调用Callback函数，所以要确保Callback函数在创建第一个Listener对象之前就应该存在，所以只能使用静态成员函数。
+- Callback函数可以使用关键字private或者public，但是在ros源码中，大神们用的是private
 
 topic_demo_class/src/listener.cpp
 
