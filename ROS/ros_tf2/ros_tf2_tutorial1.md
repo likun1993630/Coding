@@ -141,6 +141,29 @@ int main(int argc, char **argv)
 };
 ```
 
+geometry_msgs/TransformStamped
+
+```shell
+/opt/ros/kinetic/share/geometry_msgs/msg/TransformStamped.msg
+# This expresses a transform from coordinate frame header.frame_id
+# to the coordinate frame child_frame_id
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+string child_frame_id
+geometry_msgs/Transform transform
+  geometry_msgs/Vector3 translation
+    float64 x
+    float64 y
+    float64 z
+  geometry_msgs/Quaternion rotation
+    float64 x
+    float64 y
+    float64 z
+    float64 w
+```
+
 ## 运行节点
 
 修改 `CMakeLists.txt`
@@ -222,6 +245,17 @@ launch 文件中使用：
 
 就是把坐标系发到tf
 
+一般流程：
+
+- Call ros::init() to initialize a node. //初始化一个节点
+
+- Construct a tf2_ros::TransformBroadcaster. //构造一个TransformBroadcaster类对象
+
+- Pass a geometry_msgs::TransformStamped message to tf2_ros::TransformBroadcaster::sendTransform().
+      Alternatively, pass a vector of geometry_msgs::TransformStamped messages.
+
+  // 将一个geometry_msgs::TransformStamped类的对象传递给函数tf2_ros::TransformBroadcaster::sendTransform()
+
 ## Create a learning_tf2 package
 
 继续使用上一节的learning_tf2包
@@ -244,7 +278,7 @@ turtle_tf2_broadcaster.cpp：
 #include <geometry_msgs/TransformStamped.h>
 #include <turtlesim/Pose.h> // turtlesim::Pose 消息
 
-std::string turtle_name;
+std::string turtle_name; // 静态持续性（整个程序运行期间），外部链接性，全局作用域（外部可见）
 
 void poseCallback(const turtlesim::PoseConstPtr& msg){
   static tf2_ros::TransformBroadcaster br;
@@ -252,7 +286,7 @@ void poseCallback(const turtlesim::PoseConstPtr& msg){
     //静态对象，br 只有第一次poseCallback函数时被零初始化，函数被第二次调用及以后，都不使用声明语句，
     //也就是br 对象只被初始化一次 
   geometry_msgs::TransformStamped transformStamped; //tf消息
-  
+  	// 用于传递给 sendTransform() 函数
   transformStamped.header.stamp = ros::Time::now(); //当前时间
   transformStamped.header.frame_id = "world";
   transformStamped.child_frame_id = turtle_name;
@@ -266,17 +300,19 @@ void poseCallback(const turtlesim::PoseConstPtr& msg){
   transformStamped.transform.rotation.z = q.z();
   transformStamped.transform.rotation.w = q.w();
 
-  br.sendTransform(transformStamped);
+  br.sendTransform(transformStamped); // 发布到tf
 }
 
 int main(int argc, char** argv){
   ros::init(argc, argv, "my_tf2_broadcaster");
 
   ros::NodeHandle private_node("~"); // 使private_node的命名空间为/my_tf2_broadcaster
-  if (! private_node.hasParam("turtle")) // /my_tf2_broadcaster/turtle
+  // 查询参数服务器是否有参数 “turtle”,查询的是key（字符串）
+  // if这里可以先忽略，只看 turtle_name = argv[1]; 这一句就行
+  if (! private_node.hasParam("turtle")) //参数全名为： /my_tf2_broadcaster/turtle
   {
     if (argc != 2){ROS_ERROR("need turtle name as argument"); return -1;};
-    turtle_name = argv[1];
+    turtle_name = argv[1]; 
   }
   else
   {
@@ -285,8 +321,9 @@ int main(int argc, char** argv){
     
   ros::NodeHandle node;
   ros::Subscriber sub = node.subscribe(turtle_name+"/pose", 10, &poseCallback);
-
-  ros::spin();
+    // turtle_name+"/pose" 加号运算符将两个string对象连接起来，即string类重载了+运算符
+	// 设置消息列队长度为10
+  ros::spin(); // 循环处理回调函数
   return 0;
 };
 ```
@@ -323,6 +360,10 @@ target_link_libraries(turtle_tf2_broadcaster
   </launch>
 ```
 
+> 注意使用节点rosrun turtlesim turtlesim_node 生成的小海龟默认的名字为 turtle1
+>
+> 发布的话题为：/turtle1/cmd_vel  /turtle1/color_sensor  /turtle1/pose
+
 如果想要安装 launch文件到ros的 /opt/ros/kinetic/share 文件下，可以在CMakeLists.txt添加：
 
 ```makefile
@@ -356,6 +397,32 @@ At time 1568298604.277
 # Writing a tf2 listener
 
 从tf获取坐标信息
+
+一般流程：
+
+- Construct an instance of a class that implements tf2_ros::BufferInterface. //构造实现tf2_ros :: BufferInterface的类的实例
+  - tf2_ros::Buffer is the standard implementation which offers a tf2_frames service that can respond to requests with a tf2_msgs::FrameGraph. //tf2_ros :: Buffer是提供tf2_frames服务的标准实现，该服务可以使用tf2_msgs :: FrameGraph响应请求。
+
+- Pass the tf2_ros::Buffer to the constructor of tf2_ros::TransformListener.// 将tf2_ros :: Buffer传递给tf2_ros :: TransformListener的构造函数。
+
+- Use tf2_ros::BufferInterface::transform() to apply a transform on the tf server to an input frame. //使用tf2_ros :: BufferInterface :: transform（）将tf服务器上的转换应用于输入帧。
+  - Or, check if a transform is available with tf2_ros::BufferInterface::canTransform(). //    或者，使用tf2_ros :: BufferInterface :: canTransform（）检查转换是否可用。
+  - Then, call tf2_ros::BufferInterface::lookupTransform() to get the transform between two frames. //  然后，调用tf2_ros :: BufferInterface :: lookupTransform（）获得两个帧之间的转换。
+
+> 看下面实例如何使用
+
+示例：
+
+```cpp
+tf2_ros::Buffer tfBuffer;
+tf2_ros::TransformListener tfListener(tfBuffer);
+
+geometry_msgs::TransformStamped transformStamped;
+transformStamped = tfBuffer.lookupTransform("turtle2", "turtle1",ros::Time(0));
+// lookupTransform（）返回值类型为 geometry_msgs::TransformStamped，即标准tf消息
+```
+
+
 
 ### The Code
 
@@ -396,6 +463,7 @@ int main(int argc, char** argv){
       transformStamped = tfBuffer.lookupTransform("turtle2", "turtle1",
                                ros::Time(0));
         //参数顺序：目标坐标系，原坐标系，时刻
+        //可以这么理解： 坐标系turtle1的原点 在 turtle2坐标系中的坐标
         //We want the transform to this frame (target frame) 
         // from this frame (source frame).
 		//The time at which we want to transform. 
@@ -403,8 +471,8 @@ int main(int argc, char** argv){
     }
     catch (tf2::TransformException &ex) {
       ROS_WARN("%s",ex.what());
-      ros::Duration(1.0).sleep();
-      continue;
+      ros::Duration(1.0).sleep(); // sleep 1 秒
+      continue; // 如果查询变换时出现异常，则时程序睡眠1s，然后跳出当前循环，开始下一次循环
     }
 
     geometry_msgs::Twist vel_msg;
