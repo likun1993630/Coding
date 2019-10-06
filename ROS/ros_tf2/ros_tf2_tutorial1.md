@@ -1,5 +1,11 @@
 # 	TF2
 
+## TF的本质
+
+使用tf2_ros提供的接口（比如TransformBroadcaster ），向话题 /tf 发送ros定义的一种标准消息   geometry_msgs::TransformStamped ，即两个坐标系之间的变换，然后会有一个节点（抽象的）自动处理这些消息，根据接受到的消息来维护一个 tf树（非闭环），也就各个坐标系之间的相互变换关系。同时可以使用tf2_ros提供的接口 TransformListener 获取想要的两个坐标系之间的变换关系，坐标变换即保存在geometry_msgs::TransformStamped消息中。
+
+同时ros还提供了一些命令行工具用来查询当前 tf 相关的内容。
+
 ## 创建一个learning_tf2包
 
 ```shell
@@ -547,4 +553,93 @@ $ roslaunch learning_tf2 start_demo.launch
 ![1568304309942](res/1568304309942.png)
 
 # Adding a frame
+
+加入一个除了 word turtle1 和 turtle2之外的坐标系。
+
+为什么加入多个坐标系：对于许多任务，更容易在局部（本地）坐标系内进行思考，例如激光雷达的点云数据以激光雷达坐标为中心是最方便理解的方式。 tf2允许为系统中的每个传感器，构件等定义本地坐标系。 而且，tf2将处理所有引入的额外坐标变换。
+
+tf2 builds up a tree structure of frames;它不允许坐标树中存在闭环。 这意味着一帧只有一个父级，但可以有多个子级。 当前，我们的tf2树包含三个坐标系：world，turtle1和turtle2。 两个turtle是world的子级。 如果要向tf2添加新标标系，则三个现有坐标系之一必须是父级，新坐标系将成为子级。
+
+<img src="http://wiki.ros.org/tf2/Tutorials/Adding%20a%20frame%20%28C%2B%2B%29?action=AttachFile&amp;do=get&amp;target=tree.png" alt="tree.png" style="zoom:50%;" />
+
+### 代码
+
+```cpp
+ $ roscd learning_tf2/src
+ $ touch frame_tf2_broadcaster.cpp
+ $ subl frame_tf2_broadcaster.cpp
+```
+
+frame_tf2_broadcaster.cpp
+
+```cpp
+#include <ros/ros.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2/LinearMath/Quaternion.h>
+
+int main(int argc, char** argv)
+{
+  ros::init(argc, argv, "my_tf2_broadcaster");
+  ros::NodeHandle node;
+
+  tf2_ros::TransformBroadcaster tfb;
+  geometry_msgs::TransformStamped transformStamped;
+  // 新的carrot1坐标系相对与turtle1坐标系在y方向（carrot1坐标系）移动了2m
+    // 可以发布一直变化的坐标变换关系
+  transformStamped.header.frame_id = "turtle1";
+  transformStamped.child_frame_id = "carrot1";
+  transformStamped.transform.translation.x = 0.0;
+  // transformStamped.transform.translation.x = 2.0*sin(ros::Time::now().toSec());
+  transformStamped.transform.translation.y = 2.0;
+  // transformStamped.transform.translation.y = 2.0*cos(ros::Time::now().toSec());  
+  transformStamped.transform.translation.z = 0.0;
+  tf2::Quaternion q;
+        q.setRPY(0, 0, 0);
+  transformStamped.transform.rotation.x = q.x();
+  transformStamped.transform.rotation.y = q.y();
+  transformStamped.transform.rotation.z = q.z();
+  transformStamped.transform.rotation.w = q.w();
+
+  ros::Rate rate(10.0);
+  while (node.ok())
+  {
+    transformStamped.header.stamp = ros::Time::now();
+    tfb.sendTransform(transformStamped);
+    rate.sleep();
+    printf("sending\n");
+  }
+};
+```
+
+编辑 CMakeLists.txt，加入下列内容：
+
+```cmake
+add_executable(frame_tf2_broadcaster src/frame_tf2_broadcaster.cpp)
+target_link_libraries(frame_tf2_broadcaster ${catkin_LIBRARIES})
+```
+
+编辑 launch文件，加入下列内容：
+
+```xml
+  <launch>
+    ...
+    <node pkg="learning_tf2" type="frame_tf2_broadcaster"
+          name="broadcaster_frame" />
+  </launch>
+```
+
+修改src/turtle_tf2_listener.cpp 文件，使turtle2 追踪 carrot1
+
+```cpp
+transformStamped = listener.lookupTransform("/turtle2", "/carrot1",ros::Time(0));
+```
+
+### 编译并运行实例
+
+```shell
+catkin_make
+roslaunch learning_tf2 start_demo.launch
+```
+
+![1570357383972](res/1570357383972.png)
 
