@@ -1,8 +1,10 @@
 # 	TF2
 
-## TF的本质
+## TF2的本质
 
-使用tf2_ros提供的接口（比如TransformBroadcaster ），向话题 /tf 发送ros定义的一种标准消息   geometry_msgs::TransformStamped ，即两个坐标系之间的变换，然后会有一个节点（抽象的）自动处理这些消息，根据接受到的消息来维护一个 tf树（非闭环），也就各个坐标系之间的相互变换关系。同时可以使用tf2_ros提供的接口 TransformListener 获取想要的两个坐标系之间的变换关系，坐标变换即保存在geometry_msgs::TransformStamped消息中。
+使用tf2_ros提供的接口（比如TransformBroadcaster ），向话题 /tf 发送ros定义的一种标准消息   geometry_msgs::TransformStamped ，即两个坐标系之间的变换，然后会有一个节点（抽象的）自动处理这些消息，根据接受到的消息来维护一个 tf2树（非闭环），也就各个坐标系之间的相互变换关系。同时可以使用tf2_ros提供的接口 TransformListener 获取想要的两个坐标系之间的变换关系，坐标变换即保存在geometry_msgs::TransformStamped消息中。
+
+tf2 跟踪和维护坐标系树。 该树随时间变化，并且tf2会为每个坐标变换存储时间快照（默认情况下最长为10秒）。 可以使用lookupTransform（）函数来访问该tf2树中的最新可用转换，而无需知道该转换被记录在什么时间。 还可以知道在特定时间的转换。
 
 同时ros还提供了一些命令行工具用来查询当前 tf 相关的内容。
 
@@ -645,3 +647,62 @@ roslaunch learning_tf2 start_demo.launch
 ![1570357383972](res/1570357383972.png)
 
 ![1570359740462](res/1570359740462.png)
+
+# tf2 and time / tf2和ros内时钟的关系
+
+### `ros::Time(0) `与 `ros::Time::now()`
+
+`ros::Time(0) `
+
+- means "the latest available" transform in the buffer
+
+`ros::Time::now()`
+
+- 表示执行当前语句时的时刻
+
+tf2树保存在tf2 的buffer中，所以存在延迟问题，延迟时间一般是几毫秒，在一般情况下，几毫秒的延迟不会造成问题。
+
+在 **src/turtle_tf2_listener.cpp** 中有：
+
+```cpp
+try{
+    transformStamped = tfBuffer.lookupTransform("turtle2", "turtle1", ros::Time(0));
+} catch (tf2::TransformException &ex) {
+    ROS_WARN("Could NOT transform turtle2 to turtle1: %s", ex.what());
+}
+// 这里使用的是获取tf2缓冲的最新的数据
+```
+
+如果改为如下，将出现如下错误：
+
+```cpp
+try{
+    transformStamped = tfBuffer.lookupTransform("turtle2", "turtle1", ros::Time::now());
+} catch (tf2::TransformException &ex) {
+    ROS_WARN("Could NOT transform turtle2 to turtle1: %s", ex.what());
+}
+```
+
+```
+[ERROR] 1253918454.307455000: Extrapolation Too Far in the future: target_time is 1253918454.307, but the closest tf2  data is at 1253918454.300 which is 0.007 seconds away.Extrapolation Too Far in the future: target_time is 1253918454.307, but the closest tf2 data is at 1253918454.301 which is 0.006 seconds away.
+
+大意是无法找到ros::Time::now()对应时刻的tf2变换关系
+```
+
+说明：每个listener都有一个缓冲区，在其中存储来自不同tf2 broadcaster 的所有坐标转换。 当broadcaster发出一个坐标变换时，该数据进入缓冲区要花费一些时间（通常为几毫秒）。 因此，当在“现在”时间请求坐标变换时，应该等待几毫秒，以便该信息到达。
+
+### 等待 transforms
+
+tf2提供了一个不错的工具，可以用来使程序等到坐标变换可用为止。 通过将Duration参数添加到lookupTransform（）来使用它:
+
+```cpp
+  try{
+    transformStamped = tfBuffer.lookupTransform("turtle2", "turtle1", ros::Time::now(), 
+                                                ros::Duration(3.0));
+  } catch (tf2::TransformException &ex) {
+    ROS_WARN("Could NOT transform turtle2 to turtle1: %s", ex.what());
+  }
+```
+
+lookupTransform（）可以接受四个参数。 第四个是timeout,是可选的。 它使程序在当前行暂停，一直等待一段时间，直到超时设定的时间为止。 （ros :: Duration时间值以秒或秒+纳秒为单位）。在这里lookupTransform（）实际上将一直阻塞当前程序，直到两个乌龟之间的转换可用（通常需要几毫秒），如果转换一直不可用，则阻塞程序达到超时为止。
+
