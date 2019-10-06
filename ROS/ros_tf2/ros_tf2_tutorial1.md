@@ -585,13 +585,11 @@ int main(int argc, char** argv)
   tf2_ros::TransformBroadcaster tfb;
   geometry_msgs::TransformStamped transformStamped;
   // 新的carrot1坐标系相对与turtle1坐标系在y方向（carrot1坐标系）移动了2m
-    // 可以发布一直变化的坐标变换关系
   transformStamped.header.frame_id = "turtle1";
   transformStamped.child_frame_id = "carrot1";
   transformStamped.transform.translation.x = 0.0;
-  // transformStamped.transform.translation.x = 2.0*sin(ros::Time::now().toSec());
   transformStamped.transform.translation.y = 2.0;
-  // transformStamped.transform.translation.y = 2.0*cos(ros::Time::now().toSec());  
+
   transformStamped.transform.translation.z = 0.0;
   tf2::Quaternion q;
         q.setRPY(0, 0, 0);
@@ -604,6 +602,9 @@ int main(int argc, char** argv)
   while (node.ok())
   {
     transformStamped.header.stamp = ros::Time::now();
+    // 可以发布一直变化的坐标变换关系
+    // transformStamped.transform.translation.y = 2.0*cos(ros::Time::now().toSec());  
+    // transformStamped.transform.translation.x = 2.0*sin(ros::Time::now().toSec());
     tfb.sendTransform(transformStamped);
     rate.sleep();
     printf("sending\n");
@@ -643,3 +644,4 @@ roslaunch learning_tf2 start_demo.launch
 
 ![1570357383972](res/1570357383972.png)
 
+![1570359740462](res/1570359740462.png)
