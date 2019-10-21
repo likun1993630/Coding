@@ -1,5 +1,14 @@
 # 摄像头应用
 
+## 查看可用的USB和摄像头设备
+
+```shell
+$ lsusb
+# 摄像头已连上：Bus 001 Device 011: ID 046d:0825 Logitech, Inc. Webcam C270
+$ ls /dev/video*
+# 摄像头的设备号一般为/dev/video0
+```
+
 ## ubs摄像头驱动
 
 ROS : [usb_cam](http://wiki.ros.org/usb_cam)
