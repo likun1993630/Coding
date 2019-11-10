@@ -77,14 +77,22 @@ https://blog.csdn.net/u011068702/article/details/55190353/
 
 官网下载压缩包
 https://www.jetbrains.com/clion/
+
 ```shell
 # 打开终端
 cd ~/下载
 tar -xzvf CLion-2018.3.2.tar.gz
 cd clion-2018.3.2/bin
 ./clion.sh
+
+# UI安装界面逐步安装
+# 安装包可以移动位置
 ```
-UI安装界面逐步安装
+如果没有生成快捷方式，可以手动生成：
+
+首先 通过 ./clion.sh 启动clion，然后菜单：在Clion中点击Tools>Creat Desktop Entry。
+
+
 
 
 ## 安装 CMake
