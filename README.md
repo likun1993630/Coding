@@ -10,19 +10,7 @@
 - [Lesson 8](https://nbviewer.jupyter.org/github/likun1993630/Coding/blob/master/Python/Lesson8.ipynb)
 
 ## [C++ Primer Plus Notebook](./C++Primer&#32;Plus/)
-- [C++ 入门](./C++Primer&#32;Plus/C++&#32;入门.md)
-- [C++ 数据类型](./C++Primer&#32;Plus/C++_数据类型.md)
-- [C++ 复合类型-数组.字符串.string](./C++Primer&#32;Plus/C++r&#32;复合类型-数组.字符串.string.md)
-- [C++ 复合类型-结构.共用体.枚举](./C++Primer&#32;Plus/C++r&#32;复合类型-结构.共用体.枚举.md)
-- [C++ 复合类型-指针](./C++Primer&#32;Plus/C++&#32;复合类型-指针.md)
-- [C++ 循环](./C++Primer&#32;Plus/C++&#32;循环.md)
-- [C++ 函数基础](./C++Primer&#32;Plus/C++&#32;函数基础.md)
-- [C++ 函数进阶](./C++Primer&#32;Plus/C++&#32;函数进阶.md)
-- [C++ 命名空间](./C++Primer&#32;Plus/C++_命名空间.md)
-- [C++ 类和对象](./C++Primer&#32;Plus/C++_类和对象.md)
-- [C++ 使用类](./C++Primer&#32;Plus/C++_使用类.md)
-- [C++ 类和动态内存分配](./C++Primer&#32;Plus/C++_类和动态内存分配.md)
-- [C++ 类继承](./C++Primer&#32;Plus/C++_类继承.md)
+
 
 ## C++ 补充知识
 - [动态链接库与静态链接库](./C++Notebook/动态链接库与静态链接库.md)
