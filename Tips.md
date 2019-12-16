@@ -4,3 +4,14 @@ sublime：
 
 github文件名空格引用：
 - 使用 `&#32;` 代替空格
+
+linux搜索文件内的指定字符：
+
+```sh
+$ find . -type f | grep -H "Sending Fusion filter command to begin transmission"
+
+$ find . -type f |xargs cat > 1.txt << EOF
+
+$ grep -nr "Sending Fusion filter command to begin transmission" ./
+```
+
