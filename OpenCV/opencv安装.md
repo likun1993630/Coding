@@ -1,0 +1,749 @@
+## 以3.4.8 版本为例，同时安装opencv和opencv_contrib
+
+首先在opencv的github仓库下载需要的release版本。
+
+即：
+
+- opencv-3.4.8.tar.gz  
+- opencv_contrib-3.4.8.tar.gz
+
+然后将连个文件分别解压,解压后的目录为:
+
+```
+Opencv
+├── opencv-3.4.8
+├── opencv_contrib-3.4.8
+```
+
+根据一下步骤安装：
+
+```sh
+$ cd opencv-3.4.8
+$ mkdir release
+$ cd release
+
+# 安装opencv 依赖
+$ sudo apt-get install build-essential
+$ sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+# 可选的依赖
+$ sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+
+# 编译
+$ cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-3.4.8/modules/ ..
+$ make -j4
+
+# 安装
+$ sudo make install
+```
+
+安装信息：
+
+```
+-- Installing: /usr/local/share/OpenCV/OpenCVModules.cmake
+-- Installing: /usr/local/share/OpenCV/OpenCVModules-release.cmake
+-- Installing: /usr/local/share/OpenCV/OpenCVConfig-version.cmake
+-- Installing: /usr/local/share/OpenCV/OpenCVConfig.cmake
+
+-- Installing: /usr/local/include/opencv2/opencv.hpp
+
+-- Installing: /usr/local/lib/libopencv_videoio.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_videoio.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_videoio.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_videoio.so
+-- Installing: /usr/local/include/opencv2/videoio.hpp
+-- Installing: /usr/local/include/opencv2/videoio/registry.hpp
+-- Installing: /usr/local/include/opencv2/videoio/videoio.hpp
+-- Installing: /usr/local/include/opencv2/videoio/videoio_c.h
+-- Installing: /usr/local/include/opencv2/videoio/cap_ios.h
+
+```
+
+
+
+### opencv卸载
+
+```sh
+$ make uninstall
+$ cd ..
+$ sudo rm -r release
+$ sudo rm -r /usr/local/include/opencv2 /usr/local/include/opencv /usr/include/opencv /usr/include/opencv2 /usr/local/share/opencv /usr/local/share/OpenCV /usr/share/opencv /usr/share/OpenCV /usr/local/bin/opencv* /usr/local/lib/libopencv
+```
+
+
+
+### 全部的安装信息
+
+```
+-- Install configuration: "Release"
+-- Installing: /usr/local/share/licenses/opencv3/ippicv-readme.htm
+-- Installing: /usr/local/share/licenses/opencv3/ippicv-EULA.txt
+-- Installing: /usr/local/share/licenses/opencv3/ippiw-support.txt
+-- Installing: /usr/local/share/licenses/opencv3/ippiw-third-party-programs.txt
+-- Installing: /usr/local/share/licenses/opencv3/ippiw-EULA.txt
+-- Installing: /usr/local/share/licenses/opencv3/opencl-headers-LICENSE.txt
+-- Installing: /usr/local/include/opencv2/cvconfig.h
+-- Installing: /usr/local/include/opencv2/opencv_modules.hpp
+-- Installing: /usr/local/lib/pkgconfig/opencv.pc
+-- Installing: /usr/local/share/OpenCV/OpenCVModules.cmake
+-- Installing: /usr/local/share/OpenCV/OpenCVModules-release.cmake
+-- Installing: /usr/local/share/OpenCV/OpenCVConfig-version.cmake
+-- Installing: /usr/local/share/OpenCV/OpenCVConfig.cmake
+-- Installing: /usr/local/bin/setup_vars_opencv3.sh
+-- Installing: /usr/local/share/OpenCV/valgrind.supp
+-- Installing: /usr/local/share/OpenCV/valgrind_3rdparty.supp
+-- Installing: /usr/local/share/licenses/opencv3/openexr-LICENSE
+-- Installing: /usr/local/share/licenses/opencv3/openexr-AUTHORS.ilmbase
+-- Installing: /usr/local/share/licenses/opencv3/openexr-AUTHORS.openexr
+-- Installing: /usr/local/share/licenses/opencv3/protobuf-LICENSE
+-- Installing: /usr/local/share/licenses/opencv3/protobuf-README.md
+-- Installing: /usr/local/share/licenses/opencv3/quirc-LICENSE
+-- Installing: /usr/local/share/licenses/opencv3/ittnotify-LICENSE.BSD
+-- Installing: /usr/local/share/licenses/opencv3/ittnotify-LICENSE.GPL
+-- Installing: /usr/local/include/opencv/cxcore.h
+-- Installing: /usr/local/include/opencv/cv.hpp
+-- Installing: /usr/local/include/opencv/cxmisc.h
+-- Installing: /usr/local/include/opencv/cxeigen.hpp
+-- Installing: /usr/local/include/opencv/cvaux.h
+-- Installing: /usr/local/include/opencv/highgui.h
+-- Installing: /usr/local/include/opencv/ml.h
+-- Installing: /usr/local/include/opencv/cxcore.hpp
+-- Installing: /usr/local/include/opencv/cv.h
+-- Installing: /usr/local/include/opencv/cvwimage.h
+-- Installing: /usr/local/include/opencv/cvaux.hpp
+-- Installing: /usr/local/include/opencv2/opencv.hpp
+-- Installing: /usr/local/lib/libopencv_core.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_core.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_core.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_core.so
+-- Installing: /usr/local/include/opencv2/core/opencl/ocl_defs.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/opencl_svm_definitions.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/opencl_core_wrappers.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/opencl_svm_hsa_extension.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/opencl_clamdblas.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/opencl_gl.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/autogenerated/opencl_core_wrappers.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/autogenerated/opencl_clamdblas.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/autogenerated/opencl_gl.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/autogenerated/opencl_gl_wrappers.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/autogenerated/opencl_clamdfft.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/autogenerated/opencl_core.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/opencl_gl_wrappers.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/opencl_clamdfft.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/opencl_core.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/runtime/opencl_svm_20.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/opencl_info.hpp
+-- Installing: /usr/local/include/opencv2/core/opencl/opencl_svm.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/utility.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/vec_traits.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/transform.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/emulation.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/warp_shuffle.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/warp_reduce.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/vec_math.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/common.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/limits.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/vec_distance.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/datamov_utils.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/block.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/dynamic_smem.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/color.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/border_interpolate.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/reduce.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/functional.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/filters.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/scan.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/warp.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/saturate_cast.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/funcattrib.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/simd_functions.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/type_traits.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/detail/type_traits_detail.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/detail/reduce_key_val.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/detail/color_detail.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/detail/transform_detail.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/detail/reduce.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda/detail/vec_distance_detail.hpp
+-- Installing: /usr/local/include/opencv2/core.hpp
+-- Installing: /usr/local/include/opencv2/core/utility.hpp
+-- Installing: /usr/local/include/opencv2/core/cvstd.inl.hpp
+-- Installing: /usr/local/include/opencv2/core/ippasync.hpp
+-- Installing: /usr/local/include/opencv2/core/ocl.hpp
+-- Installing: /usr/local/include/opencv2/core/directx.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda_types.hpp
+-- Installing: /usr/local/include/opencv2/core/vsx_utils.hpp
+-- Installing: /usr/local/include/opencv2/core/fast_math.hpp
+-- Installing: /usr/local/include/opencv2/core/types.hpp
+-- Installing: /usr/local/include/opencv2/core/eigen.hpp
+-- Installing: /usr/local/include/opencv2/core/bindings_utils.hpp
+-- Installing: /usr/local/include/opencv2/core/opengl.hpp
+-- Installing: /usr/local/include/opencv2/core/base.hpp
+-- Installing: /usr/local/include/opencv2/core/check.hpp
+-- Installing: /usr/local/include/opencv2/core/sse_utils.hpp
+-- Installing: /usr/local/include/opencv2/core/softfloat.hpp
+-- Installing: /usr/local/include/opencv2/core/neon_utils.hpp
+-- Installing: /usr/local/include/opencv2/core/wimage.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda.inl.hpp
+-- Installing: /usr/local/include/opencv2/core/async.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda.hpp
+-- Installing: /usr/local/include/opencv2/core/core.hpp
+-- Installing: /usr/local/include/opencv2/core/simd_intrinsics.hpp
+-- Installing: /usr/local/include/opencv2/core/mat.hpp
+-- Installing: /usr/local/include/opencv2/core/va_intel.hpp
+-- Installing: /usr/local/include/opencv2/core/version.hpp
+-- Installing: /usr/local/include/opencv2/core/bufferpool.hpp
+-- Installing: /usr/local/include/opencv2/core/mat.inl.hpp
+-- Installing: /usr/local/include/opencv2/core/cuda_stream_accessor.hpp
+-- Installing: /usr/local/include/opencv2/core/ocl_genbase.hpp
+-- Installing: /usr/local/include/opencv2/core/affine.hpp
+-- Installing: /usr/local/include/opencv2/core/ptr.inl.hpp
+-- Installing: /usr/local/include/opencv2/core/ovx.hpp
+-- Installing: /usr/local/include/opencv2/core/optim.hpp
+-- Installing: /usr/local/include/opencv2/core/saturate.hpp
+-- Installing: /usr/local/include/opencv2/core/traits.hpp
+-- Installing: /usr/local/include/opencv2/core/persistence.hpp
+-- Installing: /usr/local/include/opencv2/core/matx.hpp
+-- Installing: /usr/local/include/opencv2/core/operations.hpp
+-- Installing: /usr/local/include/opencv2/core/cvstd.hpp
+-- Installing: /usr/local/include/opencv2/core/core_c.h
+-- Installing: /usr/local/include/opencv2/core/cv_cpu_helper.h
+-- Installing: /usr/local/include/opencv2/core/cv_cpu_dispatch.h
+-- Installing: /usr/local/include/opencv2/core/types_c.h
+-- Installing: /usr/local/include/opencv2/core/cvdef.h
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_neon.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_sse_em.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_wasm.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_cpp.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_msa.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/hal.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_forward.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_sse.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_avx.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_vsx.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/intrin_avx512.hpp
+-- Installing: /usr/local/include/opencv2/core/hal/msa_macros.h
+-- Installing: /usr/local/include/opencv2/core/hal/interface.h
+-- Installing: /usr/local/include/opencv2/core/utils/allocator_stats.impl.hpp
+-- Installing: /usr/local/include/opencv2/core/utils/logger.hpp
+-- Installing: /usr/local/include/opencv2/core/utils/trace.hpp
+-- Installing: /usr/local/include/opencv2/core/utils/logger.defines.hpp
+-- Installing: /usr/local/include/opencv2/core/utils/filesystem.hpp
+-- Installing: /usr/local/include/opencv2/core/utils/allocator_stats.hpp
+-- Installing: /usr/local/include/opencv2/core/detail/exception_ptr.hpp
+-- Installing: /usr/local/include/opencv2/core/detail/async_promise.hpp
+-- Installing: /usr/local/share/licenses/opencv3/SoftFloat-COPYING.txt
+-- Installing: /usr/local/lib/libopencv_flann.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_flann.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_flann.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_flann.so
+-- Installing: /usr/local/include/opencv2/flann.hpp
+-- Installing: /usr/local/include/opencv2/flann/miniflann.hpp
+-- Installing: /usr/local/include/opencv2/flann/flann_base.hpp
+-- Installing: /usr/local/include/opencv2/flann/flann.hpp
+-- Installing: /usr/local/include/opencv2/flann/sampling.h
+-- Installing: /usr/local/include/opencv2/flann/lsh_table.h
+-- Installing: /usr/local/include/opencv2/flann/allocator.h
+-- Installing: /usr/local/include/opencv2/flann/nn_index.h
+-- Installing: /usr/local/include/opencv2/flann/logger.h
+-- Installing: /usr/local/include/opencv2/flann/index_testing.h
+-- Installing: /usr/local/include/opencv2/flann/kdtree_index.h
+-- Installing: /usr/local/include/opencv2/flann/ground_truth.h
+-- Installing: /usr/local/include/opencv2/flann/defines.h
+-- Installing: /usr/local/include/opencv2/flann/any.h
+-- Installing: /usr/local/include/opencv2/flann/result_set.h
+-- Installing: /usr/local/include/opencv2/flann/object_factory.h
+-- Installing: /usr/local/include/opencv2/flann/autotuned_index.h
+-- Installing: /usr/local/include/opencv2/flann/simplex_downhill.h
+-- Installing: /usr/local/include/opencv2/flann/linear_index.h
+-- Installing: /usr/local/include/opencv2/flann/hierarchical_clustering_index.h
+-- Installing: /usr/local/include/opencv2/flann/hdf5.h
+-- Installing: /usr/local/include/opencv2/flann/dist.h
+-- Installing: /usr/local/include/opencv2/flann/dynamic_bitset.h
+-- Installing: /usr/local/include/opencv2/flann/all_indices.h
+-- Installing: /usr/local/include/opencv2/flann/heap.h
+-- Installing: /usr/local/include/opencv2/flann/composite_index.h
+-- Installing: /usr/local/include/opencv2/flann/saving.h
+-- Installing: /usr/local/include/opencv2/flann/dummy.h
+-- Installing: /usr/local/include/opencv2/flann/kdtree_single_index.h
+-- Installing: /usr/local/include/opencv2/flann/timer.h
+-- Installing: /usr/local/include/opencv2/flann/config.h
+-- Installing: /usr/local/include/opencv2/flann/kmeans_index.h
+-- Installing: /usr/local/include/opencv2/flann/params.h
+-- Installing: /usr/local/include/opencv2/flann/lsh_index.h
+-- Installing: /usr/local/include/opencv2/flann/random.h
+-- Installing: /usr/local/include/opencv2/flann/general.h
+-- Installing: /usr/local/include/opencv2/flann/matrix.h
+-- Installing: /usr/local/lib/libopencv_hdf.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_hdf.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_hdf.so.3.4.8" to "/usr/local/lib:/usr/lib/x86_64-linux-gnu/hdf5/serial/lib"
+-- Installing: /usr/local/lib/libopencv_hdf.so
+-- Installing: /usr/local/include/opencv2/hdf.hpp
+-- Installing: /usr/local/include/opencv2/hdf/hdf5.hpp
+-- Installing: /usr/local/lib/libopencv_imgproc.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_imgproc.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_imgproc.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_imgproc.so
+-- Installing: /usr/local/include/opencv2/imgproc.hpp
+-- Installing: /usr/local/include/opencv2/imgproc/imgproc.hpp
+-- Installing: /usr/local/include/opencv2/imgproc/imgproc_c.h
+-- Installing: /usr/local/include/opencv2/imgproc/types_c.h
+-- Installing: /usr/local/include/opencv2/imgproc/hal/hal.hpp
+-- Installing: /usr/local/include/opencv2/imgproc/hal/interface.h
+-- Installing: /usr/local/include/opencv2/imgproc/detail/distortion_model.hpp
+-- Installing: /usr/local/lib/libopencv_ml.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_ml.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_ml.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_ml.so
+-- Installing: /usr/local/include/opencv2/ml.hpp
+-- Installing: /usr/local/include/opencv2/ml/ml.inl.hpp
+-- Installing: /usr/local/include/opencv2/ml/ml.hpp
+-- Installing: /usr/local/lib/libopencv_phase_unwrapping.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_phase_unwrapping.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_phase_unwrapping.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_phase_unwrapping.so
+-- Installing: /usr/local/include/opencv2/phase_unwrapping.hpp
+-- Installing: /usr/local/include/opencv2/phase_unwrapping/histogramphaseunwrapping.hpp
+-- Installing: /usr/local/include/opencv2/phase_unwrapping/phase_unwrapping.hpp
+-- Installing: /usr/local/lib/libopencv_photo.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_photo.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_photo.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_photo.so
+-- Installing: /usr/local/include/opencv2/photo.hpp
+-- Installing: /usr/local/include/opencv2/photo/cuda.hpp
+-- Installing: /usr/local/include/opencv2/photo/photo.hpp
+-- Installing: /usr/local/include/opencv2/photo/photo_c.h
+-- Installing: /usr/local/lib/libopencv_plot.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_plot.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_plot.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_plot.so
+-- Installing: /usr/local/include/opencv2/plot.hpp
+-- Installing: /usr/local/lib/libopencv_reg.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_reg.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_reg.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_reg.so
+-- Installing: /usr/local/include/opencv2/reg/mapshift.hpp
+-- Installing: /usr/local/include/opencv2/reg/mappergradsimilar.hpp
+-- Installing: /usr/local/include/opencv2/reg/mappergradshift.hpp
+-- Installing: /usr/local/include/opencv2/reg/mappergradeuclid.hpp
+-- Installing: /usr/local/include/opencv2/reg/mapper.hpp
+-- Installing: /usr/local/include/opencv2/reg/mapaffine.hpp
+-- Installing: /usr/local/include/opencv2/reg/mapperpyramid.hpp
+-- Installing: /usr/local/include/opencv2/reg/mappergradaffine.hpp
+-- Installing: /usr/local/include/opencv2/reg/mappergradproj.hpp
+-- Installing: /usr/local/include/opencv2/reg/mapprojec.hpp
+-- Installing: /usr/local/include/opencv2/reg/map.hpp
+-- Installing: /usr/local/lib/libopencv_surface_matching.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_surface_matching.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_surface_matching.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_surface_matching.so
+-- Installing: /usr/local/include/opencv2/surface_matching.hpp
+-- Installing: /usr/local/include/opencv2/surface_matching/ppf_match_3d.hpp
+-- Installing: /usr/local/include/opencv2/surface_matching/pose_3d.hpp
+-- Installing: /usr/local/include/opencv2/surface_matching/ppf_helpers.hpp
+-- Installing: /usr/local/include/opencv2/surface_matching/icp.hpp
+-- Installing: /usr/local/include/opencv2/surface_matching/t_hash_int.hpp
+-- Installing: /usr/local/lib/libopencv_video.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_video.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_video.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_video.so
+-- Installing: /usr/local/include/opencv2/video.hpp
+-- Installing: /usr/local/include/opencv2/video/background_segm.hpp
+-- Installing: /usr/local/include/opencv2/video/video.hpp
+-- Installing: /usr/local/include/opencv2/video/tracking.hpp
+-- Installing: /usr/local/include/opencv2/video/tracking_c.h
+-- Installing: /usr/local/lib/libopencv_viz.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_viz.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_viz.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_viz.so
+-- Installing: /usr/local/include/opencv2/viz.hpp
+-- Installing: /usr/local/include/opencv2/viz/widget_accessor.hpp
+-- Installing: /usr/local/include/opencv2/viz/types.hpp
+-- Installing: /usr/local/include/opencv2/viz/vizcore.hpp
+-- Installing: /usr/local/include/opencv2/viz/widgets.hpp
+-- Installing: /usr/local/include/opencv2/viz/viz3d.hpp
+-- Installing: /usr/local/lib/libopencv_xphoto.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_xphoto.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_xphoto.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_xphoto.so
+-- Installing: /usr/local/include/opencv2/xphoto.hpp
+-- Installing: /usr/local/include/opencv2/xphoto/dct_image_denoising.hpp
+-- Installing: /usr/local/include/opencv2/xphoto/bm3d_image_denoising.hpp
+-- Installing: /usr/local/include/opencv2/xphoto/inpainting.hpp
+-- Installing: /usr/local/include/opencv2/xphoto/tonemap.hpp
+-- Installing: /usr/local/include/opencv2/xphoto/white_balance.hpp
+-- Installing: /usr/local/lib/libopencv_dnn.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_dnn.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_dnn.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_dnn.so
+-- Installing: /usr/local/include/opencv2/dnn.hpp
+-- Installing: /usr/local/include/opencv2/dnn/dict.hpp
+-- Installing: /usr/local/include/opencv2/dnn/layer.details.hpp
+-- Installing: /usr/local/include/opencv2/dnn/all_layers.hpp
+-- Installing: /usr/local/include/opencv2/dnn/dnn.inl.hpp
+-- Installing: /usr/local/include/opencv2/dnn/shape_utils.hpp
+-- Installing: /usr/local/include/opencv2/dnn/dnn.hpp
+-- Installing: /usr/local/include/opencv2/dnn/layer.hpp
+-- Installing: /usr/local/include/opencv2/dnn/utils/inference_engine.hpp
+-- Installing: /usr/local/lib/libopencv_features2d.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_features2d.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_features2d.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_features2d.so
+-- Installing: /usr/local/include/opencv2/features2d.hpp
+-- Installing: /usr/local/include/opencv2/features2d/features2d.hpp
+-- Installing: /usr/local/include/opencv2/features2d/hal/interface.h
+-- Installing: /usr/local/lib/libopencv_freetype.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_freetype.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_freetype.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_freetype.so
+-- Installing: /usr/local/include/opencv2/freetype.hpp
+-- Installing: /usr/local/lib/libopencv_fuzzy.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_fuzzy.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_fuzzy.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_fuzzy.so
+-- Installing: /usr/local/include/opencv2/fuzzy.hpp
+-- Installing: /usr/local/include/opencv2/fuzzy/fuzzy_F0_math.hpp
+-- Installing: /usr/local/include/opencv2/fuzzy/types.hpp
+-- Installing: /usr/local/include/opencv2/fuzzy/fuzzy_F1_math.hpp
+-- Installing: /usr/local/include/opencv2/fuzzy/fuzzy_image.hpp
+-- Installing: /usr/local/lib/libopencv_hfs.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_hfs.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_hfs.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_hfs.so
+-- Installing: /usr/local/include/opencv2/hfs.hpp
+-- Installing: /usr/local/lib/libopencv_img_hash.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_img_hash.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_img_hash.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_img_hash.so
+-- Installing: /usr/local/include/opencv2/img_hash.hpp
+-- Installing: /usr/local/include/opencv2/img_hash/block_mean_hash.hpp
+-- Installing: /usr/local/include/opencv2/img_hash/radial_variance_hash.hpp
+-- Installing: /usr/local/include/opencv2/img_hash/img_hash_base.hpp
+-- Installing: /usr/local/include/opencv2/img_hash/average_hash.hpp
+-- Installing: /usr/local/include/opencv2/img_hash/color_moment_hash.hpp
+-- Installing: /usr/local/include/opencv2/img_hash/phash.hpp
+-- Installing: /usr/local/include/opencv2/img_hash/marr_hildreth_hash.hpp
+-- Installing: /usr/local/lib/libopencv_imgcodecs.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_imgcodecs.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_imgcodecs.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_imgcodecs.so
+-- Installing: /usr/local/include/opencv2/imgcodecs.hpp
+-- Installing: /usr/local/include/opencv2/imgcodecs/imgcodecs.hpp
+-- Installing: /usr/local/include/opencv2/imgcodecs/imgcodecs_c.h
+-- Installing: /usr/local/include/opencv2/imgcodecs/ios.h
+-- Installing: /usr/local/lib/libopencv_line_descriptor.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_line_descriptor.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_line_descriptor.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_line_descriptor.so
+-- Installing: /usr/local/include/opencv2/line_descriptor.hpp
+-- Installing: /usr/local/include/opencv2/line_descriptor/descriptor.hpp
+-- Installing: /usr/local/lib/libopencv_saliency.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_saliency.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_saliency.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_saliency.so
+-- Installing: /usr/local/include/opencv2/saliency.hpp
+-- Installing: /usr/local/include/opencv2/saliency/saliencySpecializedClasses.hpp
+-- Installing: /usr/local/include/opencv2/saliency/saliencyBaseClasses.hpp
+-- Installing: /usr/local/lib/libopencv_shape.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_shape.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_shape.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_shape.so
+-- Installing: /usr/local/include/opencv2/shape.hpp
+-- Installing: /usr/local/include/opencv2/shape/shape.hpp
+-- Installing: /usr/local/include/opencv2/shape/emdL1.hpp
+-- Installing: /usr/local/include/opencv2/shape/hist_cost.hpp
+-- Installing: /usr/local/include/opencv2/shape/shape_distance.hpp
+-- Installing: /usr/local/include/opencv2/shape/shape_transformer.hpp
+-- Installing: /usr/local/lib/libopencv_text.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_text.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_text.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_text.so
+-- Installing: /usr/local/include/opencv2/text.hpp
+-- Installing: /usr/local/include/opencv2/text/erfilter.hpp
+-- Installing: /usr/local/include/opencv2/text/textDetector.hpp
+-- Installing: /usr/local/include/opencv2/text/ocr.hpp
+-- Installing: /usr/local/lib/libopencv_videoio.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_videoio.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_videoio.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_videoio.so
+-- Installing: /usr/local/include/opencv2/videoio.hpp
+-- Installing: /usr/local/include/opencv2/videoio/registry.hpp
+-- Installing: /usr/local/include/opencv2/videoio/videoio.hpp
+-- Installing: /usr/local/include/opencv2/videoio/videoio_c.h
+-- Installing: /usr/local/include/opencv2/videoio/cap_ios.h
+-- Installing: /usr/local/lib/libopencv_calib3d.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_calib3d.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_calib3d.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_calib3d.so
+-- Installing: /usr/local/include/opencv2/calib3d.hpp
+-- Installing: /usr/local/include/opencv2/calib3d/calib3d.hpp
+-- Installing: /usr/local/include/opencv2/calib3d/calib3d_c.h
+-- Installing: /usr/local/lib/libopencv_datasets.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_datasets.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_datasets.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_datasets.so
+-- Installing: /usr/local/include/opencv2/datasets/ar_sports.hpp
+-- Installing: /usr/local/include/opencv2/datasets/util.hpp
+-- Installing: /usr/local/include/opencv2/datasets/ar_hmdb.hpp
+-- Installing: /usr/local/include/opencv2/datasets/slam_kitti.hpp
+-- Installing: /usr/local/include/opencv2/datasets/or_pascal.hpp
+-- Installing: /usr/local/include/opencv2/datasets/fr_lfw.hpp
+-- Installing: /usr/local/include/opencv2/datasets/slam_tumindoor.hpp
+-- Installing: /usr/local/include/opencv2/datasets/is_weizmann.hpp
+-- Installing: /usr/local/include/opencv2/datasets/pd_inria.hpp
+-- Installing: /usr/local/include/opencv2/datasets/gr_skig.hpp
+-- Installing: /usr/local/include/opencv2/datasets/tr_svt.hpp
+-- Installing: /usr/local/include/opencv2/datasets/msm_epfl.hpp
+-- Installing: /usr/local/include/opencv2/datasets/tr_icdar.hpp
+-- Installing: /usr/local/include/opencv2/datasets/gr_chalearn.hpp
+-- Installing: /usr/local/include/opencv2/datasets/track_alov.hpp
+-- Installing: /usr/local/include/opencv2/datasets/or_mnist.hpp
+-- Installing: /usr/local/include/opencv2/datasets/or_imagenet.hpp
+-- Installing: /usr/local/include/opencv2/datasets/track_vot.hpp
+-- Installing: /usr/local/include/opencv2/datasets/ir_affine.hpp
+-- Installing: /usr/local/include/opencv2/datasets/pd_caltech.hpp
+-- Installing: /usr/local/include/opencv2/datasets/or_sun.hpp
+-- Installing: /usr/local/include/opencv2/datasets/fr_adience.hpp
+-- Installing: /usr/local/include/opencv2/datasets/msm_middlebury.hpp
+-- Installing: /usr/local/include/opencv2/datasets/tr_chars.hpp
+-- Installing: /usr/local/include/opencv2/datasets/hpe_parse.hpp
+-- Installing: /usr/local/include/opencv2/datasets/ir_robot.hpp
+-- Installing: /usr/local/include/opencv2/datasets/is_bsds.hpp
+-- Installing: /usr/local/include/opencv2/datasets/dataset.hpp
+-- Installing: /usr/local/include/opencv2/datasets/hpe_humaneva.hpp
+-- Installing: /usr/local/lib/libopencv_highgui.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_highgui.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_highgui.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_highgui.so
+-- Installing: /usr/local/include/opencv2/highgui.hpp
+-- Installing: /usr/local/include/opencv2/highgui/highgui.hpp
+-- Installing: /usr/local/include/opencv2/highgui/highgui_c.h
+-- Installing: /usr/local/lib/libopencv_objdetect.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_objdetect.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_objdetect.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_objdetect.so
+-- Installing: /usr/local/include/opencv2/objdetect.hpp
+-- Installing: /usr/local/include/opencv2/objdetect/objdetect.hpp
+-- Installing: /usr/local/include/opencv2/objdetect/detection_based_tracker.hpp
+-- Installing: /usr/local/include/opencv2/objdetect/objdetect_c.h
+-- Installing: /usr/local/lib/libopencv_rgbd.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_rgbd.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_rgbd.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_rgbd.so
+-- Installing: /usr/local/include/opencv2/rgbd.hpp
+-- Installing: /usr/local/include/opencv2/rgbd/linemod.hpp
+-- Installing: /usr/local/lib/libopencv_stereo.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_stereo.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_stereo.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_stereo.so
+-- Installing: /usr/local/include/opencv2/stereo.hpp
+-- Installing: /usr/local/include/opencv2/stereo/stereo.hpp
+-- Installing: /usr/local/include/opencv2/stereo/descriptor.hpp
+-- Installing: /usr/local/include/opencv2/stereo/matching.hpp
+-- Installing: /usr/local/lib/libopencv_structured_light.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_structured_light.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_structured_light.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_structured_light.so
+-- Installing: /usr/local/include/opencv2/structured_light.hpp
+-- Installing: /usr/local/include/opencv2/structured_light/structured_light.hpp
+-- Installing: /usr/local/include/opencv2/structured_light/graycodepattern.hpp
+-- Installing: /usr/local/include/opencv2/structured_light/sinusoidalpattern.hpp
+-- Installing: /usr/local/lib/libopencv_superres.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_superres.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_superres.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_superres.so
+-- Installing: /usr/local/include/opencv2/superres.hpp
+-- Installing: /usr/local/include/opencv2/superres/optical_flow.hpp
+-- Installing: /usr/local/lib/libopencv_tracking.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_tracking.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_tracking.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_tracking.so
+-- Installing: /usr/local/include/opencv2/tracking.hpp
+-- Installing: /usr/local/include/opencv2/tracking/onlineBoosting.hpp
+-- Installing: /usr/local/include/opencv2/tracking/tracker.hpp
+-- Installing: /usr/local/include/opencv2/tracking/tldDataset.hpp
+-- Installing: /usr/local/include/opencv2/tracking/onlineMIL.hpp
+-- Installing: /usr/local/include/opencv2/tracking/tracking.hpp
+-- Installing: /usr/local/include/opencv2/tracking/feature.hpp
+-- Installing: /usr/local/include/opencv2/tracking/kalman_filters.hpp
+-- Installing: /usr/local/lib/libopencv_videostab.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_videostab.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_videostab.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_videostab.so
+-- Installing: /usr/local/include/opencv2/videostab.hpp
+-- Installing: /usr/local/include/opencv2/videostab/motion_stabilizing.hpp
+-- Installing: /usr/local/include/opencv2/videostab/optical_flow.hpp
+-- Installing: /usr/local/include/opencv2/videostab/stabilizer.hpp
+-- Installing: /usr/local/include/opencv2/videostab/global_motion.hpp
+-- Installing: /usr/local/include/opencv2/videostab/fast_marching_inl.hpp
+-- Installing: /usr/local/include/opencv2/videostab/outlier_rejection.hpp
+-- Installing: /usr/local/include/opencv2/videostab/wobble_suppression.hpp
+-- Installing: /usr/local/include/opencv2/videostab/deblurring.hpp
+-- Installing: /usr/local/include/opencv2/videostab/inpainting.hpp
+-- Installing: /usr/local/include/opencv2/videostab/frame_source.hpp
+-- Installing: /usr/local/include/opencv2/videostab/ring_buffer.hpp
+-- Installing: /usr/local/include/opencv2/videostab/log.hpp
+-- Installing: /usr/local/include/opencv2/videostab/motion_core.hpp
+-- Installing: /usr/local/include/opencv2/videostab/fast_marching.hpp
+-- Installing: /usr/local/lib/libopencv_xfeatures2d.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_xfeatures2d.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_xfeatures2d.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_xfeatures2d.so
+-- Installing: /usr/local/include/opencv2/xfeatures2d.hpp
+-- Installing: /usr/local/include/opencv2/xfeatures2d/nonfree.hpp
+-- Installing: /usr/local/include/opencv2/xfeatures2d/cuda.hpp
+-- Installing: /usr/local/lib/libopencv_ximgproc.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_ximgproc.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_ximgproc.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_ximgproc.so
+-- Installing: /usr/local/include/opencv2/ximgproc.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/seeds.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/deriche_filter.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/weighted_median_filter.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/edgeboxes.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/paillou_filter.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/edge_filter.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/fast_line_detector.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/brightedges.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/peilin.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/slic.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/fourier_descriptors.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/lsc.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/ridgefilter.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/disparity_filter.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/structured_edge_detection.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/segmentation.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/estimated_covariance.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/sparse_match_interpolator.hpp
+-- Installing: /usr/local/include/opencv2/ximgproc/fast_hough_transform.hpp
+-- Installing: /usr/local/lib/libopencv_xobjdetect.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_xobjdetect.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_xobjdetect.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_xobjdetect.so
+-- Installing: /usr/local/include/opencv2/xobjdetect.hpp
+-- Installing: /usr/local/bin/opencv_waldboost_detector
+-- Set runtime path of "/usr/local/bin/opencv_waldboost_detector" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_aruco.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_aruco.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_aruco.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_aruco.so
+-- Installing: /usr/local/include/opencv2/aruco.hpp
+-- Installing: /usr/local/include/opencv2/aruco/dictionary.hpp
+-- Installing: /usr/local/include/opencv2/aruco/charuco.hpp
+-- Installing: /usr/local/lib/libopencv_bgsegm.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_bgsegm.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_bgsegm.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_bgsegm.so
+-- Installing: /usr/local/include/opencv2/bgsegm.hpp
+-- Installing: /usr/local/lib/libopencv_bioinspired.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_bioinspired.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_bioinspired.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_bioinspired.so
+-- Installing: /usr/local/include/opencv2/bioinspired.hpp
+-- Installing: /usr/local/include/opencv2/bioinspired/retina.hpp
+-- Installing: /usr/local/include/opencv2/bioinspired/transientareassegmentationmodule.hpp
+-- Installing: /usr/local/include/opencv2/bioinspired/bioinspired.hpp
+-- Installing: /usr/local/include/opencv2/bioinspired/retinafasttonemapping.hpp
+-- Installing: /usr/local/lib/libopencv_ccalib.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_ccalib.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_ccalib.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_ccalib.so
+-- Installing: /usr/local/include/opencv2/ccalib.hpp
+-- Installing: /usr/local/include/opencv2/ccalib/multicalib.hpp
+-- Installing: /usr/local/include/opencv2/ccalib/omnidir.hpp
+-- Installing: /usr/local/include/opencv2/ccalib/randpattern.hpp
+-- Installing: /usr/local/lib/libopencv_dnn_objdetect.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_dnn_objdetect.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_dnn_objdetect.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_dnn_objdetect.so
+-- Installing: /usr/local/include/opencv2/core_detect.hpp
+-- Installing: /usr/local/lib/libopencv_dpm.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_dpm.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_dpm.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_dpm.so
+-- Installing: /usr/local/include/opencv2/dpm.hpp
+-- Installing: /usr/local/lib/libopencv_face.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_face.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_face.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_face.so
+-- Installing: /usr/local/include/opencv2/face.hpp
+-- Installing: /usr/local/include/opencv2/face/facemark_train.hpp
+-- Installing: /usr/local/include/opencv2/face/mace.hpp
+-- Installing: /usr/local/include/opencv2/face/bif.hpp
+-- Installing: /usr/local/include/opencv2/face/facemarkLBF.hpp
+-- Installing: /usr/local/include/opencv2/face/predict_collector.hpp
+-- Installing: /usr/local/include/opencv2/face/facemarkAAM.hpp
+-- Installing: /usr/local/include/opencv2/face/face_alignment.hpp
+-- Installing: /usr/local/include/opencv2/face/facemark.hpp
+-- Installing: /usr/local/include/opencv2/face/facerec.hpp
+-- Installing: /usr/local/lib/libopencv_optflow.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_optflow.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_optflow.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_optflow.so
+-- Installing: /usr/local/include/opencv2/optflow.hpp
+-- Installing: /usr/local/include/opencv2/optflow/sparse_matching_gpc.hpp
+-- Installing: /usr/local/include/opencv2/optflow/motempl.hpp
+-- Installing: /usr/local/include/opencv2/optflow/pcaflow.hpp
+-- Installing: /usr/local/lib/libopencv_stitching.so.3.4.8
+-- Installing: /usr/local/lib/libopencv_stitching.so.3.4
+-- Set runtime path of "/usr/local/lib/libopencv_stitching.so.3.4.8" to "/usr/local/lib"
+-- Installing: /usr/local/lib/libopencv_stitching.so
+-- Installing: /usr/local/include/opencv2/stitching.hpp
+-- Installing: /usr/local/include/opencv2/stitching/warpers.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/timelapsers.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/blenders.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/util.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/camera.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/motion_estimators.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/autocalib.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/seam_finders.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/exposure_compensate.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/util_inl.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/matchers.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/warpers_inl.hpp
+-- Installing: /usr/local/include/opencv2/stitching/detail/warpers.hpp
+-- Installing: /usr/local/lib/python2.7/dist-packages/cv2/__init__.py
+-- Installing: /usr/local/lib/python2.7/dist-packages/cv2/load_config_py2.py
+-- Installing: /usr/local/lib/python2.7/dist-packages/cv2/load_config_py3.py
+-- Installing: /usr/local/lib/python2.7/dist-packages/cv2/config.py
+-- Installing: /usr/local/lib/python2.7/dist-packages/cv2/python-2.7/cv2.so
+-- Set runtime path of "/usr/local/lib/python2.7/dist-packages/cv2/python-2.7/cv2.so" to "/usr/local/lib"
+-- Installing: /usr/local/lib/python2.7/dist-packages/cv2/config-2.7.py
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_frontalcatface_extended.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_smile.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_eye.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_fullbody.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_licence_plate_rus_16stages.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_profileface.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_alt2.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_righteye_2splits.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_upperbody.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_eye_tree_eyeglasses.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_alt_tree.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_frontalcatface.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_lowerbody.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_russian_plate_number.xml
+-- Installing: /usr/local/share/OpenCV/haarcascades/haarcascade_lefteye_2splits.xml
+-- Installing: /usr/local/share/OpenCV/lbpcascades/lbpcascade_frontalface_improved.xml
+-- Installing: /usr/local/share/OpenCV/lbpcascades/lbpcascade_profileface.xml
+-- Installing: /usr/local/share/OpenCV/lbpcascades/lbpcascade_frontalface.xml
+-- Installing: /usr/local/share/OpenCV/lbpcascades/lbpcascade_frontalcatface.xml
+-- Installing: /usr/local/share/OpenCV/lbpcascades/lbpcascade_silverware.xml
+-- Installing: /usr/local/bin/opencv_traincascade
+-- Set runtime path of "/usr/local/bin/opencv_traincascade" to "/usr/local/lib"
+-- Installing: /usr/local/bin/opencv_createsamples
+-- Set runtime path of "/usr/local/bin/opencv_createsamples" to "/usr/local/lib"
+-- Installing: /usr/local/bin/opencv_annotation
+-- Set runtime path of "/usr/local/bin/opencv_annotation" to "/usr/local/lib"
+-- Installing: /usr/local/bin/opencv_visualisation
+-- Set runtime path of "/usr/local/bin/opencv_visualisation" to "/usr/local/lib"
+-- Installing: /usr/local/bin/opencv_interactive-calibration
+-- Set runtime path of "/usr/local/bin/opencv_interactive-calibration" to "/usr/local/lib"
+-- Installing: /usr/local/bin/opencv_version
+-- Set runtime path of "/usr/local/bin/opencv_version" to "/usr/local/lib"
+```
+
+
+
+
