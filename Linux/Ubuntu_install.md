@@ -316,6 +316,48 @@ Ctrl+Shift+X    将分割的某一个窗口放大至全屏使用
 Ctrl+Shift+Z    从放大至全屏的某一窗口回到多窗格界面
 ```
 
+配置：
+
+- 刚安装完terminator之后默认没有配置文件，可以自己新建`～/.config/terminator/config`文件或者自己鼠标放在terminator的任意空白处右击选择`preferences`随便设置一些就可以自动生成`～/.config/terminator/config`文件
+- 配置文件如下：
+
+```sh
+[global_config]
+  title_transmit_bg_color = "#d30102"
+  focus = system
+  suppress_multiple_term_dialog = True
+[keybindings]
+[profiles]
+  [[default]]
+    palette = "#2d2d2d:#f2777a:#99cc99:#ffcc66:#6699cc:#cc99cc:#66cccc:#d3d0c8:#747369:#f2777a:#99cc99:#ffcc66:#6699cc:#cc99cc:#66cccc:#f2f0ec"
+    background_color = "#2D2D2D" # 背景颜色
+    background_image = None   
+    background_darkness = 0.85 
+    cursor_color = "#eee8d5" # 光标颜色
+    cursor_blink = True # 光标是否闪烁
+    foreground_color = "#EEE9E9" # 文字的颜色
+    use_system_font = False # 是否启用系统字体
+    font = Ubuntu Mono 13  # 字体设置，后面的数字表示字体大小
+    copy_on_selection = True # 选择文本时同时将数据拷贝到剪切板中
+    show_titlebar = False # 不显示标题栏，也就是 terminator 中那个默认的红色的标题栏
+[layouts]
+  [[default]]
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+      profile = default
+    [[[window0]]]
+      type = Window
+      parent = ""
+[plugins]
+```
+
+## 安装nomacs图片浏览器
+
+```sh
+sudo apt-get install nomacs
+```
+
 ## Surface pro4 wifi 崩溃问题
 
 不安装第三方内核的情况下
